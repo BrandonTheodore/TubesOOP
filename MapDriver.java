@@ -113,7 +113,6 @@ public class MapDriver {
      * Print the map with color-coded tiles for better visualization
      */
     private static void printColorMap(char[][] map) {
-        System.out.println("Map:");
         for (int row = 0; row < map.length; row++) {
             for (int col = 0; col < map[row].length; col++) {
                 switch(map[row][col]) {
