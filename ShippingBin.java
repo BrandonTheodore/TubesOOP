@@ -9,6 +9,10 @@ public class ShippingBin {
         this.bin = new HashMap<>();
     }
 
+    /**
+     * add item to bin,
+     * if already in bin add quantity
+     */
     public void addItem(Item item, int quantity, Player player) {
         // mungkin checkItem ngecheck itemnya ada di inventory sekaligus quantitynya
         if(item == null || quantity <= 0 || player.inventory.checkItem(item)){
@@ -29,6 +33,10 @@ public class ShippingBin {
         }
     }
 
+    /**
+     * add player gold,
+     * clear bin
+     */
     public void sellBin(Player player) {
         if(this.bin.isEmpty()){
             System.out.println("");
@@ -46,11 +54,17 @@ public class ShippingBin {
         clearBin();
     }
 
+    /**
+     * clear bin
+     */
     public void clearBin(){
         this.bin.clear();
     }
 
-    public void PrintBin(){
+    /**
+     * print shipping bin
+     */
+    public void printBin(){
         System.out.printf("%-15s %-10s\n", "Item", "Quantity");
         System.out.println("-----------------------------");
 
