@@ -22,15 +22,7 @@ public class MapDriver {
         
         boolean running = true;
         String input;
-        
-        System.out.println("=== Farming Game Map Driver ===");
-        System.out.println("Controls:");
-        System.out.println("- WASD: Move player");
-        System.out.println("- T: Till soil");
-        System.out.println("- P: Plant crops");
-        System.out.println("- M: Access world map (not finished)");
-        System.out.println("- Q: Quit game");
-        System.out.println();
+        String message = "nothing";
         
         // Game loop
         while (running) {
@@ -42,12 +34,27 @@ public class MapDriver {
             char currentTile = gameMap.getCurrentTile();
             
             // Display player status and surroundings
+            if(message.equals("nothing")){
+                System.out.println("");
+            } else {
+                System.out.println(ANSI_RED + message + ANSI_RESET);
+            }
+            System.out.println("");
+            
             System.out.println("Player position: (" + gameMap.getPlayerX() + ", " + gameMap.getPlayerY() + ")");
             System.out.println("Current tile: " + getTileDescription(currentTile));
             System.out.println("Surroundings: Up[" + getTileDescription(surroundingTiles[0]) + 
                                "], Down[" + getTileDescription(surroundingTiles[1]) + 
                                "], Left[" + getTileDescription(surroundingTiles[2]) + 
                                "], Right[" + getTileDescription(surroundingTiles[3]) + "]");
+            
+            System.out.println("Controls:");
+            System.out.println("- WASD: Move player");
+            System.out.println("- T: Till soil");
+            System.out.println("- P: Plant crops");
+            System.out.println("- M: Access world map (not finished)");
+            System.out.println("- Q: Quit game");
+            System.out.println();
             
             // Get player input
             System.out.print("Enter command: ");
@@ -56,29 +63,29 @@ public class MapDriver {
             // Process input
             switch (input) {
                 case "w", "a", "s", "d" -> {
-                    // Move player
-                    gameMap.move(input);
+                    message = gameMap.move(input);
                 }
                 case "t" -> {
                     // Till soil if possible
                     if (gameMap.isTillable()) {
                         gameMap.setCurrentTile('t');
-                        System.out.println("You tilled the soil!");
+                        message = "You tilled the soil!";
                     } else {
-                        System.out.println("Cannot till here!");
+                        message = "Cannot till here!";
                     }
                 }
                 case "p" -> {
                     // Plant on tilled soil
                     if (gameMap.isTilled()) {
                         gameMap.setCurrentTile('l');
-                        System.out.println("You planted seeds!");
+                        message = "You planted seeds!";
                     } else {
-                        System.out.println("Cannot plant here! Till the soil first.");
+                        message = "Cannot plant here! Till the soil first.";
                     }
                 }
                 case "m" -> {
                     // Access world map
+                    TerminalClear.clearScreen();
                     System.out.println("Opening world map...");
                     gameMap.worldMap();
                 }
@@ -86,11 +93,13 @@ public class MapDriver {
                     System.out.println("Quitting game. Goodbye!");
                     running = false;
                 }
-                default -> System.out.println("Unknown command. Use WASD to move, T to till, P to plant, M for world map, Q to quit.");
+                default -> message = "Unknown command. Use WASD to move, T to till, P to plant, M for world map, Q to quit.";
             }
             
             // Clear some space between turns
-            System.out.println("\n----------\n");
+            // System.out.println("\n----------\n");
+
+            TerminalClear.clearScreen();
         }
 
         scanner.close();

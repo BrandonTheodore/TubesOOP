@@ -16,8 +16,8 @@ public class Map {
     private int playerX;
     private int playerY;
     private char currentTile;
-
     private char[][] map;
+    
     private Random rand;
 
     public Map() {
@@ -197,11 +197,13 @@ public class Map {
     /*
      * Move the player from one place to another
      */
-    public void move(String input){
+    public String move(String input){
         int previousX = this.playerX;
         int previousY = this.playerY;
         char previousTile = 'a'; // random char
         boolean canMove = false;
+        boolean inputValid = true;
+        String message = "";
 
         switch (input) {
             case "w" -> {
@@ -210,8 +212,6 @@ public class Map {
                     this.playerY -= 1;
                     this.currentTile = this.map[this.playerY][this.playerX];
                     canMove = true;
-                } else {
-                    System.out.println("Cannot move through buildings / out of bounds!");
                 }
             }
             case "a" -> {
@@ -220,8 +220,6 @@ public class Map {
                     this.playerX -= 1;
                     this.currentTile = this.map[this.playerY][this.playerX];
                     canMove = true;
-                } else {
-                    System.out.println("Cannot move through buildings / out of bounds!");
                 }
             }
             case "s" -> {
@@ -230,8 +228,6 @@ public class Map {
                     this.playerY += 1;
                     this.currentTile = this.map[this.playerY][this.playerX];
                     canMove = true;
-                } else {
-                    System.out.println("Cannot move through buildings / out of bounds!");
                 }
             }
             case "d" -> {
@@ -240,16 +236,21 @@ public class Map {
                     this.playerX += 1;
                     this.currentTile = this.map[this.playerY][this.playerX];
                     canMove = true;
-                } else {
-                    System.out.println("Cannot move through buildings / out of bounds!");
                 }
             }
-            default -> System.out.println("Please use WASD to move!");
+            default -> inputValid = false;
         }
 
-        if(canMove){
+        if(canMove && inputValid){
             this.map[this.playerY][this.playerX] = PLAYER;
             this.map[previousY][previousX] = previousTile;
+            return message;
+        } else if(!canMove && inputValid) {
+            message = "Cannot move through buildings / out of bounds!";
+            return message;
+        } else {
+            message = "use WASD to move!";
+            return message;
         }
     }
 
@@ -364,8 +365,12 @@ public class Map {
                     break;
                 }
                 default -> {
-                System.out.println("Input is not valid.");
+                    System.out.println("Input is not valid.");
                 }
+            }
+
+            if(input.equals("back")){
+                break;
             }
         }
     }
