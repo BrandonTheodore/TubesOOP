@@ -25,28 +25,33 @@ public class Map {
         this.playerX = WIDTH / 2;
         this.playerY = HEIGHT / 2;
         this.currentTile = '.';
-        // rand = new Random();
     }
 
     /*
-     * return the map
+     * return map
      */
     public char[][] getMap(){
         return map;
     }
 
+    /**
+     * return playerX/column
+     */
     public int getPlayerX(){
         return playerX;
     }
 
+    /**
+     * return playerY/row
+     */
     public int getPlayerY(){
         return playerY;
     }
 
     /*
-     * Generate the map at random everytime
+     * Generate map random each time
      */
-    public void generateMap() {
+    public void generateMap () {
         final int HOUSE_SIZE = 6;
         final int BIN_WIDTH = 3;
         final int BIN_HEIGHT = 2;
@@ -63,7 +68,7 @@ public class Map {
             }
         }
 
-        // Place workbench at bottom-right first
+        // Place workbench at bottom-right
         int workbenchX = WIDTH - WORLDMAP_SIZE;
         int workbenchY = HEIGHT - WORLDMAP_SIZE;
         fillArea(workbenchX, workbenchY, WORLDMAP_SIZE, WORLDMAP_SIZE, WORLDMAP);
@@ -133,6 +138,9 @@ public class Map {
     private boolean isAreaEmpty(int startX, int startY, int width, int height) {
         for(int y = startY; y < startY + height; y++) {
             for(int x = startX; x < startX + width; x++) {
+                if(x < 0 || x >= this.WIDTH || y < 0 || y >= this.HEIGHT){
+                    throw new ArrayIndexOutOfBoundsException("Map/Object height or width is incorrect");
+                }
                 if(map[y][x] != TILLABLE) return false;
             }
         }
@@ -145,6 +153,9 @@ public class Map {
     private void fillArea(int startX, int startY, int width, int height, char c) {
         for(int y = startY; y < startY + height; y++) {
             for(int x = startX; x < startX + width; x++) {
+                if(x < 0 || x >= this.WIDTH || y < 0 || y >= this.HEIGHT){
+                    throw new ArrayIndexOutOfBoundsException("Map/Object height or width is incorrect");
+                }
                 map[y][x] = c;
             }
         }
@@ -195,12 +206,12 @@ public class Map {
     }
 
     /*
-     * Move the player from one place to another
+     * Move the player
      */
     public String move(String input){
         int previousX = this.playerX;
         int previousY = this.playerY;
-        char previousTile = 'a'; // random char
+        char previousTile = 'a';
         boolean canMove = false;
         boolean inputValid = true;
         String message = "";
@@ -294,10 +305,16 @@ public class Map {
         return this.currentTile;
     }
 
+    /**
+     * set current player's tile
+     */
     public void setCurrentTile(char tile){
         this.currentTile = tile;
     }
 
+    /**
+     * set any tile
+     */
     public void setTile(char tile, int x, int y){
         this.map[y][x] = tile;
     }
@@ -341,7 +358,7 @@ public class Map {
                     System.out.println("5. Emily");
                     System.out.println("6. Abigail");
                     /**
-                    * do NPC action based on the NPC
+                    * do NPC action
                     */
                 }
                 case "2" -> {
@@ -358,7 +375,7 @@ public class Map {
                     /**
                      * Show item name and price,
                      * decrease player gold,
-                     * and put item inside player's inventory after buying
+                     * and add item to player's inventory after buying
                      */
                 }
                 case "back" -> {

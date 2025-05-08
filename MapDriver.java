@@ -18,7 +18,11 @@ public class MapDriver {
         Map gameMap = new Map();
         
         // Generate the initial map
-        gameMap.generateMap();
+        try {
+            gameMap.generateMap();
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println(e.getMessage());
+        }
         
         boolean running = true;
         String input;
@@ -40,7 +44,7 @@ public class MapDriver {
                 System.out.println(ANSI_RED + message + ANSI_RESET);
             }
             System.out.println("");
-            
+
             System.out.println("Player position: (" + gameMap.getPlayerX() + ", " + gameMap.getPlayerY() + ")");
             System.out.println("Current tile: " + getTileDescription(currentTile));
             System.out.println("Surroundings: Up[" + getTileDescription(surroundingTiles[0]) + 
