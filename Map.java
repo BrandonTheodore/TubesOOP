@@ -333,7 +333,12 @@ public class Map {
         return this.currentTile == 't';
     }
 
-    public void worldMap(/** Player player */){
+    /**
+     * world map
+     * masih bingung parameternya apa aja,
+     * atau mending taro di player aja biar lebih gampang akses data-datanya
+     */
+    public void worldMap(/** Player player, NPC npc */){
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
