@@ -1,0 +1,87 @@
+import java.util.*;
+
+public class Inventory {
+    private Map<Item, Integer> items;
+
+    // konstruktor
+    public Inventory() {
+        items = new HashMap<>();
+    }
+
+    // method menambahkan item
+    public void addItem(Item item, int quantity) {
+        if (items.containsKey(item)) {
+            items.put(item, items.get(item) + quantity);
+        } else {
+            items.put(item, quantity);
+        }
+    }
+
+    // method menghapus item
+    public boolean removeItem(Item item, int quantity) {
+        // kalo itemnya ga ada
+        if (!items.containsKey(item)) {
+            return false; 
+        }
+
+        int currentQuantity = items.get(item);
+        // kalo quantity yang mau dihapus lebih banyak dari yang player punya
+        if (quantity > currentQuantity) {
+            return false;
+        }
+
+        // kalo sama dengan
+        if (currentQuantity == quantity) {
+            items.remove(item);
+        } else {
+            items.put(item, currentQuantity - quantity);
+        }
+        return true;
+    }
+
+    // method untuk menggunakan item
+    // public Item getItem(Item item) {
+    //     if (!items.containsKey(item)) {
+    //         return null;
+    //     } else {
+    //         int currentQuantity = items.get(item);
+    //         if (currentQuantity == 1) {
+    //             items.remove(item);
+    //         } else {
+    //             items.put(item, currentQuantity - 1);
+    //         }
+    //         return item;
+    //     }
+    // }
+
+    // method untuk mendapatkan jumlah item
+    public int getItemQuantity(Item item) {
+        if (!items.containsKey(item)) {
+            return 0;
+        } else {
+            return items.get(item);
+        }
+    }
+
+    // method untuk mengecek apakah sebuah item ada di inventory
+    public boolean checkItem(Item item) {
+        return items.containsKey(item);
+    }
+
+    // method untuk menampilkan inventory
+    public void printInventory() {
+        if (items.isEmpty()) {
+            System.out.println("Inventory kosong");
+            return;
+        }
+        System.out.println("----------------------------+------------");
+        System.out.printf("| %-25s | %-10s|\n", "Nama Item", "Jumlah");
+        System.out.println("----------------------------+------------");
+        for (Map.Entry<Item, Integer> entry : items.entrySet()) {
+            String name = entry.getKey().getName();
+            int quantity = entry.getValue();
+            System.out.printf("| %-25s | %-10d|\n", name, quantity);
+        }
+        System.out.println("----------------------------+------------");
+    }
+}
