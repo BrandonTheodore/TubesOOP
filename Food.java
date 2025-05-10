@@ -5,5 +5,9 @@ public class Food extends Item{
         super(name, buyP, sellP, c);
         this.energy = e;
     }
+
+    public void useItem(Player player, Food food){
+        player.setEnergy(player.getEnergy() + food.energy);
+    }
 }
 
