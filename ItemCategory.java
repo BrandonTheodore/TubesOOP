@@ -1,6 +1,6 @@
 public enum ItemCategory{
     SEED,
-    CROP,
+    CROPS,
     FISH,
     FOOD,
     EQUIPMENT,

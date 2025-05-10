@@ -8,8 +8,8 @@ public class Fish extends Item{
     private Rarity rarity;
     private int energy;
 
-    public Fish(String name, int buyP, int sellP, ItemCategory c, Season s, Time t, Weather w, Location l, Rarity r, int e){
-        super(name, buyP, sellP, c);
+    public Fish(String name, int buyP, int sellP, Season s, Time t, Weather w, Location l, Rarity r, int e){
+        super(name, buyP, sellP, ItemCategory.FISH);
         this.season = s;
         this.time = t;
         this.weather = w;
@@ -27,8 +27,7 @@ public class Fish extends Item{
         return this.season == s && this.time == time && this.weather == w && this.location == l;
     }
 
-    public void useItem(Player player, Fish fish){
+    public void useItem(Player player, Item item){
         player.setEnergy(player.getEnergy() + fish.getEnergy());
     }
-    
 }
