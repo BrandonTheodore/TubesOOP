@@ -8,6 +8,15 @@ public class Inventory {
         items = new HashMap<>();
     }
 
+    // berarti ini harusnya ada di player
+    // public Map<Item, Integer> getInventory() {
+    //     return items;
+    // }
+
+    public void setItems(Map<Item, Integer> items) {
+        this.items = items;
+    }
+
     // method menambahkan item
     public void addItem(Item item, int quantity) {
         if (items.containsKey(item)) {
@@ -40,19 +49,19 @@ public class Inventory {
     }
 
     // method untuk menggunakan item
-    // public Item getItem(Item item) {
-    //     if (!items.containsKey(item)) {
-    //         return null;
-    //     } else {
-    //         int currentQuantity = items.get(item);
-    //         if (currentQuantity == 1) {
-    //             items.remove(item);
-    //         } else {
-    //             items.put(item, currentQuantity - 1);
-    //         }
-    //         return item;
-    //     }
-    // }
+    public Item getItem(Item item) {
+        if (!items.containsKey(item)) {
+            return null;
+        } else {
+            int currentQuantity = items.get(item);
+            if (currentQuantity == 1) {
+                items.remove(item);
+            } else {
+                items.put(item, currentQuantity - 1);
+            }
+            return item;
+        }
+    }
 
     // method untuk mendapatkan jumlah item
     public int getItemQuantity(Item item) {
@@ -66,6 +75,19 @@ public class Inventory {
     // method untuk mengecek apakah sebuah item ada di inventory
     public boolean checkItem(Item item) {
         return items.containsKey(item);
+    }
+
+    // method buat check item dan jumlahnya
+    public boolean checkItemAndQuantity(Item item, int quantity) {
+        if (!items.containsKey(item)) {
+            return false;
+        } else {
+            if (items.get(item) >= quantity) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     // method untuk menampilkan inventory
