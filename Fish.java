@@ -5,7 +5,7 @@ import java.util.List;
 public class Fish extends Item {
     private List<Season> seasons;
     private List<Weather> weathers;
-    private List<Location> locations; // mountain lake, pond, dll
+    private List<LocationFish> locations; // mountain_lake, pond, forest_river, ocean
     private String timeStart;
     private String timeEnd;
     private Rarity rarity;
@@ -47,7 +47,7 @@ public class Fish extends Item {
     List<LocationFish> legendLocations = Arrays.asList(LocationFish.MOUNTAIN_LAKE);
 
     
-    public Fish(String name, int sellPrice, Rarity rarity, List<Season> seasons, List<Weather> weathers, List<Location> locations, String timeStart, String timeEnd) {
+    public Fish(String name, int sellPrice, Rarity rarity, List<Season> seasons, List<Weather> weathers, List<LocationFish> locations, String timeStart, String timeEnd) {
         super(name, 0, calculateSellPrice(rarity, seasons.size(), calculateHourRange(timeStart, timeEnd), weathers.size(), locations.size()), ItemCategory.FISH); // fish gabisa dibeli jadi buyPrice = 0
         this.rarity = rarity;
         this.seasons = seasons;
@@ -65,7 +65,7 @@ public class Fish extends Item {
         return weathers;
     }
     
-    public List<Location> getLocations() {
+    public List<LocationFish> getLocations() {
         return locations;
     }
     
@@ -81,7 +81,7 @@ public class Fish extends Item {
         return rarity;
     }
     
-    public boolean isCatchable(Season currentSeason, Weather currentWeather, Location currentLocation, String currentTime) {
+    public boolean isCatchable(Season currentSeason, Weather currentWeather, LocationFish currentLocation, String currentTime) {
         boolean seasonMatch = seasons.contains(currentSeason); // cek season di parameter ada di list seasons gak, kalo ada true
         boolean weatherMatch = weathers.contains(currentWeather);// cek weather di parameter ada di list weathers gak, kalo ada true
         boolean locationMatch = locations.contains(currentLocation); // cek season di parameter ada di list seasons gak, kalo ada true
