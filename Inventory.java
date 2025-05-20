@@ -72,6 +72,15 @@ public class Inventory {
         }
     }
 
+    public Item getItemByName(String name) {
+        for (Item item : items.keySet()) {
+            if (item.getName().equalsIgnoreCase(name)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     // method untuk mengecek apakah sebuah item ada di inventory
     public boolean checkItem(Item item) {
         return items.containsKey(item);
@@ -88,6 +97,15 @@ public class Inventory {
                 return false;
             }
         }
+    }
+
+    public boolean checkItemByName(String itemName) {
+        for (Item item : items.keySet()) {
+            if (item.getName().equalsIgnoreCase(itemName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // method untuk menampilkan inventory

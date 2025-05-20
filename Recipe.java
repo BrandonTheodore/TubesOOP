@@ -1,35 +1,30 @@
 import java.util.*;
 
 public class Recipe {
-    private String recipeId;
-    private Map<Item, Integer> ingredients;
+    private String recipeName;
+    private Map<String, Integer> ingredients;
     private Food food;
     private boolean isUnlocked;
     private String unlockInfo;
 
-    // konstruktor
-    public Recipe(String recipeId, Map<Item, Integer> ingredients, Food food, boolean isUnlocked, String unlockInfo) {
-        this.recipeId = recipeId;
-        this.ingredients = ingredients;
-        this.food = food;
-        this.isUnlocked = isUnlocked;
-        this.unlockInfo = unlockInfo;
+    public Recipe(String recipeName) {
+        this.recipeName = recipeName;
+        ingredients = new HashMap<>();
+        food = null;
+        isUnlocked = false;
+        unlockInfo = "";
     }
 
-    public String getRecipeId() {
-        return recipeId;
+    public void addIngredient(String name, int quantity) {
+        ingredients.put(name, quantity); // pakai lowercase buat konsistensi
     }
 
-    public void setRecipeId(String recipeId) {
-        this.recipeId = recipeId;
-    }
-
-    public Map<Item, Integer> getIngredients() {
+    public Map<String, Integer> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(Map<Item, Integer> ingredients) {
-        this.ingredients = ingredients;
+    public String getRecipeName() {
+        return recipeName;
     }
 
     public Food getFood() {
@@ -57,26 +52,35 @@ public class Recipe {
     }
 
     public void printIngredients(Food food) {
-        System.out.println("Berikut adalah bahan baku yang dibutuhkan untuk membuat " + food.getName());
-        for (Map.Entry<Item, Integer> entry : ingredients.entrySet()) {
-            System.out.println("- " + entry.getKey().getName() + " x" + entry.getValue());
+        System.out.println("Bahan-bahan untuk membuat " + food.getName() + ":");
+        for (Map.Entry<String, Integer> entry : ingredients.entrySet()) {
+            System.out.println("- " + entry.getKey() + " x" + entry.getValue());
         }
     }
 
-    public void printRecipesList(List<Recipe> recipes) {
-        System.out.println("---------------+---------------------------");
-        System.out.printf("| %-12s | %-25s|\n", "recipe_id", "Nama Makanan");
-        System.out.println("---------------+---------------------------");        
+    public void printIngredientsByName(String name) {
+        System.out.println("Bahan-bahan untuk membuat " + name + ":");
+        for (Map.Entry<String, Integer> entry : ingredients.entrySet()) {
+            System.out.println("- " + entry.getKey() + " x" + entry.getValue());
+        }
+    }
 
-        for (Recipe recipe : recipes) {
-            if (recipe.isUnlocked()) {
-                System.out.printf("| %-12s | %-25s|\n", recipe.getRecipeId(), recipe.getFood().getName());
+    public boolean hasRequiredItems(Player player) {
+        for (Map.Entry<String, Integer> entry : ingredients.entrySet()) {
+            Item item = player.getInventory().getItemByName(entry.getKey());
+            if (item == null || player.getInventory().getItemQuantity(item) < entry.getValue()) {
+                return false;
             }
         }
-        System.out.println("---------------+---------------------------");
+        return true;
     }
 
-    // public void printLockedRecipes() {
-    //     System.out.println("Resep ini masih terkunci, silakan buka resep ini dengan cara: " + unlockInfo);
-    // }
+    public void consumeIngredients(Player player) {
+        for (Map.Entry<String, Integer> entry : ingredients.entrySet()) {
+            Item item = player.getInventory().getItemByName(entry.getKey());
+            if (item != null) {
+                player.getInventory().removeItem(item, entry.getValue());
+            }
+        }
+    }
 }
