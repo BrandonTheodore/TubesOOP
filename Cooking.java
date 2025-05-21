@@ -1,15 +1,20 @@
+import java.util.*;
+
 public class Cooking {
     // nanti tiap mau cook ambil dulu nama fuelnya yaa
 
     public boolean cook(Player player, Recipe recipe, String fuelName) {
         // cek lokasi player
         if (!player.getLocation().equals("House")) {
-            System.out.println("Player tidak berada di dapur");
+            System.out.println("Player sedang tidak di rumah");
             return false;
         }
 
         // cek resep udah unlocked belum
-        if (!player.getUn)
+        if (!recipe.isUnlocked()) {
+            System.out.println("Resep masih terkunci");
+            return false;
+        }
 
         // cek fuel
         Item fuelItem = player.getInventory().getItemByName(fuelName);
@@ -42,8 +47,17 @@ public class Cooking {
             System.out.println("Fuel tidak valid");
             return false;
         }
+        
+        // cek bahan bahannya
+        if (!recipe.hasRequiredItems(player)) {
+            System.out.println("Ingredients tidak tercukupi");
+            return false;
+        }
 
+        if (player.getEnergy() < (-10)) {
+            System.out.println("Energi tidak cukup untuk memasak");
+            return false;
+        }
     }
-
 
 }
