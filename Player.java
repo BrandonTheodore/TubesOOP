@@ -1,0 +1,433 @@
+import java.util.Objects;
+
+public class Player {
+    // Definisi enum Gender di dalam file yang sama dengan Player
+    public enum Gender {
+        MALE, FEMALE
+    }
+
+    public enum Direction {
+        UP, DOWN, LEFT, RIGHT
+    }
+
+    private String name;
+    private Gender gender;
+    private int energy;
+    private String farmName;
+    private String partner;
+    private int gold;
+    private Inventory inventory;
+    private Location location;
+
+    // Konstanta untuk energi
+    private static final int MAX_ENERGY = 100;
+    private static final int MIN_ENERGY_BEFORE_SLEEP = -20;
+
+    // Konstruktor (Tidak berubah)
+    public Player(String name, Gender gender, String farmName) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nama pemain tidak boleh kosong.");
+        }
+        if (gender == null) {
+            throw new IllegalArgumentException("Jenis kelamin pemain tidak boleh null.");
+        }
+        if (farmName == null || farmName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nama farm tidak boleh kosong.");
+        }
+
+        this.name = name;
+        this.gender = gender;
+        this.energy = MAX_ENERGY;
+        this.farmName = farmName;
+        this.partner = null;
+        this.gold = 0;
+        this.inventory = new Inventory();
+        this.location = new Location("Home");
+    }
+
+    public String getName() {
+        return name; 
+    }
+    public Gender getGender() {
+        return gender;
+    }
+    public int getEnergy() {
+        return energy;
+    }
+    public String getFarmName() {
+        return farmName;
+    }
+    public String getPartner() {
+        return partner;
+    }
+    public int getGold() {
+        return gold;
+    }
+    public Inventory getInventory() {
+        return inventory;
+    }
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setGender(Gender gender) {
+        if (gender == null) {
+            throw new IllegalArgumentException("Jenis kelamin tidak boleh null.");
+        }
+        this.gender = gender;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = Math.min(energy, MAX_ENERGY);
+    }
+
+    public void setFarmName(String farmName) {
+        if (farmName == null || farmName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nama farm tidak boleh kosong.");
+        }
+        this.farmName = farmName;
+    }
+
+    public void setPartner(String partner) {
+        this.partner = partner;
+    }
+
+    public void setGold(int gold) {
+        this.gold = Math.max(0, gold);
+    }
+
+    public void setInventory(Inventory inventory) {
+        if (inventory == null) {
+            throw new IllegalArgumentException("Inventory tidak boleh null.");
+        }
+        this.inventory = inventory;
+    }
+
+    public void setLocation(Location location) {
+        if (location == null) {
+            throw new IllegalArgumentException("Lokasi tidak boleh null.");
+        }
+        this.location = location;
+    }
+
+    public boolean consumeEnergy(int energyCost) {
+        if (energyCost < 0) {
+            throw new IllegalArgumentException("Biaya energi tidak boleh negatif.");
+        }
+        this.energy -= energyCost;
+        if (this.energy < MIN_ENERGY_BEFORE_SLEEP) {
+            System.out.println(this.name + " kelelahan dan harus segera tidur! Energi mencapai " + this.energy);
+            sleep(); // Panggil metode sleep() yang baru
+            return false;
+        }
+        System.out.println(this.name + " melakukan aksi. Energi berkurang " + energyCost + ". Sisa energi: " + this.energy);
+        return true;
+    }
+
+    public void addEnergy(int energyGain) {
+        if (energyGain < 0) {
+            throw new IllegalArgumentException("Penambahan energi tidak boleh negatif.");
+        }
+        this.energy = Math.min(this.energy + energyGain, MAX_ENERGY);
+        System.out.println(this.name + " mendapatkan energi. Energi bertambah " + energyGain + ". Energi saat ini: " + this.energy);
+    }
+
+    public void addGold(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Jumlah gold yang ditambahkan tidak boleh negatif.");
+        }
+        this.gold += amount;
+        System.out.println(this.name + " mendapatkan " + amount + " gold. Total gold: " + this.gold);
+    }
+
+    public boolean removeGold(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Jumlah gold yang dikurangi tidak boleh negatif.");
+        }
+        if (this.gold >= amount) {
+            this.gold -= amount;
+            System.out.println(this.name + " mengeluarkan " + amount + " gold. Sisa gold: " + this.gold);
+            return true;
+        } else {
+            System.out.println("Gold " + this.name + " tidak cukup untuk mengurangi " + amount + ". Hanya punya " + this.gold);
+            return false;
+        }
+    }
+
+    // --- Metode Aksi Baru yang Ditambahkan ---
+
+    /**
+     * Metode: sleep()
+     * Mengisi penuh energi pemain.
+     */
+    public void sleep() {
+        System.out.println(this.name + " tertidur pulas...");
+        this.energy = MAX_ENERGY;
+        System.out.println(this.name + " bangun dengan energi penuh (" + this.energy + ")!");
+    }
+
+    /**
+     * Metode: eat(Item food)
+     * Mengkonsumsi makanan untuk menambah energi.
+     * @param food Objek Item yang akan dimakan.
+     */
+    public boolean eat(Item food) {
+        int energyGain = 0; // Default gain
+        // Asumsi makan 1 unit makanan
+        int quantityToConsume = 1;
+
+        if (food != null) {
+            // Perlu cek apakah player memiliki makanan tersebut dan kuantitasnya
+            if (!this.inventory.checkItemAndQuantity(food, quantityToConsume)) {
+                System.out.println(this.name + " tidak memiliki cukup " + food.getName() + " di inventory.");
+                return false;
+            }
+
+            // Logika sederhana, Anda akan memerlukan sistem Item yang lebih kompleks
+            switch (food.getName().toLowerCase()) {
+                case "apple":
+                    energyGain = 10;
+                    break;
+                case "sandwich":
+                    energyGain = 30;
+                    break;
+                default:
+                    System.out.println(this.name + " mencoba makan " + food.getName() + " tapi tidak tahu efeknya.");
+                    return false;
+            }
+
+            // Hapus item dari inventory
+            if (this.inventory.removeItem(food, quantityToConsume)) {
+                addEnergy(energyGain);
+                System.out.println(this.name + " makan " + food.getName() + " dan mendapatkan " + energyGain + " energi.");
+                return true;
+            }
+            // else blok tidak perlu karena removeItem sudah mencetak pesan jika gagal
+        }
+        System.out.println(this.name + " mencoba makan sesuatu yang tidak valid.");
+        return false;
+    }
+
+    /**
+     * Metode: move(Direction direction)
+     * Bergerak berdasarkan arah yang diberikan.
+     * @param direction Arah gerakan (misal: UP, DOWN, LEFT, RIGHT).
+     */
+    public void move(Direction direction) {
+        int energyCost = 5;
+        if (consumeEnergy(energyCost)) {
+            System.out.println(this.name + " bergerak ke arah: " + direction + ".");
+            String oldLoc = this.location.getName();
+            if (direction == Player.Direction.UP) this.location.setName("North " + oldLoc);
+            else if (direction == Player.Direction.DOWN) this.location.setName("South " + oldLoc);
+            else if (direction == Player.Direction.LEFT) this.location.setName("West " + oldLoc);
+            else if (direction == Player.Direction.RIGHT) this.location.setName("East " + oldLoc);
+            System.out.println(this.name + " sekarang berada di: " + this.location.getName() + ".");
+        } else {
+            System.out.println(this.name + " terlalu lelah untuk bergerak ke " + direction + ".");
+        }
+    }
+
+    /**
+     * Metode: visit(Location location)
+     * Mengunjungi lokasi tertentu.
+     * @param newLocation Objek lokasi yang akan dikunjungi.
+     */
+    public void visit(Location newLocation) {
+        int energyCost = 10;
+        if (this.location.equals(newLocation)) {
+            System.out.println(this.name + " sudah berada di " + newLocation.getName() + ".");
+            return;
+        }
+
+        if (consumeEnergy(energyCost)) {
+            System.out.println(this.name + " mengunjungi " + newLocation.getName() + " dari " + this.location.getName() + ".");
+            this.setLocation(newLocation);
+        } else {
+            System.out.println(this.name + " terlalu lelah untuk mengunjungi " + newLocation.getName() + ".");
+        }
+    }
+
+    /**
+     * Metode: gift(NPC npc, Item item)
+     * Memberikan hadiah kepada NPC.
+     * @param npc Objek NPC yang akan diberi hadiah.
+     * @param item Objek Item yang akan diberikan sebagai hadiah.
+     */
+    public boolean gift(NPC npc, Item item) {
+        int energyCost = 5;
+        int quantityToGift = 1; // Memberi 1 unit item
+        if (consumeEnergy(energyCost)) {
+            // Menggunakan removeItem(Item item, int quantity) yang baru
+            if (this.inventory.removeItem(item, quantityToGift)) {
+                System.out.println(this.name + " memberikan " + item.getName() + " sebagai hadiah kepada " + npc.getName() + ".");
+                npc.receiveGift(item);
+                return true;
+            } else {
+                System.out.println(this.name + " tidak memiliki " + item.getName() + " di inventory (atau tidak cukup jumlahnya).");
+                return false;
+            }
+        } else {
+            System.out.println(this.name + " terlalu lelah untuk memberikan hadiah.");
+            return false;
+        }
+    }
+
+    /**
+     * Metode: chat(NPC npc)
+     * Berinteraksi dengan NPC melalui obrolan.
+     * @param npc Objek NPC yang akan diajak bicara.
+     */
+    public void chat(NPC npc) {
+        int energyCost = 3;
+        if (consumeEnergy(energyCost)) {
+            System.out.println(this.name + " mengobrol dengan " + npc.getName() + ".");
+        } else {
+            System.out.println(this.name + " terlalu lelah untuk mengobrol.");
+        }
+    }
+
+    /**
+     * Metode: propose(NPC npc)
+     * Melamar NPC.
+     * @param npc Objek NPC yang akan dilamar.
+     */
+    public boolean propose(NPC npc) {
+        int energyCost = 20;
+        Item proposalRing = new Item("Proposal Ring", 1000); // Contoh cincin, pastikan namanya konsisten
+        int quantityOfRing = 1;
+
+        if (consumeEnergy(energyCost)) {
+            // Menggunakan checkItemAndQuantity untuk memastikan ada cincin
+            if (this.inventory.checkItemAndQuantity(proposalRing, quantityOfRing)) {
+                System.out.println(this.name + " melamar " + npc.getName() + "!");
+                boolean accepted = npc.receiveProposal(this); // Memanggil metode yang benar di NPC
+
+                if (accepted) {
+                    // Jika NPC menerima, Player mengurangi cincin dari inventory
+                    this.inventory.removeItem(proposalRing, quantityOfRing); // Mengurangi 1 cincin
+                    // Partner di Player sudah diset di NPC.receiveProposal, tapi bisa juga di sini
+                    // this.partner = npc.getName(); // Jika belum diset di receiveProposal
+                    System.out.println(npc.getName() + " menerima lamaran! Selamat " + this.name + ", Anda bertunangan dengan " + this.partner + "!");
+                    return true;
+                } else {
+                    System.out.println(npc.getName() + " menolak lamaran Anda.");
+                    return false;
+                }
+            } else {
+                System.out.println(this.name + " tidak memiliki cincin lamaran (Proposal Ring) di inventory atau jumlahnya tidak cukup.");
+                return false;
+            }
+        } else {
+            System.out.println(this.name + " terlalu lelah untuk melamar.");
+            return false;
+        }
+    }
+
+    /**
+     * Metode: marry(NPC npc)
+     * Menikah dengan NPC.
+     * @param npc Objek NPC yang akan dinikahi.
+     */
+    public boolean marry(NPC npc) {
+        int energyCost = 30;
+        if (consumeEnergy(energyCost)) {
+            if (this.partner != null && this.partner.equals(npc.getName()) && npc.getRelationshipStatus() == NPC.RelationshipStatus.FIANCE) {
+
+                System.out.println(this.name + " menikah dengan " + npc.getName() + "!");
+                npc.marryPlayer(this);
+                this.setPartner(npc.getName());
+                System.out.println("Selamat, " + this.name + " dan " + npc.getName() + " resmi menikah!");
+                return true;
+            } else {
+                System.out.println(this.name + " tidak dapat menikah dengan " + npc.getName() + ".");
+                System.out.println("Status: " + (this.partner == null ? "Belum bertunangan." : "Bertunangan dengan " + this.partner + ".") + " NPC Relationship: " + npc.getRelationshipStatus());
+                return false;
+            }
+        } else {
+            System.out.println(this.name + " terlalu lelah untuk menikah.");
+            return false;
+        }
+    }
+
+    /**
+     * Metode: till()
+     * Mengolah tanah (menggemburkan).
+     */
+    public boolean till() {
+        int energyCost = 10;
+        if (consumeEnergy(energyCost)) {
+            System.out.println(this.name + " mengolah tanah di lokasi saat ini.");
+            return true;
+        } else {
+            System.out.println(this.name + " terlalu lelah untuk mengolah tanah.");
+            return false;
+        }
+    }
+
+    /**
+     * Metode: recoverLand()
+     * Memulihkan tanah yang rusak.
+     */
+    public boolean recoverLand() {
+        int energyCost = 15;
+        if (consumeEnergy(energyCost)) {
+            System.out.println(this.name + " memulihkan tanah.");
+            return true;
+        } else {
+            System.out.println(this.name + " terlalu lelah untuk memulihkan tanah.");
+            return false;
+        }
+    }
+
+    /**
+     * Metode: harvest()
+     * Memanen tanaman.
+     */
+    public boolean harvest() {
+        int energyCost = 8;
+        int quantityHarvested = 1; // Misal memanen 1 unit hasil
+        if (consumeEnergy(energyCost)) {
+            System.out.println(this.name + " memanen tanaman.");
+            // Logika untuk menambahkan hasil panen ke inventory
+            Item harvestedCrop = new Item("Hasil Panen", 10); // Contoh Item hasil panen
+            this.inventory.addItem(harvestedCrop, quantityHarvested); // Menambahkan 1 unit
+            System.out.println("Hasil panen ditambahkan ke inventory.");
+            return true;
+        } else {
+            System.out.println(this.name + " terlalu lelah untuk memanen.");
+            return false;
+        }
+    }
+
+    /**
+     * Metode: fish()
+     * Melakukan aksi memancing.
+     */
+    public boolean fishing() {
+        int energyCost = 15;
+        int quantityCaught = 1;
+        System.out.println(this.name + " mulai memancing...");
+
+        if (consumeEnergy(energyCost)) {
+            String caughtItemName = "Ikan Salmon";
+            Item caughtItem = new Item(caughtItemName, 50);
+            this.inventory.addItem(caughtItem, quantityCaught);
+            System.out.println(this.name + " berhasil memancing dan mendapatkan " + caughtItemName + "!");
+            return true;
+        } else {
+            System.out.println(this.name + " terlalu lelah untuk memancing.");
+            return false;
+        }
+    }
+
+    /**
+     * Metode: showInventory()
+     * Menampilkan isi inventory pemain.
+     */
+    public void showInventory() {
+        System.out.println("\n--- Inventory " + this.name + " ---");
+        this.inventory.printInventory(); 
+        System.out.println("--------------------");
+    }
+}
