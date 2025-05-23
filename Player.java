@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.Random;
 
 public class Player {
-    // Definisi enum Gender di dalam file yang sama dengan Player
     public enum Gender {
         MALE, FEMALE
     }
@@ -22,11 +21,9 @@ public class Player {
     private Inventory inventory;
     private Location location;
 
-    // Konstanta untuk energi
     private static final int MAX_ENERGY = 100;
     private static final int MIN_ENERGY_BEFORE_SLEEP = -20;
 
-    // Konstruktor (Tidak berubah)
     public Player(String name, Gender gender, String farmName) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Nama pemain tidak boleh kosong.");
@@ -120,7 +117,7 @@ public class Player {
         this.energy -= energyCost;
         if (this.energy < MIN_ENERGY_BEFORE_SLEEP) {
             System.out.println(this.name + " kelelahan dan harus segera tidur! Energi mencapai " + this.energy);
-            sleep(); // Panggil metode sleep() yang baru
+            sleep();
             return false;
         }
         System.out.println(this.name + " melakukan aksi. Energi berkurang " + energyCost + ". Sisa energi: " + this.energy);
@@ -157,21 +154,12 @@ public class Player {
         }
     }
 
-    /**
-     * Metode: sleep()
-     * Mengisi penuh energi pemain.
-     */
     public void sleep() {
         System.out.println(this.name + " tertidur pulas...");
         this.energy = MAX_ENERGY;
         System.out.println(this.name + " bangun dengan energi penuh (" + this.energy + ")!");
     }
 
-    /**
-     * Metode: eat(Item food)
-     * Mengkonsumsi makanan untuk menambah energi.
-     * @param food Objek Item yang akan dimakan.
-     */
     public boolean eat(Item food) {
         int quantityToConsume = 1;
 
@@ -203,11 +191,6 @@ public class Player {
         return false;
     }
 
-    /**
-     * Metode: move(Direction direction)
-     * Bergerak berdasarkan arah yang diberikan.
-     * @param direction Arah gerakan (misal: UP, DOWN, LEFT, RIGHT).
-     */
     public void move(Direction direction) {
         int energyCost = 5;
         if (consumeEnergy(energyCost)) {
@@ -223,11 +206,6 @@ public class Player {
         }
     }
 
-    /**
-     * Metode: visit(Location location)
-     * Mengunjungi lokasi tertentu.
-     * @param newLocation Objek lokasi yang akan dikunjungi.
-     */
     public void visit(Location newLocation) {
         int energyCost = 10;
         if (this.location.equals(newLocation)) {
@@ -243,12 +221,6 @@ public class Player {
         }
     }
 
-    /**
-     * Metode: gift(NPC npc, Item item)
-     * Memberikan hadiah kepada NPC.
-     * @param npc Objek NPC yang akan diberi hadiah.
-     * @param item Objek Item yang akan diberikan sebagai hadiah.
-     */
     public boolean gift(NPC npc, Item item) {
         int energyCost = 5;
         int quantityToGift = 1; 
@@ -267,11 +239,6 @@ public class Player {
         }
     }
 
-    /**
-     * Metode: chat(NPC npc)
-     * Berinteraksi dengan NPC melalui obrolan.
-     * @param npc Objek NPC yang akan diajak bicara.
-     */
     public void chat(NPC npc) {
         int energyCost = 3;
         if (consumeEnergy(energyCost)) {
@@ -281,18 +248,12 @@ public class Player {
         }
     }
 
-    /**
-     * Metode: propose(NPC npc)
-     * Melamar NPC.
-     * @param npc Objek NPC yang akan dilamar.
-     */
     public boolean propose(NPC npc) {
         int energyCost = 20;
         Item proposalRing = new Item("Proposal Ring", 1000);
         int quantityOfRing = 1;
 
         if (consumeEnergy(energyCost)) {
-            // Menggunakan checkItemAndQuantity untuk memastikan ada cincin
             if (this.inventory.checkItemAndQuantity(proposalRing, quantityOfRing)) {
                 System.out.println(this.name + " melamar " + npc.getName() + "!");
                 boolean accepted = npc.receiveProposal(this);
@@ -315,11 +276,6 @@ public class Player {
         }
     }
 
-    /**
-     * Metode: marry(NPC npc)
-     * Menikah dengan NPC.
-     * @param npc Objek NPC yang akan dinikahi.
-     */
     public boolean marry(NPC npc) {
         int energyCost = 30;
         if (consumeEnergy(energyCost)) {
@@ -341,10 +297,6 @@ public class Player {
         }
     }
 
-    /**
-     * Metode: till()
-     * Mengolah tanah (menggemburkan).
-     */
     public boolean till() {
         int energyCost = 10;
         if (consumeEnergy(energyCost)) {
@@ -356,10 +308,6 @@ public class Player {
         }
     }
 
-    /**
-     * Metode: recoverLand()
-     * Memulihkan tanah yang rusak.
-     */
     public boolean recoverLand() {
         int energyCost = 15;
         if (consumeEnergy(energyCost)) {
@@ -371,10 +319,6 @@ public class Player {
         }
     }
 
-    /**
-     * Metode: harvest()
-     * Memanen tanaman.
-     */
     public boolean harvest() {
         int energyCost = 8;
         int quantityHarvested = 1;
@@ -390,11 +334,6 @@ public class Player {
         }
     }
 
-    /**
-     * Metode: fish()
-     * Melakukan aksi memancing.
-     * Akan mencari ikan yang bisa ditangkap berdasarkan kondisi saat ini.
-     */
     public boolean fish() {
         int energyCost = 15;
         int quantityCaught = 1;
@@ -453,10 +392,6 @@ public class Player {
         }
     }
 
-    /**
-     * Metode: showInventory()
-     * Menampilkan isi inventory pemain.
-     */
     public void showInventory() {
         System.out.println("\n--- Inventory " + this.name + " ---");
         this.inventory.printInventory(); 
