@@ -6,8 +6,8 @@ public class Time {
     private final long startRealTimeNano;
     private String state; // Siang dan malam
 
-    public Time(int time, double accelerationFactor) {
-        this.startGameTime = LocalTime.of(time, 0);
+    public Time() {
+        this.startGameTime = LocalTime.of(6, 0);
         this.accelerationFactor = 300;
         this.startRealTimeNano = System.nanoTime();
         this.state = "Siang";
