@@ -1,4 +1,7 @@
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class Player {
     // Definisi enum Gender di dalam file yang sama dengan Player
@@ -154,8 +157,6 @@ public class Player {
         }
     }
 
-    // --- Metode Aksi Baru yang Ditambahkan ---
-
     /**
      * Metode: sleep()
      * Mengisi penuh energi pemain.
@@ -172,12 +173,10 @@ public class Player {
      * @param food Objek Item yang akan dimakan.
      */
     public boolean eat(Item food) {
-        int energyGain = 0; // Default gain
-        // Asumsi makan 1 unit makanan
+        int energyGain = 0; 
         int quantityToConsume = 1;
 
         if (food != null) {
-            // Perlu cek apakah player memiliki makanan tersebut dan kuantitasnya
             if (!this.inventory.checkItemAndQuantity(food, quantityToConsume)) {
                 System.out.println(this.name + " tidak memiliki cukup " + food.getName() + " di inventory.");
                 return false;
@@ -196,13 +195,12 @@ public class Player {
                     return false;
             }
 
-            // Hapus item dari inventory
             if (this.inventory.removeItem(food, quantityToConsume)) {
                 addEnergy(energyGain);
                 System.out.println(this.name + " makan " + food.getName() + " dan mendapatkan " + energyGain + " energi.");
                 return true;
             }
-            // else blok tidak perlu karena removeItem sudah mencetak pesan jika gagal
+            //else blok gaperlu karena removeItem sudah mencetak pesan jika gagal
         }
         System.out.println(this.name + " mencoba makan sesuatu yang tidak valid.");
         return false;
@@ -256,9 +254,8 @@ public class Player {
      */
     public boolean gift(NPC npc, Item item) {
         int energyCost = 5;
-        int quantityToGift = 1; // Memberi 1 unit item
+        int quantityToGift = 1; 
         if (consumeEnergy(energyCost)) {
-            // Menggunakan removeItem(Item item, int quantity) yang baru
             if (this.inventory.removeItem(item, quantityToGift)) {
                 System.out.println(this.name + " memberikan " + item.getName() + " sebagai hadiah kepada " + npc.getName() + ".");
                 npc.receiveGift(item);
@@ -294,20 +291,17 @@ public class Player {
      */
     public boolean propose(NPC npc) {
         int energyCost = 20;
-        Item proposalRing = new Item("Proposal Ring", 1000); // Contoh cincin, pastikan namanya konsisten
+        Item proposalRing = new Item("Proposal Ring", 1000);
         int quantityOfRing = 1;
 
         if (consumeEnergy(energyCost)) {
             // Menggunakan checkItemAndQuantity untuk memastikan ada cincin
             if (this.inventory.checkItemAndQuantity(proposalRing, quantityOfRing)) {
                 System.out.println(this.name + " melamar " + npc.getName() + "!");
-                boolean accepted = npc.receiveProposal(this); // Memanggil metode yang benar di NPC
+                boolean accepted = npc.receiveProposal(this);
 
                 if (accepted) {
-                    // Jika NPC menerima, Player mengurangi cincin dari inventory
-                    this.inventory.removeItem(proposalRing, quantityOfRing); // Mengurangi 1 cincin
-                    // Partner di Player sudah diset di NPC.receiveProposal, tapi bisa juga di sini
-                    // this.partner = npc.getName(); // Jika belum diset di receiveProposal
+                    this.inventory.removeItem(proposalRing, quantityOfRing);
                     System.out.println(npc.getName() + " menerima lamaran! Selamat " + this.name + ", Anda bertunangan dengan " + this.partner + "!");
                     return true;
                 } else {
@@ -386,12 +380,11 @@ public class Player {
      */
     public boolean harvest() {
         int energyCost = 8;
-        int quantityHarvested = 1; // Misal memanen 1 unit hasil
+        int quantityHarvested = 1;
         if (consumeEnergy(energyCost)) {
             System.out.println(this.name + " memanen tanaman.");
-            // Logika untuk menambahkan hasil panen ke inventory
-            Item harvestedCrop = new Item("Hasil Panen", 10); // Contoh Item hasil panen
-            this.inventory.addItem(harvestedCrop, quantityHarvested); // Menambahkan 1 unit
+            Item harvestedCrop = new Item("Hasil Panen", 10);
+            this.inventory.addItem(harvestedCrop, quantityHarvested);
             System.out.println("Hasil panen ditambahkan ke inventory.");
             return true;
         } else {
@@ -403,17 +396,59 @@ public class Player {
     /**
      * Metode: fish()
      * Melakukan aksi memancing.
+     * Akan mencari ikan yang bisa ditangkap berdasarkan kondisi saat ini.
      */
-    public boolean fishing() {
+    public boolean fish() {
         int energyCost = 15;
         int quantityCaught = 1;
         System.out.println(this.name + " mulai memancing...");
 
         if (consumeEnergy(energyCost)) {
-            String caughtItemName = "Ikan Salmon";
-            Item caughtItem = new Item(caughtItemName, 50);
-            this.inventory.addItem(caughtItem, quantityCaught);
-            System.out.println(this.name + " berhasil memancing dan mendapatkan " + caughtItemName + "!");
+            Season currentSeason = Season.SPRING;
+            Weather currentWeather = Weather.SUNNY;
+            LocationFish currentLocationFish;
+            if (this.location.getName().equalsIgnoreCase("River")) {
+                currentLocationFish = LocationFish.RIVER;
+            } else if (this.location.getName().equalsIgnoreCase("Lake")) {
+                currentLocationFish = LocationFish.LAKE;
+            } else if (this.location.getName().equalsIgnoreCase("Ocean")) {
+                currentLocationFish = LocationFish.OCEAN;
+            } else {
+                currentLocationFish = LocationFish.POND;
+            }
+            String currentTime = "10:00"; //misal aja
+
+            List<Fish> allPossibleFish = new java.util.ArrayList<>();
+            allPossibleFish.add(new Fish("Ikan Mas", 0, Rarity.COMMON,
+                Arrays.asList(Season.SPRING, Season.SUMMER), Arrays.asList(Weather.SUNNY, Weather.CLOUDY), Arrays.asList(LocationFish.POND, LocationFish.RIVER), "06:00", "18:00"));
+            allPossibleFish.add(new Fish("Ikan Lele", 0, Rarity.REGULAR,
+                Arrays.asList(Season.SPRING, Season.SUMMER, Season.AUTUMN), Arrays.asList(Weather.RAINY, Weather.CLOUDY), Arrays.asList(LocationFish.RIVER, LocationFish.LAKE), "18:00", "02:00"));
+            allPossibleFish.add(new Fish("Ikan Tuna", 0, Rarity.RARE,
+                Arrays.asList(Season.SUMMER, Season.AUTUMN), Arrays.asList(Weather.SUNNY), Arrays.asList(LocationFish.OCEAN), "09:00", "17:00"));
+            allPossibleFish.add(new Fish("Ikan Salmon", 0, Rarity.EPIC,
+                Arrays.asList(Season.AUTUMN), Arrays.asList(Weather.SUNNY, Weather.RAINY), Arrays.asList(LocationFish.RIVER), "08:00", "16:00"));
+            allPossibleFish.add(new Fish("Legendary Fish", 0, Rarity.LEGENDARY,
+                Arrays.asList(Season.WINTER), Arrays.asList(Weather.SNOWY), Arrays.asList(LocationFish.LAKE), "00:00", "23:59"));
+
+            List<Fish> catchableFish = new java.util.ArrayList<>();
+            for (Fish f : allPossibleFish) {
+                if (f.isCatchable(currentSeason, currentWeather, currentLocationFish, currentTime)) {
+                    catchableFish.add(f);
+                }
+            }
+
+            if (catchableFish.isEmpty()) {
+                System.out.println(this.name + " memancing... tapi tidak ada ikan yang bisa ditangkap di kondisi ini. Anda hanya mendapatkan sampah!");
+                this.inventory.addItem(new Item("Sampah", 1), quantityCaught);
+                return true;
+            }
+
+            Random rand = new Random();
+            Fish caughtFish = catchableFish.get(rand.nextInt(catchableFish.size()));
+
+            this.inventory.addItem(caughtFish, quantityCaught);
+            System.out.println(this.name + " berhasil memancing dan mendapatkan " + caughtFish.getName() + " (" + caughtFish.getFishRarity() + ")!");
+            System.out.println("Harga jual: " + caughtFish.getValue() + " gold.");
             return true;
         } else {
             System.out.println(this.name + " terlalu lelah untuk memancing.");
