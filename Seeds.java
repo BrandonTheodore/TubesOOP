@@ -1,7 +1,7 @@
 public class Seeds extends Item {
     private Season season;
-    private int daysToHarvest; // jumlah hari until panen
-    private Crops resultCrop; // crops yang bakal dihasilkan dari seed
+    private int daysToHarvest; 
+    private Crops resultCrop; 
     
     public Seeds(String name, int buyPrice, Season season, int daysToHarvest, Crops resultCrop) {
         // harga jual seed adalah setengah harga belinya
