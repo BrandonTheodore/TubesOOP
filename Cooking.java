@@ -4,11 +4,7 @@ public class Cooking {
     // nanti tiap mau cook ambil dulu nama fuelnya yaa
 
     public boolean cook(Player player, Recipe recipe, String fuelName) {
-        // cek lokasi player
-        if (!player.getLocation().equals("House")) {
-            System.out.println("Player sedang tidak di rumah");
-            return false;
-        }
+        // cek lokasi player harus dirumah 
 
         // cek resep udah unlocked belum
         if (!recipe.isUnlocked()) {
@@ -58,6 +54,6 @@ public class Cooking {
             System.out.println("Energi tidak cukup untuk memasak");
             return false;
         }
+        return true;
     }
-
 }

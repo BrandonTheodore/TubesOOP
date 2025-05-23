@@ -1,4 +1,5 @@
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Inventory {
     private Map<Item, Integer> items;
