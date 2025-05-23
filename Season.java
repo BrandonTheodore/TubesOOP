@@ -1,8 +1,6 @@
-public class Season {
-    enum season {
-        SUMMER,
-        WINTER,
-        SPRING,
-        FALL;
-    }
+public enum Season {
+    SUMMER,
+    WINTER,
+    SPRING,
+    FALL;
 }

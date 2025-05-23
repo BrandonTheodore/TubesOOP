@@ -20,7 +20,7 @@ public class Farm {
         this.weather = "P";
     }
 
-
+    
 }
 
 

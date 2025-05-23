@@ -1,6 +1,5 @@
-public class Weather {
-    enum weather {
-        RAINY,
-        SUNNY;
-    }
+public enum Weather {
+    RAINY,
+    SUNNY;
 }
+
