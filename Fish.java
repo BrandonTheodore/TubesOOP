@@ -70,7 +70,7 @@ public class Fish extends Item {
         return Integer.parseInt(parts[0]);
     }
 
-    public void useItem(Player player) {
+    public void useItem(Player player, Item item) {
         if (player != null) {
             Inventory inventory = player.getInventory();
             if (inventory.checkItem(this)) {
