@@ -1,54 +1,15 @@
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Fish extends Item {
     private List<Season> seasons;
     private List<Weather> weathers;
-    private List<LocationFish> locations; // mountain_lake, pond, forest_river, ocean
+    private List<LocationFish> locations;
     private String timeStart;
     private String timeEnd;
     private Rarity rarity;
-
-    // seasons untuk masing-masing ikan
-    List<Season> anySeasons = Arrays.asList(Season.SUMMER, Season.AUTUMN, Season.WINTER, Season.SPRING); // rarity common, largemouth bass, halibut, sardine
-    List<Season> rainbowSeasons = Arrays.asList(Season.SUMMER);
-    List<Season> sturgeonSeasons = Arrays.asList(Season.SUMMER, Season.WINTER);
-    List<Season> midnightSeasons= Arrays.asList(Season.WINTER, Season.FALL);
-    List<Season> flounderSeasons = Arrays.asList(Season.SPRING, Season.SUMMER);
-    List<Season> octopusSeasons = Arrays.asList(Season.SUMMER);
-    List<Season> pufferfishSeasons = Arrays.asList(Season.SUMMER);
-    List<Season> superCucumberSeasons = Arrays.asList(Season.SUMMER, Season.FALL, Season.WINTER);
-    List<Season> catFishSeasons = Arrays.asList(Season.SPRING, Season.SUMMER, Season.FALL);
-    List<Season> salmonSeasons = Arrays.asList(Season.FALL);
-    List<Season> anglerSeasons = Arrays.asList(Season.FALL);
-    List<Season> crimsonfishSeasons = Arrays.asList(Season.SUMMER);
-    List<Season> glacierfishSeason = Arrays.asList(Season.WINTER);
-    List<Season> LegendSeasons = Arrays.asList(Season.SPRING);
-
-    // weathers untuk masing-masing ikan
-    List<Weather> anyWeathers = Arrays.asList(Weather.SUNNY, Weather.RAINY); // common fish, largemouth bass, sturgeon, midnight carp, flounder, halibut, octopus, sardine, super cucumber, salmon, angler, crimsonfish, glacierfish
-    List<Weather> summerWeathers = Arrays.asList(Weather.SUNNY); // rainbow trout, pufferfish 
-    List<Weather> rainyWeathers = Arrays.asList(Weather.RAINY); // catfish, legend
-
-    // location untuk masing-masing ikan
-    List<LocationFish> bullheadLocations = Arrays.asList(LocationFish.MOUNTAIN_LAKE);
-    List<LocationFish> carpLocations = Arrays.asList(LocationFish.MOUNTAIN_LAKE, LocationFish.POND);
-    List<LocationFish> chubLocations = Arrays.asList(LocationFish.FOREST_RIVER, LocationFish.MOUNTAIN_LAKE);
-    List<LocationFish> largemouthLocations = Arrays.asList(LocationFish.MOUNTAIN_LAKE);
-    List<LocationFish> rainbowLocations = Arrays.asList(LocationFish.FOREST_RIVER, LocationFish.MOUNTAIN_LAKE);
-    List<LocationFish> sturgeonLocations = Arrays.asList(LocationFish.MOUNTAIN_LAKE);
-    List<LocationFish> midnightLocations = Arrays.asList(LocationFish.MOUNTAIN_LAKE, LocationFish.POND);
-    List<LocationFish> oceanLocations = Arrays.asList(LocationFish.OCEAN); // flounder, halibut, octopus, pufferfish, sardine, super cucumber, crimsonfish
-    List<LocationFish> catfishLocations = Arrays.asList(LocationFish.FOREST_RIVER, LocationFish.POND);
-    List<LocationFish> salmonLocations = Arrays.asList(LocationFish.FOREST_RIVER);
-    List<LocationFish> anglerLocations = Arrays.asList(LocationFish.POND);
-    List<LocationFish> glacierLocations = Arrays.asList(LocationFish.FOREST_RIVER);
-    List<LocationFish> legendLocations = Arrays.asList(LocationFish.MOUNTAIN_LAKE);
-
     
     public Fish(String name, int sellPrice, Rarity rarity, List<Season> seasons, List<Weather> weathers, List<LocationFish> locations, String timeStart, String timeEnd) {
-        super(name, 0, calculateSellPrice(rarity, seasons.size(), calculateHourRange(timeStart, timeEnd), weathers.size(), locations.size()), ItemCategory.FISH); // fish gabisa dibeli jadi buyPrice = 0
+        super(name, 0, calculateSellPrice(rarity, seasons.size(), calculateHourRange(timeStart, timeEnd), weathers.size(), locations.size()), ItemCategory.FISH);
         this.rarity = rarity;
         this.seasons = seasons;
         this.weathers = weathers;
@@ -82,14 +43,31 @@ public class Fish extends Item {
     }
     
     public boolean isCatchable(Season currentSeason, Weather currentWeather, LocationFish currentLocation, String currentTime) {
-        boolean seasonMatch = seasons.contains(currentSeason); // cek season di parameter ada di list seasons gak, kalo ada true
-        boolean weatherMatch = weathers.contains(currentWeather);// cek weather di parameter ada di list weathers gak, kalo ada true
-        boolean locationMatch = locations.contains(currentLocation); // cek season di parameter ada di list seasons gak, kalo ada true
+        // season weather location hrs match
+        boolean seasonMatch = seasons.contains(currentSeason);
+        boolean weatherMatch = weathers.contains(currentWeather);
+        boolean locationMatch = locations.contains(currentLocation);
         
-        // masih bingung untuk time mau gimana
-        boolean timeMatch = timeStart != null && timeEnd != null; 
-
+        // ngubah waktu saat ini ke format jam
+        int currentHour = parseTimeToHour(currentTime);
+        int startHour = parseTimeToHour(timeStart);
+        int endHour = parseTimeToHour(timeEnd);
+        
+        // waktu harus match
+        boolean timeMatch;
+        if (endHour < startHour) { // kalo melewati tengah malam (18:00 - 02:00)
+            timeMatch = (currentHour >= startHour) || (currentHour <= endHour);
+        } else { // kalo normal (06:00 - 18:00)
+            timeMatch = (currentHour >= startHour) && (currentHour <= endHour);
+        }
+        
         return seasonMatch && weatherMatch && locationMatch && timeMatch;
+    }
+    
+    // mengubah string waktu menjadi jam
+    private int parseTimeToHour(String time) {
+        String[] parts = time.split(":");
+        return Integer.parseInt(parts[0]);
     }
 
     public void useItem(Player player) {
@@ -103,6 +81,18 @@ public class Fish extends Item {
             else {
                 System.out.println(getName() + " is not available in your inventory.");
             }
+        }
+    }
+    
+    // ngitung rentang jam
+    private static int calculateHourRange(String timeStart, String timeEnd) {
+        int start = Integer.parseInt(timeStart.replace(":", "")) / 100;
+        int end = Integer.parseInt(timeEnd.replace(":", "")) / 100;
+        
+        if (end < start) {
+            return (24 - start) + end;
+        } else {
+            return end - start;
         }
     }
     
@@ -120,7 +110,7 @@ public class Fish extends Item {
                 rarityMultiplier = 25;
                 break;
             default:
-                rarityMultiplier = 5; // default raritynya bakal regular
+                rarityMultiplier = 5;
         }
         return (int) (baseMultiplier * rarityMultiplier);
     }
