@@ -173,36 +173,33 @@ public class Player {
      * @param food Objek Item yang akan dimakan.
      */
     public boolean eat(Item food) {
-        int energyGain = 0; 
         int quantityToConsume = 1;
 
-        if (food != null) {
-            if (!this.inventory.checkItemAndQuantity(food, quantityToConsume)) {
-                System.out.println(this.name + " tidak memiliki cukup " + food.getName() + " di inventory.");
-                return false;
-            }
-
-            // Logika sederhana, Anda akan memerlukan sistem Item yang lebih kompleks
-            switch (food.getName().toLowerCase()) {
-                case "apple":
-                    energyGain = 10;
-                    break;
-                case "sandwich":
-                    energyGain = 30;
-                    break;
-                default:
-                    System.out.println(this.name + " mencoba makan " + food.getName() + " tapi tidak tahu efeknya.");
-                    return false;
-            }
-
-            if (this.inventory.removeItem(food, quantityToConsume)) {
-                addEnergy(energyGain);
-                System.out.println(this.name + " makan " + food.getName() + " dan mendapatkan " + energyGain + " energi.");
-                return true;
-            }
-            //else blok gaperlu karena removeItem sudah mencetak pesan jika gagal
+        if (food == null) {
+            System.out.println(this.name + " mencoba makan sesuatu yang tidak valid.");
+            return false;
         }
-        System.out.println(this.name + " mencoba makan sesuatu yang tidak valid.");
+
+        if (!(food instanceof Food)) {
+            System.out.println(this.name + " tidak bisa makan " + food.getName() + " (bukan kategori makanan/Food).");
+            return false;
+        }
+
+        Food foodToEat = (Food) food; 
+        
+        if (!this.inventory.checkItemAndQuantity(foodToEat, quantityToConsume)) {
+            System.out.println(this.name + " tidak memiliki cukup " + foodToEat.getName() + " di inventory.");
+            return false;
+        }
+
+        int energyGain = foodToEat.getEnergyGain(); 
+
+        if (this.inventory.removeItem(foodToEat, quantityToConsume)) {
+            addEnergy(energyGain);
+            System.out.println(this.name + " makan " + foodToEat.getName() + " dan mendapatkan " + energyGain + " energi.");
+            return true;
+        }
+        // else blok gaperlu karena removeItem sudah mencetak pesan jika gagal
         return false;
     }
 
