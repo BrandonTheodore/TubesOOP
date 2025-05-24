@@ -269,7 +269,7 @@ public class Player {
         }
     }
 
-    public boolean plant(Seed seedToPlant, int numSeeds) {
+    public boolean plant(Seeds seedToPlant, int numSeeds) {
         if (seedToPlant == null) {
             System.out.println(this.name + ": Tidak ada seed untuk ditanam.");
             return false;
@@ -379,7 +379,7 @@ public class Player {
                 System.out.println(this.name + " memanen tanaman dari tile " + tileToHarvest.getCoordinates() + ".");
                 
                 // Dapatkan jenis hasil panen dari seed yang ditanam
-                Seed plantedSeed = tileToHarvest.getPlantedSeed();
+                Seeds plantedSeed = tileToHarvest.getPlantedSeed();
                 if (plantedSeed == null) {
                     System.out.println("Error: Tile seharusnya punya seed tapi tidak ada.");
                     tileToHarvest.setStatus(TileStatus.SOIL);
@@ -428,7 +428,7 @@ public class Player {
             return false;
         }
 
-        int energyGain = foodToEat.getEnergyGain();
+        int energyGain = foodToEat.getEnergyValue();
 
         if (this.inventory.removeItem(foodToEat, quantityToConsume)) {
             addEnergy(energyGain);
@@ -757,6 +757,7 @@ public class Player {
         boolean accepted = npc.receiveProposal(this);
 
         if (accepted) {
+            proposalRing.useItem(this, proposalRing);
             System.out.println(npc.getName() + " menerima lamaran! Selamat " + this.name + ", Anda bertunangan dengan " + npc.getName() + "!");
             if (!consumeEnergy(PROPOSE_ENERGY_COST_ACCEPTED)) {
                 System.out.println("Peringatan: Energi " + this.name + " sangat rendah setelah diterima, tetapi lamaran sudah diset.");
