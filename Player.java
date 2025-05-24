@@ -24,7 +24,7 @@ public class Player {
     private Inventory inventory;
     private Location location;
     private FoodManager foodManager;
-    private Equipment equippedtool;
+    private Equipment equippedTool;
 
     private static final int MAX_ENERGY = 100;
     private static final int MIN_ENERGY_BEFORE_SLEEP = -20;
