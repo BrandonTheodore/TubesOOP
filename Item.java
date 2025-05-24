@@ -11,6 +11,10 @@ public abstract class Item {
         this.category = c;
     }
 
+    public ItemCategory getCategory(){
+        return category;
+    }
+
     public String getName(){
         return name;
     }
