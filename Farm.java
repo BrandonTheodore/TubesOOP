@@ -20,7 +20,35 @@ public class Farm {
         this.weather = "P";
     }
 
+    public String getName(){
+        return name;
+    }
 
+    public Player getPlayer(){
+        return player;
+    }
+
+    public Map getfarmMap(){
+        return farmMap;
+    }
+
+    public Time getTime(){
+        return time;
+    }
+
+    public String getDay(){
+        return day;
+    }
+
+    public String getSeason(){
+        return season;
+    }
+
+    public String getWeather(){
+        return weather;
+    }
+
+    
 }
 
 

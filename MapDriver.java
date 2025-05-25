@@ -13,7 +13,7 @@ public class MapDriver {
     private static final String ANSI_RED = "\u001B[31m";
     private static final String ANSI_CYAN = "\u001B[36m";
     
-    public static void main(String[] args) {
+    public void Play() {
         Scanner scanner = new Scanner(System.in);
         Map gameMap = new Map();
         
