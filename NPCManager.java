@@ -2,6 +2,11 @@ import java.util.*;
 
 public class NPCManager {
     private static List<NPC> allNPC = new ArrayList<>();
+    private static List<String> allItems = new ArrayList<>();
+    private static CropsManager cropsm = new CropsManager();
+    private static SeedsManager seedsm = new SeedsManager();
+    private static FishManager fishm = new FishManager();
+    private static FoodManager foodm = new FoodManager();
 
     public static void initNPC() {
         // Mayor Tadi
@@ -10,6 +15,16 @@ public class NPCManager {
         mayorTadi.addLikedItems("Angler");
         mayorTadi.addLikedItems("Crimsonfish");
         mayorTadi.addLikedItems("Glacierfish");
+        allItems.addAll(fishm.getAllFishNames());
+        allItems.addAll(foodm.getAllFoodNames());
+        allItems.addAll(seedsm.getAllSeedsNames());
+        allItems.addAll(cropsm.getAllCropsNames());
+        for (String item : allItems) {
+            String lower = item.toLowerCase();
+            if (!mayorTadi.getLovedItems().contains(lower) && !mayorTadi.getLikedItems().contains(lower)) {
+                mayorTadi.addHatedItems(lower);
+            }
+        }
 
         NPC caroline = new NPC("Caroline");
         caroline.addLovedItems("Firewood");
@@ -22,7 +37,9 @@ public class NPCManager {
         perry.addLovedItems("Cranberry");
         perry.addLovedItems("Blueberry");
         perry.addLikedItems("Wine");
-        perry.addHatedItems("null"); // semua item fish
+        for (String fish : fishm.getAllFishNames()) {
+            perry.addHatedItems(fish.toLowerCase());
+        }
 
         NPC dasco = new NPC("Dasco");
         dasco.addLovedItems("The Legends of Spakbor");
@@ -42,7 +59,9 @@ public class NPCManager {
         dasco.addHatedItems("Salmon");
 
         NPC emily = new NPC("Emily");
-        emily.addLovedItems(""); // tambahin semua item seed
+        for (String seed : seedsm.getAllCropsNames()) {
+            emily.addLovedItems(seed.toLowerCase());
+        }
         emily.addLikedItems("Catfish");
         emily.addLikedItems("Salmon");
         emily.addLikedItems("Sardine");
