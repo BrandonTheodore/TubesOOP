@@ -56,6 +56,10 @@ public class Farm {
         return rainyDay;
     }
 
+    public int getDayCount(){
+        return dayCount;
+    }
+
     public void changeDay(){
         Random rand = new Random();
         time.changeStartGameTime(LocalTime.of(6, 0));
