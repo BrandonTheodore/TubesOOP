@@ -7,14 +7,6 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Player {
-    public enum Gender {
-        MALE, FEMALE
-    }
-
-    public enum Direction {
-        UP, DOWN, LEFT, RIGHT
-    }
-
     private String name;
     private Gender gender;
     private int energy;
@@ -359,7 +351,7 @@ public class Player {
         }
     }
 
-    public boolean harvest(int numCrops) { // Parameter diubah menjadi numCrops
+    public boolean harvest(int numCrops) {
         if (!(this.location instanceof FarmLocation)) {
             System.out.println("Pergi ke farm untuk memanen!");
             return false;
@@ -470,7 +462,7 @@ public class Player {
     }
 
     
-    public boolean cook(String recipeName, Misc fuelMiscItem) { // Parameter fuel diubah ke Misc
+    public boolean cook(String recipeName, Misc fuelMiscItem) {
         Recipe recipe = this.recipeManager.getRecipeByName(recipeName);
 
         if (recipe == null) {
@@ -931,5 +923,9 @@ public class Player {
 
     public String showTime() {
         return String.format("Musim: %s, Hari: %d, Waktu: %s (%s)", getCurrentSeason(), getCurrentDay(), getFormattedGameTime(), getTimeState());
+    }
+
+    public String showLocation() {
+        return String.format("Lokasi: %s, Koordinat: %s", this.location.getSurroundingTiles(), this.location.getCoordinates());
     }
 }
