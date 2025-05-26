@@ -6,18 +6,18 @@ public class Farm {
     private Player player;
     private Map farmMap;
     private Time time;
-    private String day;
-    private String season;
-    private String weather;
+    private Day day;
+    private Season season;
+    private Weather weather;
 
-    public Farm(String farm, Player player, int time){
+    public Farm(String farm, Player player){
         this.name = farm;
         this.player = player;
         this.farmMap = new Map();
         this.time = new Time();
-        this.day = "P";
-        this.season = "P";
-        this.weather = "P";
+        this.day = Day.MONDAY;
+        this.season = Season.SPRING;
+        this.weather = Weather.SUNNY;
     }
 
     public String getName(){
@@ -36,15 +36,15 @@ public class Farm {
         return time;
     }
 
-    public String getDay(){
+    public Day getDay(){
         return day;
     }
 
-    public String getSeason(){
+    public Season getSeason(){
         return season;
     }
 
-    public String getWeather(){
+    public Weather getWeather(){
         return weather;
     }
 
