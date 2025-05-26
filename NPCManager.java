@@ -8,9 +8,9 @@ public class NPCManager {
     private static FishManager fishm = new FishManager();
     private static FoodManager foodm = new FoodManager();
 
-    public static void initNPC() {
+    public static void initNPC(Time time) {
         // Mayor Tadi
-        NPC mayorTadi = new NPC("Mayor Tadi");
+        NPC mayorTadi = new NPC("Mayor Tadi", time);
         mayorTadi.addLovedItems("Legend");
         mayorTadi.addLikedItems("Angler");
         mayorTadi.addLikedItems("Crimsonfish");
@@ -26,14 +26,14 @@ public class NPCManager {
             }
         }
 
-        NPC caroline = new NPC("Caroline");
+        NPC caroline = new NPC("Caroline", time);
         caroline.addLovedItems("Firewood");
         caroline.addLovedItems("Coal");
         caroline.addLikedItems("Potato");
         caroline.addLikedItems("Wheat");
         caroline.addHatedItems("Hot Pepper");
 
-        NPC perry = new NPC("Perry");
+        NPC perry = new NPC("Perry", time);
         perry.addLovedItems("Cranberry");
         perry.addLovedItems("Blueberry");
         perry.addLikedItems("Wine");
@@ -41,7 +41,7 @@ public class NPCManager {
             perry.addHatedItems(fish.toLowerCase());
         }
 
-        NPC dasco = new NPC("Dasco");
+        NPC dasco = new NPC("Dasco", time);
         dasco.addLovedItems("The Legends of Spakbor");
         dasco.addLovedItems("Cooked Pig's Head");
         dasco.addLovedItems("Wine");
@@ -58,8 +58,8 @@ public class NPCManager {
         dasco.addHatedItems("Pufferfish");
         dasco.addHatedItems("Salmon");
 
-        NPC emily = new NPC("Emily");
-        for (String seed : seedsm.getAllCropsNames()) {
+        NPC emily = new NPC("Emily", time);
+        for (String seed : seedsm.getAllSeedsNames()) {
             emily.addLovedItems(seed.toLowerCase());
         }
         emily.addLikedItems("Catfish");
@@ -68,7 +68,7 @@ public class NPCManager {
         emily.addHatedItems("Coal");
         emily.addHatedItems("Wood");
 
-        NPC abigail = new NPC("Abigail");
+        NPC abigail = new NPC("Abigail", time);
         abigail.addLovedItems("Blueberry");
         abigail.addLovedItems("Melon");
         abigail.addLovedItems("Pumpkin");

@@ -1,3 +1,4 @@
+import java.time.LocalTime;
 import java.util.*;
 
 public class NPC {
@@ -9,15 +10,17 @@ public class NPC {
     private List<String> hatedItems;
     private int proposalTime;
     private int marryTime;
+    private Time time;
 
     // konstruktor
-    public NPC(String name) {
+    public NPC(String name, Time time) {
         this.name = name;
         heartPoints = 0;
         relationshipStatus = RelationshipStatus.SINGLE;
         this.lovedItems = new ArrayList<>();
         this.likedItems = new ArrayList<>();
         this.hatedItems = new ArrayList<>();
+        this.time = time;
     }
 
     public String getName() {
@@ -28,6 +31,10 @@ public class NPC {
         lovedItems.add(itemName);
     }
 
+    public List<String> getLovedItems() {
+        return lovedItems;
+    }
+
     // public void addLovedItemsByList(List<String> itemNameList) {
     //     hatedItems.addAll(itemNameList);  
     // }
@@ -36,8 +43,16 @@ public class NPC {
         likedItems.add(itemName);
     }
 
+    public List<String> getLikedItems() {
+        return likedItems;
+    }
+
     public void addHatedItems(String itemName) {
         hatedItems.add(itemName);
+    }
+
+    public List<String> getHatedItems() {
+        return hatedItems;
     }
 
     // public void addHatedItemsByList(List<String> itemNameList) {
@@ -101,9 +116,7 @@ public class NPC {
         if (heartPoints < 150) {
             System.out.println("Maaf, lamaranmu ditolak karena heartpointsmu belum cukup");
             player.consumeEnergy(20);
-            // tambah waktu 1 jam udah di player
-            Time now = Farm.getTime();
-            now.addTime(60);
+            time.addTime(60); // tambah waktu 1 jam udah di player
             return;
         }
 
@@ -115,6 +128,7 @@ public class NPC {
     }
 
     public void marryPlayer(Player player) {
+
         marryTime = farm.getDayCount();
         if (relationshipStatus != RelationshipStatus.FIANCE) {
             System.out.println("Kamu belum bertunangan dengan " + name);
@@ -125,7 +139,8 @@ public class NPC {
         } else {
             this.relationshipStatus = RelationshipStatus.SPOUSE;
             player.consumeEnergy(80);
-            LocalTime.of(22, 00); // time skip ke 22.00
+            LocalTime skipTo = LocalTime.of(22, 00); // time skip ke 22.00
+            time.setTime(skipTo);
         }
     }
 
@@ -138,18 +153,10 @@ public class NPC {
         }
 
         player.consumeEnergy(10);
-        Time now = Farm.getTime();
-        now.addTime(10); // tambah waktu 10 menit
+        time.addTime(10); // tambah waktu 10 menit
         heartPoints += 10;
 
         System.out.println(player.getName() + " : ....");
         System.out.println(name + " : ....");
-    }
-
-    // ini ntar dipanggil di game(?)
-    public void nextDay() {
-        if (relationshipStatus == RelationshipStatus.FIANCE) {
-            proposalTime++;
-            proposalTimarry     }
     }
 }
