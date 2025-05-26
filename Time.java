@@ -51,4 +51,18 @@ public class Time {
     public void changeStartRealTime(long time){
         this.startRealTimeNano = time;
     }
+
+    public void addTime(int minutes) {
+        LocalTime currentGameTime = getCurrentGameTime();
+
+        LocalTime newGameTime = currentGameTime.plusMinutes(minutes);
+
+        this.startGameTime = newGameTime;
+        this.startRealTimeNano = System.nanoTime();
+    }
+
+    public void setTime(LocalTime time) {
+        this.startGameTime = time;
+        this.startRealTimeNano = System.nanoTime();
+    }
 }
