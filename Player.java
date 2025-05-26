@@ -7,14 +7,6 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Player {
-    public enum Gender {
-        MALE, FEMALE
-    }
-
-    public enum Direction {
-        UP, DOWN, LEFT, RIGHT
-    }
-
     private String name;
     private Gender gender;
     private int energy;
@@ -359,7 +351,7 @@ public class Player {
         }
     }
 
-    public boolean harvest(int numCrops) { // Parameter diubah menjadi numCrops
+    public boolean harvest(int numCrops) {
         if (!(this.location instanceof FarmLocation)) {
             System.out.println("Pergi ke farm untuk memanen!");
             return false;
@@ -470,7 +462,7 @@ public class Player {
     }
 
     
-    public boolean cook(String recipeName, Misc fuelMiscItem) { // Parameter fuel diubah ke Misc
+    public boolean cook(String recipeName, Misc fuelMiscItem) {
         Recipe recipe = this.recipeManager.getRecipeByName(recipeName);
 
         if (recipe == null) {
@@ -828,7 +820,7 @@ public class Player {
         }
     }
 
-    public boolean visit(Location newLocation) {
+    public boolean visiting(Location newLocation) {
         if (newLocation == null) {
             System.out.println(this.name + ": Lokasi yang ingin dikunjungi tidak valid.");
             return false;
@@ -857,9 +849,9 @@ public class Player {
         }
     }
 
-    public boolean chat(NPC npc) {
+    public boolean chatting(NPC npc) {
         if (npc == null) {
-            System.out.println(this.name + ": NPC tidak valid.");
+            System.out.println("NPC tidak valid.");
             return false;
         }
 
@@ -883,37 +875,33 @@ public class Player {
         }
     }
 
-    public void move(Direction direction) {
-        int energyCost = 5;
-        if (consumeEnergy(energyCost)) {
-            System.out.println(this.name + " bergerak ke arah: " + direction + ".");
-            String oldLoc = this.location.getName();
-            if (direction == Player.Direction.UP) this.location.setName("North " + oldLoc);
-            else if (direction == Player.Direction.DOWN) this.location.setName("South " + oldLoc);
-            else if (direction == Player.Direction.LEFT) this.location.setName("West " + oldLoc);
-            else if (direction == Player.Direction.RIGHT) this.location.setName("East " + oldLoc);
-            System.out.println(this.name + " sekarang berada di: " + this.location.getName() + ".");
-        } else {
-            System.out.println(this.name + " terlalu lelah untuk bergerak ke " + direction + ".");
-        }
-    }
+    public void moving(Direction direction) {
+        System.out.println(this.name + " mencoba bergerak ke arah: " + direction + ".");
 
-    public void visit(Location newLocation) {
-        int energyCost = 10;
-        if (this.location.equals(newLocation)) {
-            System.out.println(this.name + " sudah berada di " + newLocation.getName() + ".");
+        String oldLocName = this.location.getName(); 
+        String newLocName = oldLocName;
+
+        if (direction == Direction.UP) {
+            newLocName = "North of " + oldLocName;
+        } else if (direction == Direction.DOWN) {
+            newLocName = "South of " + oldLocName;
+        } else if (direction == Direction.LEFT) {
+            newLocName = "West of " + oldLocName;
+        } else if (direction == Direction.RIGHT) {
+            newLocName = "East of " + oldLocName;
+        } else {
+            System.out.println("Arah tidak valid.");
             return;
         }
-
-        if (consumeEnergy(energyCost)) {
-            System.out.println(this.name + " mengunjungi " + newLocation.getName() + " dari " + this.location.getName() + ".");
-            this.setLocation(newLocation);
-        } else {
-            System.out.println(this.name + " terlalu lelah untuk mengunjungi " + newLocation.getName() + ".");
-        }
+        this.location.setName(newLocName); 
+        System.out.println(this.name + " berhasil berpindah. Lokasi baru: " + this.location.getName() + ".");
     }
 
-
+    public void openInventory() {
+        System.out.println("\n--- Inventory " + this.name + " ---");
+        this.inventory.printInventory(); 
+        System.out.println("--------------------");
+    }
 
     public boolean gift(NPC npc, Item item) {
         int energyCost = 5;
@@ -933,18 +921,11 @@ public class Player {
         }
     }
 
-    public void chat(NPC npc) {
-        int energyCost = 3;
-        if (consumeEnergy(energyCost)) {
-            System.out.println(this.name + " mengobrol dengan " + npc.getName() + ".");
-        } else {
-            System.out.println(this.name + " terlalu lelah untuk mengobrol.");
-        }
+    public String showTime() {
+        return String.format("Musim: %s, Hari: %d, Waktu: %s (%s)", getCurrentSeason(), getCurrentDay(), getFormattedGameTime(), getTimeState());
     }
 
-    public void showInventory() {
-        System.out.println("\n--- Inventory " + this.name + " ---");
-        this.inventory.printInventory(); 
-        System.out.println("--------------------");
+    public String showLocation() {
+        return String.format("Lokasi: %s, Koordinat: %s", this.location.getSurroundingTiles(), this.location.getCoordinates());
     }
 }
