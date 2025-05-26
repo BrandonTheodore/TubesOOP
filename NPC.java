@@ -7,7 +7,8 @@ public class NPC {
     private List<String> lovedItems;
     private List<String> likedItems;
     private List<String> hatedItems;
-    private int daysSinceFiance;
+    private int proposalTime;
+    private int marryTime;
 
     // konstruktor
     public NPC(String name) {
@@ -17,7 +18,6 @@ public class NPC {
         this.lovedItems = new ArrayList<>();
         this.likedItems = new ArrayList<>();
         this.hatedItems = new ArrayList<>();
-        daysSinceFiance = 0;
     }
 
     public String getName() {
@@ -88,8 +88,7 @@ public class NPC {
         
         // hapus item dari inventory player
         player.getInventory().removeItem(item, 1);
-        player.reduceEnergy(5); // kurangin energinya
-        // tambah 10 menit
+        // tambah 10 menit mau di player aja
     }
 
     // method buat nerima propose
@@ -101,29 +100,32 @@ public class NPC {
 
         if (heartPoints < 150) {
             System.out.println("Maaf, lamaranmu ditolak karena heartpointsmu belum cukup");
-            player.reduceEnergy(20);
-            // tambah waktu 1 jam
+            player.consumeEnergy(20);
+            // tambah waktu 1 jam udah di player
+            Time now = Farm.getTime();
+            now.addTime(60);
             return;
         }
 
         this.relationshipStatus = RelationshipStatus.FIANCE;
-        player.reduceEnergy(10);
+        player.consumeEnergy(10);
         // tambah waktu 1 jam
         System.out.println("Selamat! Lamaranmu diterima.");
-        // daysSinceFiance
+        proposalTime = farm.getDayCount();
     }
 
     public void marryPlayer(Player player) {
+        marryTime = farm.getDayCount();
         if (relationshipStatus != RelationshipStatus.FIANCE) {
             System.out.println("Kamu belum bertunangan dengan " + name);
         }
-        else if (daysSinceFiance < 1) {
+        else if (marryTime- proposalTime < 1) {
             System.out.println("Tunggu minimal 1 hari setelah tunangan untuk menikah ya.");
             return;
         } else {
             this.relationshipStatus = RelationshipStatus.SPOUSE;
-            player.reduceEnergy(80);
-            // time skip ke 22.00
+            player.consumeEnergy(80);
+            LocalTime.of(22, 00); // time skip ke 22.00
         }
     }
 
@@ -135,8 +137,9 @@ public class NPC {
             return;
         }
 
-        player.reduceEnergy(10);
-        // player.addGameTime(0, 10); // tambah waktu 10 menit
+        player.consumeEnergy(10);
+        Time now = Farm.getTime();
+        now.addTime(10); // tambah waktu 10 menit
         heartPoints += 10;
 
         System.out.println(player.getName() + " : ....");
@@ -146,7 +149,7 @@ public class NPC {
     // ini ntar dipanggil di game(?)
     public void nextDay() {
         if (relationshipStatus == RelationshipStatus.FIANCE) {
-            daysSinceFiance++;
-        }
+            proposalTime++;
+            proposalTimarry     }
     }
 }
