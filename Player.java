@@ -17,6 +17,7 @@ public class Player {
     private Location location;
     private FoodManager foodManager;
     private Equipment equippedTool;
+    private boolean hasUsedShippingBinToday;
 
     private static final int MAX_ENERGY = 100;
     private static final int MIN_ENERGY_BEFORE_SLEEP = -20;
@@ -44,6 +45,7 @@ public class Player {
     private static final int VISIT_TIME_COST_MINUTES = 15;
     private static final int CHAT_ENERGY_COST = 3;
     private static final int CHAT_TIME_COST_MINUTES = 10;
+    private static final int SELLING_TIME_COST_MINUTES = 15; //buat waktu jual
 
 
     public Player(String name, Gender gender, String farmName) {
@@ -65,6 +67,7 @@ public class Player {
         this.gold = 0;
         this.inventory = new Inventory();
         this.location = new Location("Home");
+        this.hasUsedShippingBinToday = false;
     }
 
     public String getName() {
@@ -939,5 +942,70 @@ private boolean isAtNPCHome(NPC npc) {
 
     public String showLocation() {
         return String.format("Lokasi: %s, Koordinat: %s", this.location.getSurroundingTiles(), this.location.getCoordinates());
+    }
+
+    private boolean isNearShippingBin() {
+    // shipping bin ada di farm dan berjarak 1 petak dari rumah
+        if (!(this.location instanceof FarmLocation)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean sell(Item item, int quantity, ShippingBin shippingBin, Farm farm) {
+        if (item == null) {
+            System.out.println(this.name + ": Item tidak valid untuk dijual.");
+            return false;
+        }
+    
+        if (quantity <= 0) {
+            System.out.println(this.name + ": Jumlah item yang dijual harus lebih dari 0.");
+            return false;
+        }
+
+        if (!isNearShippingBin()) {
+            System.out.println(this.name + ": Anda harus berada di dekat shipping bin untuk menjual item.");
+            return false;
+        }
+
+        if (hasUsedShippingBinToday) {
+            System.out.println(this.name + ": Anda sudah menjual item hari ini. Tunggu sampai esok hari.");
+            return false;
+        }
+
+
+        if (!this.inventory.checkItemAndQuantity(item, quantity)) {
+            System.out.println(this.name + ": Anda tidak memiliki cukup " + item.getName() + " di inventory.");
+            return false;
+        }
+
+        // harus punya sell price > 0
+        if (item.getSellPrice() <= 0) {
+            System.out.println(this.name + ": " + item.getName() + " tidak bisa dijual.");
+            return false;
+        }
+
+        System.out.println(this.name + " memasukkan " + quantity + " " + item.getName() + " ke shipping bin.");
+
+        // stop time buat selling
+        farm.getTime().stopTime();
+
+        // pake shipping bin buat nambahin item yg udh valid dijual
+        shippingBin.addItem(item, quantity, this);
+
+        System.out.println("Item berhasil dimasukkan ke shipping bin. Item akan dijual pada malam hari.");
+        System.out.println("Perkiraan pendapatan: " + (item.getSellPrice() * quantity) + " gold.");
+
+        // ubah boolean penggunaan shippingbin jadi true
+        hasUsedShippingBinToday = true;
+
+        // waktu +15 menit abis jualan
+        farm.getTime().addTime(SELLING_TIME_COST_MINUTES);
+        
+        // Lanjutkan waktu
+        farm.getTime().resumeTime();
+
+        System.out.println("Waktu game bertambah " + SELLING_TIME_COST_MINUTES + " menit karena proses penjualan.");
+        return true;
     }
 }
