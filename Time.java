@@ -7,7 +7,7 @@ public class Time {
     private long startRealTimeNano;
     private String state;
 
-    public Time(Day day, Weather weather, Season season) {
+    public Time() {
         this.startGameTime = LocalTime.of(6, 0);
         this.accelerationFactor = 300;
         this.startRealTimeNano = System.nanoTime();

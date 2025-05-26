@@ -16,7 +16,7 @@ public class Farm {
         this.name = farm;
         this.player = player;
         this.farmMap = new Map();
-        this.time = new Time(Day.MONDAY, Weather.SUNNY, Season.SPRING);
+        this.time = new Time();
         this.day = Day.MONDAY;
         this.season = Season.SPRING;
         this.weather = Weather.SUNNY;
