@@ -1,44 +1,26 @@
 import java.time.LocalTime;
 import java.util.*;
-
+import java.lang.*;
 public class Time {
     private final int accelerationFactor;
     private LocalTime startGameTime;
     private long startRealTimeNano;
     private String state;
-    private Day day;
-    private Weather weather;
-    private Season season;
-    private int dayCount;
+    private boolean isStopped = false;
+    private LocalTime stoppedGameTime;
+    private long stoppedRealTimeNano;
 
-    public Time(Day day, Weather weather, Season season) {
+    public Time() {
         this.startGameTime = LocalTime.of(6, 0);
         this.accelerationFactor = 300;
         this.startRealTimeNano = System.nanoTime();
         this.state = "DAY";
-        this.day = day;
-        this.weather = weather;
-        this.season = season;
-        this.dayCount = 1;
-    }
-
-    public int getDayCount(){
-        return dayCount;
-    }
-
-    public Day getDay(){
-        return day;
-    }
-
-    public Season getSeason(){
-        return season;
-    }
-
-    public Weather getWeather(){
-        return weather;
     }
 
     public LocalTime getCurrentGameTime() {
+        if (isStopped) {
+            return stoppedGameTime;
+        }
         long currentRealTimeNano = System.nanoTime();
         double realElapsedSeconds = (currentRealTimeNano - startRealTimeNano) / 1_000_000_000.0;
 
@@ -61,65 +43,68 @@ public class Time {
         return state;
     }
 
+    public void stopTime() {
+        if (!isStopped) {
+            stoppedGameTime = getCurrentGameTime();
+            stoppedRealTimeNano = System.nanoTime();
+            isStopped = true;
+        }
+    }
+
+    public void resumeTime() {
+        if (isStopped) {
+            long currentNano = System.nanoTime();
+            long pausedDuration = currentNano - stoppedRealTimeNano;
+            this.startGameTime = stoppedGameTime;
+            this.startRealTimeNano = System.nanoTime();
+            isStopped = false;
+        }
+    }
+
     public String getFormattedGameTime() {
         LocalTime gameTime = getCurrentGameTime();
         return gameTime.toString();
     }
 
-    public void changeDay(){
-        Random rand = new Random();
-        this.startGameTime = LocalTime.of(6, 0);
+    public void changeStartGameTime(LocalTime time){
+        this.startGameTime = time;
+    }
+
+    public void changeStartRealTime(long time){
+        this.startRealTimeNano = time;
+    }
+
+    public void addTime(int minutes) {
+        LocalTime currentGameTime = getCurrentGameTime();
+
+        LocalTime newGameTime = currentGameTime.plusMinutes(minutes);
+
+        this.startGameTime = newGameTime;
         this.startRealTimeNano = System.nanoTime();
-        this.day = day.nextDay();
-        this.dayCount++;
-        int randomNumber = rand.nextInt(1000);
-        if(dayCount % 10 == 1){
-            changeSeason();
-        }
-        if(randomNumber % 2 == 0){
-            changeWeather();
-        }
-        System.out.println("Day has changed!");
     }
 
-    public void changeSeason(){
-        this.season = season.nextSeason();
-        System.out.println("Season has changed!");
+    public void setTime(LocalTime time) {
+        this.startGameTime = time;
+        this.startRealTimeNano = System.nanoTime();
     }
 
-    public void changeWeather(){
-        this.weather = weather.nextWeather();
-        System.out.println("Today is a " + weather.toString() + " day");
-    }
 
-    public void showTime(){
-        System.out.println("Time : " + getFormattedGameTime());
-        System.out.println("Today is " + day.toString());
-        System.out.println("Current season is " + season.toString());
-        System.out.println("Today's weather is " + weather.toString());
-    }
-    public static void main(String[] args){
-        Time waktu = new Time(Day.MONDAY, Weather.SUNNY, Season.SPRING);
-
-        Scanner input = new Scanner(System.in);
-
+    public static void main(String[] args) throws InterruptedException {
+        Time time = new Time();
+        Scanner scan = new Scanner(System.in);
         while(true){
-            String x = input.nextLine();
-            switch(x){
-                case "a" :
-                    waktu.showTime();
+            String input = scan.nextLine();
+            switch(input){
+                case "t" :
+                    System.out.println(time.getFormattedGameTime());
                     break;
-                case "b" :
-                    System.out.println(waktu.getState());
+                case "s" :
+                    time.stopTime();
                     break;
-                case "c" :
-                    waktu.changeDay();
-                    break;
-                case "d" :
-                    waktu.changeSeason();
-                    break;
+                case "r" :
+                    time.resumeTime();
             }
+
         }
-        
     }
 }
