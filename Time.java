@@ -1,11 +1,14 @@
 import java.time.LocalTime;
 import java.util.*;
-
+import java.lang.*;
 public class Time {
     private final int accelerationFactor;
     private LocalTime startGameTime;
     private long startRealTimeNano;
     private String state;
+    private boolean isStopped = false;
+    private LocalTime stoppedGameTime;
+    private long stoppedRealTimeNano;
 
     public Time() {
         this.startGameTime = LocalTime.of(6, 0);
@@ -15,6 +18,9 @@ public class Time {
     }
 
     public LocalTime getCurrentGameTime() {
+        if (isStopped) {
+            return stoppedGameTime;
+        }
         long currentRealTimeNano = System.nanoTime();
         double realElapsedSeconds = (currentRealTimeNano - startRealTimeNano) / 1_000_000_000.0;
 
@@ -37,7 +43,23 @@ public class Time {
         return state;
     }
 
+    public void stopTime() {
+        if (!isStopped) {
+            stoppedGameTime = getCurrentGameTime();
+            stoppedRealTimeNano = System.nanoTime();
+            isStopped = true;
+        }
+    }
 
+    public void resumeTime() {
+        if (isStopped) {
+            long currentNano = System.nanoTime();
+            long pausedDuration = currentNano - stoppedRealTimeNano;
+            this.startGameTime = stoppedGameTime;
+            this.startRealTimeNano = System.nanoTime();
+            isStopped = false;
+        }
+    }
 
     public String getFormattedGameTime() {
         LocalTime gameTime = getCurrentGameTime();
@@ -64,5 +86,25 @@ public class Time {
     public void setTime(LocalTime time) {
         this.startGameTime = time;
         this.startRealTimeNano = System.nanoTime();
+    }
+
+
+    public static void main(String[] args) throws InterruptedException {
+        Time time = new Time();
+        Scanner scan = new Scanner(System.in);
+        while(true){
+            String input = scan.nextLine();
+            switch(input){
+                case "t" :
+                    System.out.println(time.getFormattedGameTime());
+                    break;
+                case "s" :
+                    time.stopTime();
+                    break;
+                case "r" :
+                    time.resumeTime();
+            }
+
+        }
     }
 }
