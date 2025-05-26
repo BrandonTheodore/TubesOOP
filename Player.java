@@ -737,31 +737,12 @@ public class Player {
         Misc proposalRing = new Misc("Proposal Ring", 1000, 1000, MiscType.PROPOSAL_RING, "A ring for proposal.");
         int quantityOfRing = 1;
 
-        // --- Cek Ketersediaan Cincin ---
-        // Menggunakan checkItemAndQuantity dengan objek Misc
-        if (!this.inventory.checkItemAndQuantity(proposalRing, quantityOfRing)) {
-            System.out.println(this.name + " tidak memiliki cincin lamaran (Proposal Ring) di inventory.");
-            return false;
-        }
-
         System.out.println(this.name + " melamar " + npc.getName() + "!");
 
-        boolean accepted = npc.receiveProposal(this);
+        // npc yg nentuin dia mau nerima apa engga
+        // npc yang ngurangin energy 
+        npc.receiveProposal(this);
 
-        if (accepted) {
-            proposalRing.useItem(this, proposalRing);
-            System.out.println(npc.getName() + " menerima lamaran! Selamat " + this.name + ", Anda bertunangan dengan " + npc.getName() + "!");
-            if (!consumeEnergy(PROPOSE_ENERGY_COST_ACCEPTED)) {
-                System.out.println("Peringatan: Energi " + this.name + " sangat rendah setelah diterima, tetapi lamaran sudah diset.");
-            }
-            this.setPartner(npc.getName());
-
-        } else {
-            System.out.println(npc.getName() + " menolak lamaran Anda.");
-            if (!consumeEnergy(PROPOSE_ENERGY_COST_REJECTED)) {
-                 System.out.println("Peringatan: Energi " + this.name + " sangat rendah setelah ditolak.");
-            }
-        }
 
         gameManager.advanceTime(PROPOSE_TIME_COST_MINUTES);
         System.out.println("Aksi melamar memakan waktu " + PROPOSE_TIME_COST_MINUTES + " menit.");
@@ -904,22 +885,53 @@ public class Player {
     }
 
     public boolean gift(NPC npc, Item item) {
-        int energyCost = 5;
-        int quantityToGift = 1; 
-        if (consumeEnergy(energyCost)) {
-            if (this.inventory.removeItem(item, quantityToGift)) {
-                System.out.println(this.name + " memberikan " + item.getName() + " sebagai hadiah kepada " + npc.getName() + ".");
-                npc.receiveGift(item);
-                return true;
-            } else {
-                System.out.println(this.name + " tidak memiliki " + item.getName() + " di inventory (atau tidak cukup jumlahnya).");
-                return false;
-            }
-        } else {
-            System.out.println(this.name + " terlalu lelah untuk memberikan hadiah.");
-            return false;
-        }
+    if (npc == null) {
+        System.out.println(this.name + ": NPC tidak valid.");
+        return false;
     }
+    if (item == null) {
+        System.out.println(this.name + ": Item tidak valid.");
+        return false;
+    }
+    if (!isAtNPCHome(npc)) {
+        System.out.println("Kamu lagi gak dirumah NPC :(");
+        return false;
+    }
+
+    if (!this.inventory.checkItem(item)) {
+        System.out.println(this.name + ": Anda tidak memiliki " + item.getName() + " di inventory.");
+        return false;
+    }
+
+    int energyCost = 5;
+    if (!consumeEnergy(energyCost)) { // cek energy player cukup gak
+        System.out.println(this.name + " terlalu lelah untuk memberikan hadiah.");
+        return false;
+    }
+
+    // heartpoints di handle npc
+    npc.receiveGift(this, item);
+    
+    System.out.println(this.name + " memberikan " + item.getName() + " kepada " + npc.getName() + ".");
+    
+    return true;
+}
+
+// Helper method untuk mengecek apakah player berada di rumah NPC
+private boolean isAtNPCHome(NPC npc) {
+    String npcName = npc.getName().toLowerCase();
+    String currentLocation = this.location.getName().toLowerCase();
+    
+    // Sesuai spesifikasi, setiap NPC punya rumah kecuali Emily yang tinggal di Store
+    if (npcName.equals("emily")) {
+        return currentLocation.contains("store");
+    } else {
+        // Untuk NPC lain, cek apakah lokasi mengandung nama NPC
+        return currentLocation.contains(npcName) || 
+               currentLocation.contains(npcName + "'s house") ||
+               currentLocation.contains("rumah " + npcName);
+    }
+}
 
     public String showTime() {
         return String.format("Musim: %s, Hari: %d, Waktu: %s (%s)", getCurrentSeason(), getCurrentDay(), getFormattedGameTime(), getTimeState());
