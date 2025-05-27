@@ -172,31 +172,7 @@ public class Map {
             outOfBound = true;
         }
 
-        // if(outOfBound){
-        //     System.out.print("Do you want to exit the farm? (y/n) ");
-        //     String userInput = scanner.nextLine().toLowerCase();
-        //     if(userInput.equals("y")){
-        //         worldMap();
-        //     }
-        // }
-
         return outOfBound;
-    }
-
-    public boolean exitFarms(String input){
-        Scanner scanner = new Scanner(System.in);
-        boolean outOfBounds = isOutOfBound(input);
-
-        if(outOfBounds){
-            System.out.print("Do you want to exit the farm? (y/n) ");
-            String userInput = scanner.nextLine().toLowerCase();
-            if(userInput.equals("y")){
-                scanner.close();
-                return true;
-            }
-        }
-        scanner.close();
-        return false;
     }
 
     /*
@@ -391,8 +367,8 @@ public class Map {
             System.out.println("1. NPC's House");
             System.out.println("2. Fishing Location");
             System.out.println("3. Store");
-            System.out.println("** Type the correspending number to navigate through the world map **");
             System.out.println("** Type 'back' to go to the previous section **");
+            System.out.println("** Type the correspending number to navigate through the world map **");
             System.out.println("");
             if(message.equals("nothing")){
                 System.out.println("System Message: None");
@@ -414,8 +390,8 @@ public class Map {
                         System.out.println("3. Perry");
                         System.out.println("4. Dasco");
                         System.out.println("5. Abigail");
-                        System.out.println("** Type the correspending number to navigate through the world map **");
                         System.out.println("** Type 'b' to go to the previous section **");
+                        System.out.println("** Type the correspending number to navigate through the world map **");
 
                         System.out.println("");
                         if(message.equals("nothing")){
@@ -432,18 +408,23 @@ public class Map {
                         switch(input2) {
                             case "1" -> {
                                 System.out.println("Chatting with Mayor Tedi..");
+                                message = "Done chatting with Mayor Tadi";
                             }
                             case "2" -> {
                                 System.out.println("Chatting with Caroline...");
+                                message = "Done chatting with Caroline";
                             }
                             case "3" -> {
                                 System.out.println("Chatting with Perry...");
+                                message = "Done chatting with Perry";
                             }
                             case "4" -> {
                                 System.out.println("Chatting with Dasco...");
+                                message = "Done chatting with Dasco";
                             }
                             case "5" -> {
                                 System.out.println("Chatting with Abigail...");
+                                message = "Done chatting with Abigail";
                             }
                             case "b" -> {
                                 message = "Back from NPC's house menu";
@@ -463,8 +444,8 @@ public class Map {
                         System.out.println("1. Forest River");
                         System.out.println("2. Mountain Lake");
                         System.out.println("3. Ocean");
-                        System.out.println("** Type the correspending number to navigate through the world map **");
                         System.out.println("** Type 'b' to go to the previous section **");
+                        System.out.println("** Type the correspending number to navigate through the world map **");
 
                         System.out.println("");
                         if(message.equals("nothing")){
@@ -481,12 +462,15 @@ public class Map {
                         switch(input2){
                             case "1" -> {
                                 System.out.println("Fishing in Forest River...");
+                                message = "Done fishing at Forest River";
                             } 
                             case "2" -> {
                                 System.out.println("FIshing in Mountain Lake...");
+                                message = "Done fishing at Mountain Lake";
                             }
                             case "3" -> {
                                 System.out.println("Fishing in the Ocean...");
+                                message = "Done fishing at the Ocean";
                             }
                             case "b" -> {
                                 message = "Back from Fishing Locations menu";
@@ -506,8 +490,8 @@ public class Map {
                         System.out.println("1. Visit and Chat with Emily");
                         System.out.println("2. Buy Item");
                         System.out.println("3. Buy Recipe");
-                        System.out.println("** Type the correspending number to navigate through the world map **");
                         System.out.println("** Type 'b' to go to the previous section **");
+                        System.out.println("** Type the correspending number to navigate through the world map **");
                         
                         System.out.println("");
                         if(message.equals("nothing")){
@@ -520,6 +504,8 @@ public class Map {
 
                         System.out.print("What to do in the Store: ");
                         String input2 = scanner.nextLine().toLowerCase();
+
+                        message = "nothing";
 
                         switch(input2){
                             case "1" -> {
@@ -547,16 +533,16 @@ public class Map {
 
                                     System.out.print("What item do you want to buy: ");
                                     String input3 = scanner.nextLine().toLowerCase();
+
+                                    if(input3.equals("b")){
+                                        break;
+                                    }
                                     
                                     if(isInteger(input3)){
                                         System.out.print("Item Quantity: ");
                                         String input4 = scanner.nextLine().toLowerCase();
                                     } else {
                                         message = "Must input a number!";
-                                    }
-
-                                    if(input3.equals("b")){
-                                        break;
                                     }
                                 }
                             }
@@ -576,6 +562,8 @@ public class Map {
 
                                     System.out.println("** Type 'b' to exit this menu **");
                                     System.out.println("** Type the correspending number to navigate **");
+
+                                    message = "nothing";
 
                                     System.out.print("What recipe do you want to buy: ");
                                     String input3 = scanner.nextLine().toLowerCase();
@@ -614,6 +602,7 @@ public class Map {
             }
 
             if(input.equals("back")){
+                scanner.close();
                 break;
             }
         }

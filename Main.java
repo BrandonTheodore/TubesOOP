@@ -52,9 +52,10 @@ public class Main {
             
             // Display player status and surroundings
             if(message.equals("nothing")){
-                System.out.println("");
+                System.out.println("System Message: ");
             } else {
-                System.out.println(ANSI_RED + message + ANSI_RESET);
+                System.out.print("System Message: ");
+                System.out.println(message);
             }
             System.out.println("");
 
@@ -152,7 +153,9 @@ public class Main {
                         message = "You harvested the crops!";
                     } else if (gameMap.isPlanted()) {
                         message = "Crop is not ready for harvest";
-                    } else {
+                    } else if (gameMap.isWithered()) {
+                        message = "Crop has withered";
+                    }else {
                         message = "No plant to harvest";
                     }
                 }
@@ -162,8 +165,38 @@ public class Main {
                 }
                 case "h" -> {
                     if(houseNearby){
-                        System.out.println("=== House Menu ===");
-                        Thread.sleep(2000);
+                        while(true){
+                            System.out.println("=== House Menu ===");
+                            // print action list
+                            System.out.println("** Type 'b' to go to the previous section **");
+                            System.out.println("** Type the number based on the action! **");
+
+                            if(message.equals("nothing")){
+                                System.out.println("System Message: ");
+                            } else {
+                                System.out.print("System Message: ");
+                                System.out.println(message);
+                            }
+
+                            System.out.println("");
+                            System.out.print("Action to do: ");
+
+                            message = "nothing";
+
+                            input = scanner.nextLine().toLowerCase();
+                            boolean inputIsInteger = isInteger(input);
+
+                            if(input.equals("b")){
+                                break;
+                            }
+
+                            if(inputIsInteger){
+                                System.out.println("Player do action x");
+                            } else {
+                                message = "Input must be a number!";
+                            }
+                        }
+                        message = "You exited the house";
                     } else {
                         message = "You are not near a house!";
                     }
@@ -171,15 +204,88 @@ public class Main {
                 case "f" -> {
                     if(pondNearby){
                         System.out.println("Fishing in a Pond..");
-                        Thread.sleep(2000);
+                        message = "You got a fish/trash from the pond";
                     } else {
                         message = "You are not near a pond!";
                     }
                 }
                 case "sb" -> {
                     if(shippingBinNearby){
-                        System.out.println("=== Shipping Bin Menu ===");
-                        Thread.sleep(2000);
+                        while (true) { 
+                            System.out.println("=== Shipping Bin Menu ==="); 
+                            System.out.println("1. Add item to Shipping Bin");
+                            System.out.println("2. Show current items, quantity, and price in Shipping Bin");
+                            System.out.println("3. Sell Shipping Bin");
+                            System.out.println("** Type 'b' to go to the previous section **");
+                            System.out.println("** Type the number based on the action! **");
+
+                            if(message.equals("nothing")){
+                                System.out.println("System Message: ");
+                            } else {
+                                System.out.print("System Message: ");
+                                System.out.println(message);
+                            }
+                            System.out.println("");
+                            System.out.print("Action to do: ");
+
+                            message = "nothing";
+                            
+                            input = scanner.nextLine().toLowerCase();
+                            boolean inputIsInteger = isInteger(input);
+
+                            if(input.equals("b")){
+                                break;
+                            }
+
+                            if(inputIsInteger){
+                                switch(input) {
+                                    case "1" -> {
+                                        System.out.println("What item do you want to add?");
+                                        System.out.print("Input item name: ");
+                                        input = scanner.nextLine();
+                                        while(true){
+                                            System.out.println("** Type 'b' to go to the previous section **");
+                                            System.out.println("How much of this item do you want to add?");
+                                            System.out.print("Input Item Quantity: "); 
+                                            input = scanner.nextLine().toLowerCase();
+                                            inputIsInteger = isInteger(input);
+
+                                            if(input.equals("b")){
+                                                break;
+                                            }
+
+                                            if(inputIsInteger){
+                                                int itemQuantity = Integer.parseInt(input);
+                                                message = "Item x added to the shipping bin";
+                                                break;
+                                            } else {
+                                                System.out.println("Input must be an integer!");
+                                            }
+                                        }
+                                    }
+                                    case "2" -> {
+                                        while (true) { 
+                                            System.out.println("=== Current Shipping Bin ===");
+                                            System.out.println("** Type 'b' to go to the previous section **");
+                                            input = scanner.nextLine().toLowerCase();
+
+                                            if(input.equals("b")){
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    case "3" -> {
+                                        System.out.println("Shipping Bin Sold!");
+                                    }
+                                    case "b" -> {
+                                        break;
+                                    }
+                                }
+                            } else {
+                                message = "Input must be a number";
+                            }
+                        }
+                        message = "You exited the shipping bin";
                     } else {
                         message = "You are not near a shipping bin!";
                     }
@@ -234,5 +340,17 @@ public class Main {
             case '\0' -> "Edge of Map";
             default -> "Unknown";
         };
+    }
+
+    public static boolean isInteger(String str) {
+        if (str == null || str.isEmpty()) {
+            return false; 
+        }
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }
