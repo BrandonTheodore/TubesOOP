@@ -8,10 +8,10 @@ public class Map {
     static final char TILLED = 't';
     static final char PLANTED = 'v';
     static final char HARVESTABLE = 'c';
+    static final char WITHERED = 'w';
     static final char HOUSE = 'h';
     static final char BIN = 's';
     static final char POND = 'o';
-    static final char WORLDMAP = 'w';
     static final char PLAYER = 'P';
 
     private int playerX;
@@ -159,10 +159,9 @@ public class Map {
     /*
      * check if the player is out of bound
      */
-    private boolean exitFarm(String input){
-        Scanner scanner = new Scanner(System.in);
+    public boolean isOutOfBound (String input){
+        // Scanner scanner = new Scanner(System.in);
         boolean outOfBound = false;
-        boolean exit = false;
         if(input.equals("w") && this.playerY == 0){
             outOfBound = true;
         } else if(input.equals("a") && this.playerX == 0){
@@ -173,36 +172,28 @@ public class Map {
             outOfBound = true;
         }
 
-        if(outOfBound){
-            System.out.print("Do you want to exit the farm? (y/n) ");
-            String userInput = scanner.nextLine().toLowerCase();
-            if(userInput.equals("y")){
-                worldMap();
-            }
-        }
-
         return outOfBound;
     }
 
     /*
      * check if the tile is walkable
-     */
+     */ 
     private boolean isWalkable(String input){
         boolean walkable = false;
-        boolean bound = exitFarm(input);
-        if(input.equals("w") && bound == false){
+        boolean bound = isOutOfBound(input);
+        if(input.equals("w") && !bound){
             if(this.map[this.playerY - 1][this.playerX] == TILLABLE || this.map[this.playerY - 1][this.playerX] == TILLED || this.map[this.playerY - 1][this.playerX] == PLANTED){
                 walkable = true;
             }
-        } else if(input.equals("a") && bound == false){
+        } else if(input.equals("a") && !bound){
             if(this.map[this.playerY][this.playerX - 1] == TILLABLE || this.map[this.playerY][this.playerX - 1] == TILLED || this.map[this.playerY][this.playerX - 1] == PLANTED){
                 walkable = true;
             }
-        } else if(input.equals("s") && bound == false){
+        } else if(input.equals("s") && !bound){
             if(this.map[this.playerY + 1][this.playerX] == TILLABLE || this.map[this.playerY + 1][this.playerX] == TILLED || this.map[this.playerY + 1][this.playerX] == PLANTED){
                 walkable = true;
             }
-        } else if(input.equals("d") && bound == false){
+        } else if(input.equals("d") && !bound){
             if(this.map[this.playerY][this.playerX + 1] == TILLABLE || this.map[this.playerY][this.playerX + 1] == TILLED || this.map[this.playerY][this.playerX + 1] == PLANTED){
                 walkable = true;
             }
@@ -222,7 +213,7 @@ public class Map {
 
         switch (input) {
             case "w" -> {
-                if(!exitFarm(input) && isWalkable(input)){
+                if(!isOutOfBound(input) && isWalkable(input)){
                     previousTile = this.currentTile;
                     this.playerY -= 1;
                     this.currentTile = this.map[this.playerY][this.playerX];
@@ -230,7 +221,7 @@ public class Map {
                 }
             }
             case "a" -> {
-                if(!exitFarm(input) && isWalkable(input)){
+                if(!isOutOfBound(input) && isWalkable(input)){
                     previousTile = this.currentTile;
                     this.playerX -= 1;
                     this.currentTile = this.map[this.playerY][this.playerX];
@@ -238,7 +229,7 @@ public class Map {
                 }
             }
             case "s" -> {
-                if(!exitFarm(input) && isWalkable(input)){
+                if(!isOutOfBound(input) && isWalkable(input)){
                     previousTile = this.currentTile;
                     this.playerY += 1;
                     this.currentTile = this.map[this.playerY][this.playerX];
@@ -246,7 +237,7 @@ public class Map {
                 }
             }
             case "d" -> {
-                if(!exitFarm(input) && isWalkable(input)){
+                if(!isOutOfBound(input) && isWalkable(input)){
                     previousTile = this.currentTile;
                     this.playerX += 1;
                     this.currentTile = this.map[this.playerY][this.playerX];
@@ -345,6 +336,22 @@ public class Map {
         return this.currentTile == 'c';
     }
 
+    public boolean isWithered(){
+        return this.currentTile == 'w';
+    }
+
+    public boolean isInteger(String str) {
+        if (str == null || str.isEmpty()) {
+            return false; 
+        }
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     /**
      * world map
      * masih bingung parameternya apa aja,
@@ -352,8 +359,7 @@ public class Map {
      */
     public void worldMap(/*Player player, List<NPC> allNPC, Store store*/){
         Scanner scanner = new Scanner(System.in);
-        boolean running = true;
-        boolean running2 = true;
+        String message = "nothing";
         // player.visiting("WORLD MAP");
 
         while(true){
@@ -361,11 +367,19 @@ public class Map {
             System.out.println("1. NPC's House");
             System.out.println("2. Fishing Location");
             System.out.println("3. Store");
-            System.out.println("** Type the correspending number to navigate through the world map **");
             System.out.println("** Type 'back' to go to the previous section **");
+            System.out.println("** Type the correspending number to navigate through the world map **");
+            System.out.println("");
+            if(message.equals("nothing")){
+                System.out.println("System Message: None");
+            } else {
+                System.out.print("System Message: ");
+                System.out.println(message);
+            }
             System.out.println("");
             System.out.print("Place to visit: ");
             String input = scanner.nextLine().toLowerCase();
+            message = "nothing";
 
             switch (input) {
                 case "1" -> {
@@ -376,32 +390,47 @@ public class Map {
                         System.out.println("3. Perry");
                         System.out.println("4. Dasco");
                         System.out.println("5. Abigail");
-                        System.out.println("** Type the correspending number to navigate through the world map **");
                         System.out.println("** Type 'b' to go to the previous section **");
+                        System.out.println("** Type the correspending number to navigate through the world map **");
+
                         System.out.println("");
+                        if(message.equals("nothing")){
+                                System.out.println("System Message: ");
+                        } else {
+                            System.out.print("System Message: ");
+                            System.out.println(message);
+                        }
+                        System.out.println("");
+
                         System.out.print("NPC to visit and chat with: ");
                         String input2 = scanner.nextLine().toLowerCase();
 
                         switch(input2) {
                             case "1" -> {
                                 System.out.println("Chatting with Mayor Tedi..");
+                                message = "Done chatting with Mayor Tadi";
                             }
                             case "2" -> {
                                 System.out.println("Chatting with Caroline...");
+                                message = "Done chatting with Caroline";
                             }
                             case "3" -> {
                                 System.out.println("Chatting with Perry...");
+                                message = "Done chatting with Perry";
                             }
                             case "4" -> {
                                 System.out.println("Chatting with Dasco...");
+                                message = "Done chatting with Dasco";
                             }
                             case "5" -> {
                                 System.out.println("Chatting with Abigail...");
+                                message = "Done chatting with Abigail";
                             }
                             case "b" -> {
+                                message = "Back from NPC's house menu";
                                 break;
                             }
-                            default -> System.out.println("Action is not valid!");
+                            default -> message = "Action is not valid!";
                         }
 
                         if(input2.equals("b")){
@@ -415,26 +444,39 @@ public class Map {
                         System.out.println("1. Forest River");
                         System.out.println("2. Mountain Lake");
                         System.out.println("3. Ocean");
-                        System.out.println("** Type the correspending number to navigate through the world map **");
                         System.out.println("** Type 'b' to go to the previous section **");
+                        System.out.println("** Type the correspending number to navigate through the world map **");
+
                         System.out.println("");
+                        if(message.equals("nothing")){
+                                System.out.println("System Message: ");
+                        } else {
+                            System.out.print("System Message: ");
+                            System.out.println(message);
+                        }
+                        System.out.println("");
+                        
                         System.out.print("Place to fish: ");
                         String input2 = scanner.nextLine().toLowerCase();
 
                         switch(input2){
                             case "1" -> {
                                 System.out.println("Fishing in Forest River...");
+                                message = "Done fishing at Forest River";
                             } 
                             case "2" -> {
                                 System.out.println("FIshing in Mountain Lake...");
+                                message = "Done fishing at Mountain Lake";
                             }
                             case "3" -> {
                                 System.out.println("Fishing in the Ocean...");
+                                message = "Done fishing at the Ocean";
                             }
                             case "b" -> {
+                                message = "Back from Fishing Locations menu";
                                 break;
                             }
-                            default -> System.out.println("Action is not valid!");
+                            default -> message = "Action is not valid!";
                         }
 
                         if(input2.equals("b")){
@@ -448,26 +490,101 @@ public class Map {
                         System.out.println("1. Visit and Chat with Emily");
                         System.out.println("2. Buy Item");
                         System.out.println("3. Buy Recipe");
-                        System.out.println("** Type the correspending number to navigate through the world map **");
                         System.out.println("** Type 'b' to go to the previous section **");
+                        System.out.println("** Type the correspending number to navigate through the world map **");
+                        
                         System.out.println("");
+                        if(message.equals("nothing")){
+                                System.out.println("System Message: ");
+                        } else {
+                            System.out.print("System Message: ");
+                            System.out.println(message);
+                        }
+                        System.out.println("");
+
                         System.out.print("What to do in the Store: ");
                         String input2 = scanner.nextLine().toLowerCase();
+
+                        message = "nothing";
 
                         switch(input2){
                             case "1" -> {
                                 System.out.println("Chatting with Emily...");
+                                message = "Done chatting with Emily";
                             }
                             case "2" -> {
-                                System.out.println("=== Item List ====");
+                                while(true){
+                                    System.out.println("=== Item List ====");
+
+                                    // print list item dijual + harga
+
+                                    if(message.equals("nothing")){
+                                        System.out.println("System Message: ");
+                                    } else {
+                                        System.out.print("System Message: ");
+                                        System.out.println(message);
+                                    }
+                                    System.out.println("");
+
+                                    message = "nothing";
+
+                                    System.out.println("** Type 'b' to exit this menu **");
+                                    System.out.println("** Type the correspending number to navigate **");
+
+                                    System.out.print("What item do you want to buy: ");
+                                    String input3 = scanner.nextLine().toLowerCase();
+
+                                    if(input3.equals("b")){
+                                        break;
+                                    }
+                                    
+                                    if(isInteger(input3)){
+                                        System.out.print("Item Quantity: ");
+                                        String input4 = scanner.nextLine().toLowerCase();
+                                    } else {
+                                        message = "Must input a number!";
+                                    }
+                                }
                             }
                             case "3" -> {
-                                System.out.println("=== Recipe List ===");
+                                while(true){
+                                    System.out.println("=== Recipe List ===");
+                                    
+                                    // show recipe list name + price
+
+                                    if(message.equals("nothing")){
+                                        System.out.println("System Message: ");
+                                    } else {
+                                        System.out.print("System Message: ");
+                                        System.out.println(message);
+                                    }
+                                    System.out.println("");
+
+                                    System.out.println("** Type 'b' to exit this menu **");
+                                    System.out.println("** Type the correspending number to navigate **");
+
+                                    message = "nothing";
+
+                                    System.out.print("What recipe do you want to buy: ");
+                                    String input3 = scanner.nextLine().toLowerCase();
+
+                                    if(isInteger(input3)){
+                                        System.out.println("Bought x Recipe!");
+                                    } else {
+                                        message = "Must input a number!";
+                                    }
+
+                                    if(input3.equals("b")){
+                                        break;
+                                    }
+                                }
+
                             }
                             case "b" -> {
+                                message = "Back from Store menu";
                                 break;
                             }
-                            default -> System.out.println("Action is not valid!");
+                            default -> message = "Action is not valid!";
                         }
 
                         if(input2.equals("b")){
@@ -480,11 +597,12 @@ public class Map {
                     break;
                 }
                 default -> {
-                    System.out.println("Input is not valid.");
+                    message = "Input is not valid.";
                 }
             }
 
             if(input.equals("back")){
+                scanner.close();
                 break;
             }
         }
