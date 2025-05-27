@@ -1,3 +1,5 @@
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -10,13 +12,13 @@ public class Player {
     private String name;
     private Gender gender;
     private int energy;
-    private String farmName;
+    private Farm farm;
     private String partner;
     private int gold;
     private Inventory inventory;
     private Location location;
     private FoodManager foodManager;
-    private Equipment equippedTool;
+    private Equipment equippedtool;
     private boolean hasUsedShippingBinToday;
 
     private static final int MAX_ENERGY = 100;
@@ -24,49 +26,36 @@ public class Player {
     private static final double ENERGY_PENALTY_THRESHOLD_PERCENTAGE = 0.10;
     private static final int ENERGY_BONUS_IF_ZERO = 10;
     private static final int TILL_ENERGY_COST_PER_TILE = 5;
-    private static final int TILL_TIME_COST_PER_TILE_MINUTES = 5;
     private static final int RECOVER_ENERGY_COST_PER_TILE = 5;
-    private static final int RECOVER_TIME_COST_PER_TILE_MINUTES = 5;
     private static final int PLANT_ENERGY_COST_PER_SEED = 5;
-    private static final int PLANT_TIME_COST_PER_TILE_MINUTES = 5;
     private static final int WATER_ENERGY_COST_PER_TILE = 5;
-    private static final int WATER_TIME_COST_PER_TILE_MINUTES = 5;
     private static final int HARVESTING_ENERGY_COST_PER_CROP = 5;
-    private static final int HARVESTING_TIME_COST_PER_TILE_MINUTES = 5;
     private static final int FISHING_ENERGY_COST = 5;
-    private static final int FISHING_TIME_COST_MINUTES = 15;
-    private static final int PROPOSE_ENERGY_COST_ACCEPTED = 10;
-    private static final int PROPOSE_ENERGY_COST_REJECTED = 20;
-    private static final int PROPOSE_TIME_COST_MINUTES = 60;
     private static final int MARRY_ENERGY_COST = 80;
-    private static final int MARRY_TIME_SKIP_HOUR = 22;
-    private static final int MARRY_TIME_SKIP_MINUTE = 0;
     private static final int VISIT_ENERGY_COST = 10;
-    private static final int VISIT_TIME_COST_MINUTES = 15;
     private static final int CHAT_ENERGY_COST = 3;
-    private static final int CHAT_TIME_COST_MINUTES = 10;
-    private static final int SELLING_TIME_COST_MINUTES = 15; //buat waktu jual
 
 
-    public Player(String name, Gender gender, String farmName) {
+    public Player(String name, Gender gender, Farm farm, Time time) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Nama pemain tidak boleh kosong.");
         }
         if (gender == null) {
             throw new IllegalArgumentException("Jenis kelamin pemain tidak boleh null.");
         }
-        if (farmName == null || farmName.trim().isEmpty()) {
+        if (farm.getName() == null || farm.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("Nama farm tidak boleh kosong.");
         }
 
         this.name = name;
         this.gender = gender;
         this.energy = MAX_ENERGY;
-        this.farmName = farmName;
+        this.farm = farm;
         this.partner = null;
         this.gold = 0;
         this.inventory = new Inventory();
         this.location = new Location("Home");
+        this.time = time; 
         this.hasUsedShippingBinToday = false;
     }
 
@@ -79,8 +68,8 @@ public class Player {
     public int getEnergy() {
         return energy;
     }
-    public String getFarmName() {
-        return farmName;
+    public Farm getFarm() {
+        return farm;
     }
     public String getPartner() {
         return partner;
@@ -95,6 +84,10 @@ public class Player {
         return location;
     }
 
+    public Time getTime() {
+        return time;
+    }
+
     public void setGender(Gender gender) {
         if (gender == null) {
             throw new IllegalArgumentException("Jenis kelamin tidak boleh null.");
@@ -106,11 +99,11 @@ public class Player {
         this.energy = Math.min(energy, MAX_ENERGY);
     }
 
-    public void setFarmName(String farmName) {
-        if (farmName == null || farmName.trim().isEmpty()) {
+    public void setFarm(Farm farm) {
+        if (farm.getName() == null || farm.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("Nama farm tidak boleh kosong.");
         }
-        this.farmName = farmName;
+        this.farm = farm;
     }
 
     public void setPartner(String partner) {
@@ -133,6 +126,13 @@ public class Player {
             throw new IllegalArgumentException("Lokasi tidak boleh null."); //
         }
         this.location = location;
+    }
+
+    public void setTime(Time time) {
+        if (time == null) {
+            throw new IllegalArgumentException("Waktu tidak boleh null.");
+        }
+        this.time = time;
     }
 
     public boolean consumeEnergy(int energyCost) {
@@ -204,9 +204,10 @@ public class Player {
             int energyCost = TILL_ENERGY_COST_PER_TILE;
 
             if (consumeEnergy(energyCost)) { 
-                System.out.println(this.name + " mengolah tile " + tileToTill.getCoordinates() + " dengan Hoe.");
+                System.out.println(this.name + " mengolah tile " + tileToTill.getCoordinates());
                 tileToTill.setStatus(TileStatus.SOIL);
                 actualTilesTilled++;
+                time.addTime(5);
 
             } else {
                 System.out.println(this.name + " terlalu lelah untuk mengolah lebih banyak tanah.");
@@ -249,6 +250,7 @@ public class Player {
                 tileToRecover.setStatus(TileStatus.LAND); 
                 tileToRecover.setPlantedCrop(null);
                 actualTilesRecovered++;
+                time.addTime(5);
             } else {
                 System.out.println(this.name + " terlalu lelah untuk memulihkan lebih banyak tanah.");
                 break;
@@ -299,6 +301,7 @@ public class Player {
                 tileToPlantOn.setPlantedCrop(seedToPlant);
                 this.inventory.removeItem(seedToPlant, 1);
                 actualSeedsPlanted++;
+                time.addTime(5);
             } else {
                 System.out.println(this.name + " terlalu lelah untuk menanam lebih banyak seed.");
                 break;
@@ -337,8 +340,9 @@ public class Player {
             int energyCost = WATER_ENERGY_COST_PER_TILE;
             if (consumeEnergy(energyCost)) {
                 System.out.println(this.name + " menyiram tile " + tileToWater.getCoordinates() + ".");
-                tileToWater.setStatus(TileStatus.WATERED); // Mengubah status tile menjadi WATERED
+                tileToWater.setStatus(TileStatus.WATERED);
                 actualTilesWatered++;
+                time.addTime(5);
             } else {
                 System.out.println(this.name + " terlalu lelah untuk menyiram lebih banyak tanah.");
                 break;
@@ -384,6 +388,7 @@ public class Player {
                 Item harvestedCrop = plantedSeed.getCropType();
                 this.inventory.addItem(harvestedCrop, 1);
                 System.out.println("Hasil panen " + harvestedCrop.getName() + " ditambahkan ke inventory.");
+                time.addTime(5);
 
                 tileToHarvest.setStatus(TileStatus.SOIL);
                 tileToHarvest.setPlantedSeed(null);
@@ -429,6 +434,7 @@ public class Player {
             addEnergy(energyGain);
             System.out.println(this.name + " makan " + foodToEat.getName() + " dan mendapatkan " + energyGain + " energi.");
             return true;
+            time.addTime(5);
         }
         return false;
     }
@@ -460,7 +466,8 @@ public class Player {
             this.energy = MAX_ENERGY;
             System.out.println(this.name + " bangun dengan energi penuh (" + this.energy + ")!");
         }
-
+        LocalTime skipTimeToMorning = LocalTime.of(6, 0);
+        time.setTime(skipTimeToMorning);
         System.out.println("Waktu game maju sampai pagi."); //harus ditambahin
     }
 
@@ -486,14 +493,12 @@ public class Player {
             System.out.println(this.name + ": Anda harus berada di Rumah untuk memasak.");
             return false;
         }
-        // Jika implementasi bonus Stove:
-        // if (HAS_STOVE_BONUS_IMPLEMENTED) {
-        //     if (this.equippedTool == null || this.equippedTool.getType() != EquipmentType.STOVE) {
-        //         System.out.println(this.name + ": Anda harus memiliki Stove yang di-equip untuk memasak.");
-        //         return false;
-        //     }
-        // }
-
+        if (HAS_STOVE) {
+            if (this.equippedTool == null || this.equippedTool.getType() != EquipmentType.STOVE) {
+                System.out.println(this.name + ": Anda harus memiliki Stove yang di-equip untuk memasak.");
+                return false;
+            }
+        }
 
         // --- Cek Bahan Bakar ---
         if (fuelMiscItem.getCategory() != ItemCategory.MISC || (fuelMiscItem.getType() != MiscType.FIREWOOD && fuelMiscItem.getType() != MiscType.COAL)) {
@@ -548,7 +553,7 @@ public class Player {
         }
         this.energy -= COOKING_ENERGY_COST_INITIATION;
         System.out.println(this.name + ": Memulai memasak '" + recipe.getName() + "'. Energi berkurang " + COOKING_ENERGY_COST_INITIATION + ". Sisa energi: " + this.energy + ".");
-
+        time.addTime(60); 
 
         // --- Kurangi Bahan Resep ---
         for (Map.Entry<Item, Integer> entry : recipe.getRequiredIngredients().entrySet()) {
@@ -574,11 +579,8 @@ public class Player {
             }
         }
 
-        // --- Kurangi Bahan Bakar (Misc item) ---
         this.inventory.removeItem(fuelMiscItem, 1);
 
-
-        // --- Mulai Tugas Memasak Pasif ---
         CookingTask cookingTask = new CookingTask(this, recipe, recipe.getResultFood(), fuelMiscItem, COOKING_DURATION_MINUTES);
         gameManager.addCookingTask(cookingTask);
 
@@ -598,12 +600,11 @@ public class Player {
         if (this.location instanceof FarmLocation) {
             FarmLocation currentFarm = (FarmLocation) this.location;
             currentLocationFish = LocationFish.POND;
-            isValidFishingLocation = true; // Sederhanakan untuk demo
+            isValidFishingLocation = true;
             System.out.println("Memancing di Pond (di dalam Farm).");
         } else if (this.location.getName().equalsIgnoreCase("Mountain Lake") ||
                    this.location.getName().equalsIgnoreCase("Forest River") ||
                    this.location.getName().equalsIgnoreCase("Ocean")) {
-            // Untuk 3 lokasi lainnya, cukup cek namanya
             if (this.location.getName().equalsIgnoreCase("Mountain Lake")) {
                 currentLocationFish = LocationFish.LAKE;
             } else if (this.location.getName().equalsIgnoreCase("Forest River")) {
@@ -626,11 +627,11 @@ public class Player {
             return false; 
         }
 
-        gameManager.stopTime(); //ini ganti aja sesuai semua yg time yak (gameManager-nya)
+        time.stopTime();
 
-        Season currentSeason = gameManager.getCurrentSeason(); //ini apa dibawah2nya juga
-        Weather currentWeather = gameManager.getCurrentWeather();
-        String currentTime = gameManager.getCurrentTime();
+        Season currentSeason = time.getCurrentSeason(); //ini apa dibawah2nya juga
+        Weather currentWeather = time.getCurrentWeather();
+        String currentTime = time.getCurrentTime();
 
         List<Fish> allPossibleFish = new java.util.ArrayList<>();
         allPossibleFish.add(new Fish("Ikan Mas", 0, Rarity.COMMON,
@@ -654,8 +655,8 @@ public class Player {
         if (catchableFish.isEmpty()) {
             System.out.println(this.name + " memancing... tapi tidak ada ikan yang bisa ditangkap di kondisi ini. Anda hanya mendapatkan sampah!");
             this.inventory.addItem(new Item("Sampah", 1, 1, ItemCategory.OTHER), 1);
-            gameManager.advanceTime(FISHING_TIME_COST_MINUTES); 
-            gameManager.resumeTime();
+            time.addTime(15); 
+            time.resumeTime();
             return true;
         }
 
@@ -717,21 +718,16 @@ public class Player {
                 System.out.println("Tebakan Anda terlalu tinggi.");
             }
         }
-
-        gameManager.advanceTime(FISHING_TIME_COST_MINUTES); 
-        gameManager.resumeTime(); 
+        time.addTime(FISHING_TIME_COST_MINUTES); 
+        time.resumeTime(); 
 
         if (guessedCorrectly) {
             this.inventory.addItem(caughtFish, 1);
             System.out.println(this.name + " berhasil menangkap " + caughtFish.getName() + " (" + caughtFish.getFishRarity() + ")!");
             System.out.println("Harga jual: " + caughtFish.getValue() + " gold.");
-            // Tidak menutup scanner di sini karena bisa menutup System.in dan membuat masalah di kemudian hari.
-            // Scanner sebaiknya ditutup di main atau di akhir program.
             return true;
         } else {
             System.out.println("Anda gagal menebak angka. Ikan " + caughtFish.getName() + " berhasil lolos!");
-            // Tidak ada ikan yang ditambahkan ke inventory
-            // Tidak menutup scanner
             return false;
         }
     }
@@ -742,15 +738,7 @@ public class Player {
 
         System.out.println(this.name + " melamar " + npc.getName() + "!");
 
-        // npc yg nentuin dia mau nerima apa engga
-        // npc yang ngurangin energy 
         npc.receiveProposal(this);
-
-
-        gameManager.advanceTime(PROPOSE_TIME_COST_MINUTES);
-        System.out.println("Aksi melamar memakan waktu " + PROPOSE_TIME_COST_MINUTES + " menit.");
-
-        return accepted;
     }
 
     public boolean marry(NPC npc) {
@@ -759,27 +747,28 @@ public class Player {
             return false;
         }
 
-        // --- Validasi Prasyarat Pernikahan ---
-        if (this.partner == null || !this.partner.equals(npc.getName())) {
-            System.out.println(this.name + " tidak bertunangan dengan " + npc.getName() + ".");
-            return false;
-        }
-        if (npc.getRelationshipStatus() != NPC.RelationshipStatus.FIANCE) {
-            System.out.println(this.name + ": " + npc.getName() + " belum berstatus fiance.");
-            return false;
-        }
-        if (!npc.readyForMarriage()) {
-            System.out.println(this.name + ": " + npc.getName() + " belum siap menikah (perlu minimal " + NPC.MIN_DAYS_AS_FIANCE_FOR_MARRIAGE + " hari setelah tunangan). Hari ini adalah hari ke-" + npc.getDaysSinceFiance() + ".");
-            return false;
-        }
+        // // --- Validasi Prasyarat Pernikahan ---
+        // if (this.partner == null || !this.partner.equals(npc.getName())) {
+        //     System.out.println(this.name + " tidak bertunangan dengan " + npc.getName() + ".");
+        //     return false;
+        // }
+        // if (npc.getRelationshipStatus() != NPC.RelationshipStatus.FIANCE) {
+        //     System.out.println(this.name + ": " + npc.getName() + " belum berstatus fiance.");
+        //     return false;
+        // }
+        // if (!npc.readyForMarriage()) {
+        //     System.out.println(this.name + ": " + npc.getName() + " belum siap menikah (perlu minimal " + NPC.MIN_DAYS_AS_FIANCE_FOR_MARRIAGE + " hari setelah tunangan). Hari ini adalah hari ke-" + npc.getDaysSinceFiance() + ".");
+        //     return false;
+        // }
 
         System.out.println(this.name + " menikah dengan " + npc.getName() + "!");
         npc.marryPlayer(this); 
         this.setPartner(npc.getName()); 
 
-        gameManager.skipTimeTo(MARRY_TIME_SKIP_HOUR, MARRY_TIME_SKIP_MINUTE);
+        // LocalTime skipTimeToNight = LocalTime.of(22, 0);
+        // time.setTime(skipTimeToNight);
         this.setLocation(new Location("Home")); 
-        System.out.println(this.name + " dan " + npc.getName() + " menghabiskan waktu bersama. Anda kembali ke " + this.location.getName() + " pada pukul " + gameManager.getCurrentTime() + ".");
+        // System.out.println(this.name + " dan " + npc.getName() + " menghabiskan waktu bersama. Anda kembali ke " + this.location.getName() + " pada pukul 22.00.");
 
         System.out.println("Selamat, " + this.name + " dan " + npc.getName() + " resmi menikah!");
         return true;
@@ -794,8 +783,8 @@ public class Player {
         if (consumeEnergy(WATCHING_ENERGY_COST)) {
             System.out.println(this.name + " menonton TV.");
 
-            gameManager.advanceTime(WATCHING_TIME_COST_MINUTES);
-            System.out.println("Waktu game maju " + WATCHING_TIME_COST_MINUTES + " menit karena menonton TV.");
+            time.addTime(15);
+            System.out.println("Anda telah menonton selama 15 menit.");
 
             return true;
         } else {
@@ -823,12 +812,12 @@ public class Player {
             System.out.println(this.name + " mengunjungi " + newLocation.getName() + " dari " + this.location.getName() + ".");
             this.setLocation(newLocation);
 
-            gameManager.advanceTime(VISIT_TIME_COST_MINUTES);
-            System.out.println("Waktu game maju " + VISIT_TIME_COST_MINUTES + " menit karena mengunjungi lokasi baru.");
+            time.addTime(15);
+            System.out.println("Jalan 15 menit nih, cape juga.");
 
             return true;
         } else {
-            System.out.println(this.name + " terlalu lelah untuk mengunjungi " + newLocation.getName() + ".");
+            System.out.println(this.name + " kecapean buat ke " + newLocation.getName() + "skip dulu dah.");
             return false;
         }
     }
@@ -840,23 +829,42 @@ public class Player {
         }
 
         if (npc.getHomeLocation() == null || !this.location.equals(npc.getHomeLocation())) {
-            System.out.println(this.name + ": Anda hanya dapat mengobrol dengan " + npc.getName() + " di rumahnya (" + (npc.getHomeLocation() != null ? npc.getHomeLocation().getName() : "lokasi tidak diketahui") + "). Anda saat ini di " + this.location.getName() + ".");
+            System.out.println("Anda hanya dapat mengobrol dengan " + npc.getName() + " di rumahnya (" + (npc.getHomeLocation() != null ? npc.getHomeLocation().getName() : "lokasi tidak diketahui") + "). Anda saat ini di " + this.location.getName() + ".");
+            return false;
+        }
+        chatWith(this);
+    }
+
+    public boolean gifting(NPC npc, Item item) {
+        if (npc == null) {
+        System.out.println(this.name + ": NPC tidak valid.");
+        return false;
+        }
+        if (item == null) {
+            System.out.println(this.name + ": Item tidak valid.");
+            return false;
+        }
+        if (!isAtNPCHome(npc)) {
+            System.out.println("Kamu lagi gak dirumah NPC :(");
             return false;
         }
 
-        if (consumeEnergy(CHAT_ENERGY_COST)) {
-            System.out.println(this.name + " mengobrol dengan " + npc.getName() + ".");
-
-            npc.addHeartPoints(10);
-
-            gameManager.advanceTime(CHAT_TIME_COST_MINUTES);
-            System.out.println("Waktu game maju " + CHAT_TIME_COST_MINUTES + " menit karena mengobrol.");
-
-            return true;
-        } else {
-            System.out.println(this.name + " terlalu lelah untuk mengobrol.");
+        if (!this.inventory.checkItem(item)) {
+            System.out.println(this.name + ": Anda tidak memiliki " + item.getName() + " di inventory.");
             return false;
         }
+
+        int energyCost = 5;
+        if (!consumeEnergy(energyCost)) { // cek energy player cukup gak
+            System.out.println(this.name + " terlalu lelah untuk memberikan hadiah.");
+            return false;
+        }
+        // heartpoints di handle npc
+        npc.receiveGift(this, item);
+        
+        System.out.println(this.name + " memberikan " + item.getName() + " kepada " + npc.getName() + ".");
+        
+        return true;
     }
 
     public void moving(Direction direction) {
@@ -878,7 +886,7 @@ public class Player {
             return;
         }
         this.location.setName(newLocName); 
-        System.out.println(this.name + " berhasil berpindah. Lokasi baru: " + this.location.getName() + ".");
+        System.out.println(this.name + " pindah ke " + this.location.getName() + ".");
     }
 
     public void openInventory() {
@@ -887,72 +895,15 @@ public class Player {
         System.out.println("--------------------");
     }
 
-    public boolean gift(NPC npc, Item item) {
-    if (npc == null) {
-        System.out.println(this.name + ": NPC tidak valid.");
-        return false;
-    }
-    if (item == null) {
-        System.out.println(this.name + ": Item tidak valid.");
-        return false;
-    }
-    if (!isAtNPCHome(npc)) {
-        System.out.println("Kamu lagi gak dirumah NPC :(");
-        return false;
-    }
-
-    if (!this.inventory.checkItem(item)) {
-        System.out.println(this.name + ": Anda tidak memiliki " + item.getName() + " di inventory.");
-        return false;
-    }
-
-    int energyCost = 5;
-    if (!consumeEnergy(energyCost)) { // cek energy player cukup gak
-        System.out.println(this.name + " terlalu lelah untuk memberikan hadiah.");
-        return false;
-    }
-
-    // heartpoints di handle npc
-    npc.receiveGift(this, item);
-    
-    System.out.println(this.name + " memberikan " + item.getName() + " kepada " + npc.getName() + ".");
-    
-    return true;
-}
-
-// Helper method untuk mengecek apakah player berada di rumah NPC
-private boolean isAtNPCHome(NPC npc) {
-    String npcName = npc.getName().toLowerCase();
-    String currentLocation = this.location.getName().toLowerCase();
-    
-    // Sesuai spesifikasi, setiap NPC punya rumah kecuali Emily yang tinggal di Store
-    if (npcName.equals("emily")) {
-        return currentLocation.contains("store");
-    } else {
-        // Untuk NPC lain, cek apakah lokasi mengandung nama NPC
-        return currentLocation.contains(npcName) || 
-               currentLocation.contains(npcName + "'s house") ||
-               currentLocation.contains("rumah " + npcName);
-    }
-}
-
     public String showTime() {
-        return String.format("Musim: %s, Hari: %d, Waktu: %s (%s)", getCurrentSeason(), getCurrentDay(), getFormattedGameTime(), getTimeState());
+        farm.showTime();
     }
 
     public String showLocation() {
-        return String.format("Lokasi: %s, Koordinat: %s", this.location.getSurroundingTiles(), this.location.getCoordinates());
+        // return String.format("Lokasi: %s, Koordinat: %s", this.location.getSurroundingTiles(), this.location.getCoordinates());
     }
 
-    private boolean isNearShippingBin() {
-    // shipping bin ada di farm dan berjarak 1 petak dari rumah
-        if (!(this.location instanceof FarmLocation)) {
-            return false;
-        }
-        return true;
-    }
-
-    public boolean sell(Item item, int quantity, ShippingBin shippingBin, Farm farm) {
+    public boolean selling(Item item, int quantity, ShippingBin shippingBin, Farm farm) {
         if (item == null) {
             System.out.println(this.name + ": Item tidak valid untuk dijual.");
             return false;
@@ -988,7 +939,7 @@ private boolean isAtNPCHome(NPC npc) {
         System.out.println(this.name + " memasukkan " + quantity + " " + item.getName() + " ke shipping bin.");
 
         // stop time buat selling
-        farm.getTime().stopTime();
+        time.stopTime();
 
         // pake shipping bin buat nambahin item yg udh valid dijual
         shippingBin.addItem(item, quantity, this);
@@ -1000,12 +951,20 @@ private boolean isAtNPCHome(NPC npc) {
         hasUsedShippingBinToday = true;
 
         // waktu +15 menit abis jualan
-        farm.getTime().addTime(SELLING_TIME_COST_MINUTES);
+        time.addTime(15);
         
         // Lanjutkan waktu
-        farm.getTime().resumeTime();
+        time.resumeTime();
 
         System.out.println("Waktu game bertambah " + SELLING_TIME_COST_MINUTES + " menit karena proses penjualan.");
+        return true;
+    }
+
+    private boolean isNearShippingBin() {
+    // shipping bin ada di farm dan berjarak 1 petak dari rumah
+        if (!(this.location instanceof FarmLocation)) {
+            return false;
+        }
         return true;
     }
 }
