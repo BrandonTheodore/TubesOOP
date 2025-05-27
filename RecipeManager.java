@@ -3,6 +3,7 @@ import java.util.*;
 public class RecipeManager {
     private static List<Recipe> allRecipes = new ArrayList<>();
     private static FoodManager foodm = new FoodManager();
+    private static FishManager fishm = new FishManager();
 
     public static void initRecipes() {
         Recipe baguette = new Recipe("Baguette");
@@ -115,4 +116,14 @@ public class RecipeManager {
         }
         return null;
     }
+
+    public static Item findItemByName(String name) {
+        Item item;
+
+        item = fishm.getFishByName(name);
+        if (item != null) return item;
+
+        return null; // gak ketemu
+    }
+
 }
