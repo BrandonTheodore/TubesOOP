@@ -15,9 +15,13 @@ public class ShippingBin {
      */
     public void addItem(Item item, int quantity, Player player) {
         // mungkin checkItem ngecheck itemnya ada di inventory sekaligus quantitynya
-        if(item == null || quantity <= 0 || player.getInventory().checkItem(item)){
-            System.out.println("Invalid item or quantity");
+        if(item == null || player.getInventory().checkItemByName(item.getName())){
+            System.out.println("Invalid item name!");
             return;
+        } else if (quantity <= 0){
+            System.out.println("Quantity must be more than 0!");
+        } else if (player.getInventory().checkItemAndQuantity(item, quantity)) {
+            System.out.println("You don't have enough " + item.getName() + " in your inventory!");
         }
 
         if (this.bin.containsKey(item)) {
@@ -51,13 +55,6 @@ public class ShippingBin {
 
         // waktu uangnya dikirim abis tidur
         player.addGold(totalSellPrice);
-        clearBin();
-    }
-
-    /**
-     * clear bin
-     */
-    public void clearBin(){
         this.bin.clear();
     }
 
