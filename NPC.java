@@ -116,24 +116,25 @@ public class NPC {
         if (heartPoints < 150) {
             System.out.println("Maaf, lamaranmu ditolak karena heartpointsmu belum cukup");
             player.consumeEnergy(20);
-            time.addTime(60); // tambah waktu 1 jam udah di player
+            time.addTime(60); // tambah waktu 1 jam
             return;
         }
 
         this.relationshipStatus = RelationshipStatus.FIANCE;
         player.consumeEnergy(10);
-        // tambah waktu 1 jam
+        time.addTime(60); // tambah waktu 1 jam
         System.out.println("Selamat! Lamaranmu diterima.");
+        Farm farm = player.getFarm();
         proposalTime = farm.getDayCount();
     }
 
     public void marryPlayer(Player player) {
-
+        Farm farm = player.getFarm();
         marryTime = farm.getDayCount();
         if (relationshipStatus != RelationshipStatus.FIANCE) {
             System.out.println("Kamu belum bertunangan dengan " + name);
         }
-        else if (marryTime- proposalTime < 1) {
+        else if (marryTime - proposalTime < 1) {
             System.out.println("Tunggu minimal 1 hari setelah tunangan untuk menikah ya.");
             return;
         } else {

@@ -10,9 +10,9 @@ public class Inventory {
     }
 
     // berarti ini harusnya ada di player
-    // public Map<Item, Integer> getInventory() {
-    //     return items;
-    // }
+    public Map<Item, Integer> getInventory() {
+        return items;
+    }
 
     public void setItems(Map<Item, Integer> items) {
         this.items = items;
