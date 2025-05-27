@@ -36,7 +36,7 @@ public class Player {
     private static final int CHAT_ENERGY_COST = 3;
 
 
-    public Player(String name, Gender gender, Farm farm, Time time) {
+    public Player(String name, Gender gender, Farm farm, Time time, Location location) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Nama pemain tidak boleh kosong.");
         }
@@ -54,9 +54,9 @@ public class Player {
         this.partner = null;
         this.gold = 0;
         this.inventory = new Inventory();
-        this.location = new Location("Home");
         this.time = time; 
         this.hasUsedShippingBinToday = false;
+        this.location = location;
     }
 
     public String getName() {
@@ -784,7 +784,7 @@ public class Player {
     }
 
     public String showLocation() {
-        // return String.format("Lokasi: %s, Koordinat: %s", this.location.getSurroundingTiles(), this.location.getCoordinates());
+        return this.name + " berada di " + location.toString() + ".";
     }
 
     public boolean selling(Item item, int quantity, ShippingBin shippingBin, Farm farm) {
@@ -840,7 +840,7 @@ public class Player {
         // Lanjutkan waktu
         time.resumeTime();
 
-        System.out.println("Waktu game bertambah " + SELLING_TIME_COST_MINUTES + " menit karena proses penjualan.");
+        System.out.println("Waktu game bertambah 15 menit karena proses penjualan.");
         return true;
     }
 
