@@ -579,11 +579,8 @@ public class Player {
             }
         }
 
-        // --- Kurangi Bahan Bakar (Misc item) ---
         this.inventory.removeItem(fuelMiscItem, 1);
 
-
-        // --- Mulai Tugas Memasak Pasif ---
         CookingTask cookingTask = new CookingTask(this, recipe, recipe.getResultFood(), fuelMiscItem, COOKING_DURATION_MINUTES);
         gameManager.addCookingTask(cookingTask);
 
