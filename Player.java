@@ -1,4 +1,3 @@
-import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.InputMismatchException;
@@ -18,8 +17,9 @@ public class Player {
     private Inventory inventory;
     private Location location;
     private FoodManager foodManager;
-    private Equipment equippedtool;
+    private Equipment equippedTool;
     private boolean hasUsedShippingBinToday;
+    private Time time;
 
     private static final int MAX_ENERGY = 100;
     private static final int MIN_ENERGY_BEFORE_SLEEP = -20;
