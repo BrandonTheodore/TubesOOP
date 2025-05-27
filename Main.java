@@ -100,8 +100,21 @@ public class Main {
             switch (input) {
                 case "w", "a", "s", "d" -> {
                     boolean moving = gameMap.move(input);
+                    boolean outOfBounds = gameMap.isOutOfBound(input);
                     if(!moving){
-                        message = "Cannot move through buildings / out of bounds!";
+                        if(outOfBounds){
+                            System.out.print("Do you want to exit the farm? (y/n) ");
+                            input = scanner.nextLine().toLowerCase();
+                            if(input.equals("y")){
+                                gameMap.worldMap();
+                                message = "Home sweet Farm!";
+                                break;
+                            } else {
+                                message = "Out of bounds!";
+                            }
+                        } else {
+                            message = "Cannot move through objects";
+                        }
                     }
                 }
                 case "t" -> {
@@ -196,7 +209,7 @@ public class Main {
                     case Map.HOUSE -> System.out.print(ANSI_RED + "h " + ANSI_RESET);
                     case Map.BIN -> System.out.print(ANSI_YELLOW + "s " + ANSI_RESET);
                     case Map.POND -> System.out.print(ANSI_BLUE + "o " + ANSI_RESET);
-                    case Map.WORLDMAP -> System.out.print(ANSI_CYAN + "w " + ANSI_RESET);
+                    case Map.WITHERED -> System.out.print(ANSI_CYAN + "w " + ANSI_RESET);
                     case Map.PLAYER -> System.out.print(ANSI_RED + "P " + ANSI_RESET);
                     default -> System.out.print(map[row][col] + " ");
                 }
@@ -216,7 +229,7 @@ public class Main {
             case Map.HOUSE -> "House";
             case Map.BIN -> "Storage Bin";
             case Map.POND -> "Pond";
-            case Map.WORLDMAP -> "World Map";
+            case Map.WITHERED -> "Withered Plant";
             case Map.PLAYER -> "Player";
             case '\0' -> "Edge of Map";
             default -> "Unknown";
