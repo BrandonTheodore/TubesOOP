@@ -1,5 +1,6 @@
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 
 public class Store {
     private Map<Item, Integer> itemsForSale;
@@ -8,6 +9,14 @@ public class Store {
     public Store() {
         itemsForSale = new HashMap<>();
         recipesForSale = new HashMap<>();
+
+        List<Item> itemList = Item.itemDijual();
+        for (Item item : itemList) {
+            // Misalnya kita kasih harga default 50, atau bisa item.getPrice()
+            itemsForSale.put(item, item.getBuyPrice()); // asumsi ada getPrice()
+        }
+
+        recipesForSale = RecipeManager.recipeYangDijual();
     }
 
     // // Tambahkan item untuk dijual

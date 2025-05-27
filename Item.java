@@ -29,7 +29,7 @@ public abstract class Item {
         return sellPrice;
     }
 
-    public List<Item> ItemDijual(){
+    public static List<Item> itemDijual(){
         List<Item> itemsDijual = new ArrayList<>();
         FishManager fishlist = new FishManager();
         for (Fish fish : fishlist.getAllFish()) {

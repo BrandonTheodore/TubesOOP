@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.Map;
 
 public class RecipeManager {
     private static List<Recipe> allRecipes = new ArrayList<>();
@@ -126,4 +127,14 @@ public class RecipeManager {
         return null; // gak ketemu
     }
 
+    public static Map<Recipe, Integer> recipeYangDijual() {
+        Map<Recipe, Integer> recipesForSale = new HashMap<>();
+        for (Recipe recipe : allRecipes) {
+            String name = recipe.getRecipeName();
+            if (name.equalsIgnoreCase("Fish n’ Chips") || name.equalsIgnoreCase("Fish Sandwich")) {
+                recipesForSale.put(recipe, 70);
+            }
+        }
+        return recipesForSale;
+    }
 }
