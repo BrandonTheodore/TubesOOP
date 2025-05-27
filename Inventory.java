@@ -7,6 +7,7 @@ public class Inventory {
     // konstruktor
     public Inventory() {
         items = new HashMap<>();
+        initStartingItems();
     }
 
     // berarti ini harusnya ada di player
@@ -107,6 +108,21 @@ public class Inventory {
             }
         }
         return false;
+    }
+
+    private void initStartingItems() {
+        // Ambil Parsnips Seeds dari SeedsManager
+        SeedsManager seedsManager = new SeedsManager();
+        Seeds parsnipSeeds = seedsManager.getSeedsByName("Parsnips Seeds");
+        if (parsnipSeeds != null) {
+            addItem(parsnipSeeds, 15);
+        }
+
+        // Tambahkan semua equipment dari EquipmentManager
+        EquipmentManager equipmentManager = new EquipmentManager();
+        for (Equipment equipment : equipmentManager.getAllEquipment()) {
+            addItem(equipment, 1);
+        }
     }
 
     // method untuk menampilkan inventory
