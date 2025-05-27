@@ -15,17 +15,17 @@ public class ShippingBin {
      */
     public void addItem(Item item, int quantity, Player player) {
         // mungkin checkItem ngecheck itemnya ada di inventory sekaligus quantitynya
-        if(item == null || quantity <= 0 || player.inventory.checkItem(item)){
+        if(item == null || quantity <= 0 || player.getInventory().checkItem(item)){
             System.out.println("Invalid item or quantity");
             return;
         }
 
         if (this.bin.containsKey(item)) {
-            player.inventory.removeItem(item, quantity);
+            player.getInventory().removeItem(item, quantity);
             this.bin.put(item, this.bin.get(item) + quantity);
         } else {
             if (this.bin.size() < maxSlot) {
-                player.inventory.removeItem(item, quantity);
+                player.getInventory().removeItem(item, quantity);
                 this.bin.put(item, quantity);
             } else {
                 System.out.println("Bin is full!");
