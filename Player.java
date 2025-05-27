@@ -32,6 +32,7 @@ public class Player {
     private static final int HARVESTING_ENERGY_COST_PER_CROP = 5;
     private static final int FISHING_ENERGY_COST = 5;
     private static final int MARRY_ENERGY_COST = 80;
+    private static final int WATCHING_ENERGY_COST = 5;
     private static final int VISIT_ENERGY_COST = 10;
     private static final int CHAT_ENERGY_COST = 3;
 
@@ -513,9 +514,9 @@ public class Player {
 
         time.stopTime();
 
-        Season currentSeason = time.getCurrentSeason(); //ini apa dibawah2nya juga
-        Weather currentWeather = time.getCurrentWeather();
-        String currentTime = time.getCurrentTime();
+        Season currentSeason = farm.getSeason(); //ini apa dibawah2nya juga
+        Weather currentWeather = farm.gettWeather();
+        farm.showTime();
 
         List<Fish> allPossibleFish = new java.util.ArrayList<>();
         allPossibleFish.add(new Fish("Ikan Mas", 0, Rarity.COMMON,
@@ -566,9 +567,6 @@ public class Player {
                 maxAttempts = 7;
                 maxRandomNumber = 500;
                 break;
-            case UNCOMMON: maxAttempts = 10; maxRandomNumber = 50; break;
-            case RARE: maxAttempts = 8; maxRandomNumber = 200; break;
-            case EPIC: maxAttempts = 7; maxRandomNumber = 400; break;
             default:
                 maxAttempts = 10;
                 maxRandomNumber = 10;
@@ -602,7 +600,7 @@ public class Player {
                 System.out.println("Tebakan Anda terlalu tinggi.");
             }
         }
-        time.addTime(FISHING_TIME_COST_MINUTES); 
+        time.addTime(15); 
         time.resumeTime(); 
 
         if (guessedCorrectly) {
@@ -617,7 +615,8 @@ public class Player {
     }
 
     public boolean propose(NPC npc) {
-        Misc proposalRing = new Misc("Proposal Ring", 1000, 1000, MiscType.PROPOSAL_RING, "A ring for proposal.");
+
+        Misc proposalRing = new Misc("Proposal Ring", 1000, 1000, MiscType.PROPOSAL_RING);
         int quantityOfRing = 1;
 
         System.out.println(this.name + " melamar " + npc.getName() + "!");
@@ -779,7 +778,7 @@ public class Player {
         System.out.println("--------------------");
     }
 
-    public String showTime() {
+    public void showTime() {
         farm.showTime();
     }
 
