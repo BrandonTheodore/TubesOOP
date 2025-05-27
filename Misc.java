@@ -2,7 +2,7 @@ public class Misc extends Item {
     private MiscType type;
     // harga jual harus lebih murah dari harga beli 
 
-    public Misc(String name, int buyPrice, int sellPrice, MiscType type, String description) {
+    public Misc(String name, int buyPrice, int sellPrice, MiscType type) {
         super(name, buyPrice, sellPrice, ItemCategory.MISC);
         this.type = type;
     }
