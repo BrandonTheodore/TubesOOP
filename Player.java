@@ -182,7 +182,7 @@ public class Player {
 
 
     //ACTIONS!!!!!
-    public void till(int numTiles) {
+    public void till() {
         int energyCost = TILL_ENERGY_COST_PER_TILE;
         if (consumeEnergy(energyCost)) { 
             time.addTime(5);
@@ -192,45 +192,12 @@ public class Player {
         }
     }
 
-    public boolean recoverLand(int numTiles) {
-        if (this.equippedTool == null || this.equippedTool.getType() != EquipmentType.PICKAXE) {
-            System.out.println("Gunakan Pickaxe untuk memulihkan tanah!");
-            return false;
-        }
-        if (!(this.location instanceof FarmLocation)) {
-            System.out.println("Pergi ke Farm terlebih dahulu untuk memulihkan tanah!");
-            return false;
-        }
-
-        FarmLocation currentFarm = (FarmLocation) this.location;
-        int actualTilesRecovered = 0;
-
-        for (int i = 0; i < numTiles; i++) {
-            Tile tileToRecover = currentFarm.findTileByStatus(TileStatus.SOIL);
-            if (tileToRecover == null) {
-                System.out.println(this.name + ": Tidak ada lagi soil yang bisa dipulihkan di sini.");
-                break;
-            }
-
-            int energyCost = RECOVER_ENERGY_COST_PER_TILE;
-            if (consumeEnergy(energyCost)) {
-                System.out.println(this.name + " memulihkan tile " + tileToRecover.getCoordinates() + " dengan Pickaxe.");
-                tileToRecover.setStatus(TileStatus.LAND); 
-                tileToRecover.setPlantedCrop(null);
-                actualTilesRecovered++;
-                time.addTime(5);
-            } else {
-                System.out.println(this.name + " terlalu lelah untuk memulihkan lebih banyak tanah.");
-                break;
-            }
-        }
-
-        if (actualTilesRecovered > 0) {
-            System.out.println(this.name + " berhasil memulihkan " + actualTilesRecovered + " tile tanah.");
-            return true;
+    public void recoverLand() {
+        int energyCost = RECOVER_ENERGY_COST_PER_TILE;
+        if (consumeEnergy(energyCost)) {
+            time.addTime(5);
         } else {
-            System.out.println(this.name + " tidak berhasil memulihkan tanah satupun.");
-            return false;
+            System.out.println(this.name + " terlalu lelah untuk memulihkan lebih banyak tanah.");
         }
     }
 
