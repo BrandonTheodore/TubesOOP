@@ -572,17 +572,10 @@ public class Player {
     }
 
     public boolean watching() {
-        if (!this.location.getName().equalsIgnoreCase("Home")) {
-            System.out.println(this.name + ": Anda hanya dapat menonton televisi di Rumah.");
-            return false;
-        }
-    
         if (consumeEnergy(WATCHING_ENERGY_COST)) {
             System.out.println(this.name + " menonton TV.");
-
             time.addTime(15);
             System.out.println("Anda telah menonton selama 15 menit.");
-
             return true;
         } else {
             System.out.println(this.name + " terlalu lelah untuk menonton TV.");
@@ -590,32 +583,13 @@ public class Player {
         }
     }
 
-    public boolean visiting(Location newLocation) {
-        if (newLocation == null) {
-            System.out.println(this.name + ": Lokasi yang ingin dikunjungi tidak valid.");
-            return false;
-        }
-
-        if (newLocation instanceof FarmLocation) {
-            System.out.println(this.name + ": Anda tidak bisa menggunakan 'visit' untuk pergi ke Farm.");
-            return false;
-        }
-        
-        if (this.location.equals(newLocation)) {
-            System.out.println(this.name + " sudah berada di " + newLocation.getName() + ".");
-        }
-
+    public void visiting(String location) {
         if (consumeEnergy(VISIT_ENERGY_COST)) {
-            System.out.println(this.name + " mengunjungi " + newLocation.getName() + " dari " + this.location.getName() + ".");
-            this.setLocation(newLocation);
-
+            System.out.println(this.name + " mengunjungi " + location);
             time.addTime(15);
             System.out.println("Jalan 15 menit nih, cape juga.");
-
-            return true;
         } else {
-            System.out.println(this.name + " kecapean buat ke " + newLocation.getName() + "skip dulu dah.");
-            return false;
+            System.out.println(this.name + " kecapean buat ke " + location + " skip dulu dah.");
         }
     }
 
@@ -636,16 +610,10 @@ public class Player {
             System.out.println(this.name + ": Item tidak valid.");
             return false;
         }
-        if (!isAtNPCHome(npc)) {
-            System.out.println("Kamu lagi gak dirumah NPC :(");
-            return false;
-        }
-
         if (!this.inventory.checkItem(item)) {
             System.out.println(this.name + ": Anda tidak memiliki " + item.getName() + " di inventory.");
             return false;
         }
-
         int energyCost = 5;
         if (!consumeEnergy(energyCost)) { // cek energy player cukup gak
             System.out.println(this.name + " terlalu lelah untuk memberikan hadiah.");
@@ -659,27 +627,6 @@ public class Player {
         return true;
     }
 
-    public void moving(Direction direction) {
-        System.out.println(this.name + " mencoba bergerak ke arah: " + direction + ".");
-
-        String oldLocName = this.location.getName(); 
-        String newLocName = oldLocName;
-
-        if (direction == Direction.UP) {
-            newLocName = "North of " + oldLocName;
-        } else if (direction == Direction.DOWN) {
-            newLocName = "South of " + oldLocName;
-        } else if (direction == Direction.LEFT) {
-            newLocName = "West of " + oldLocName;
-        } else if (direction == Direction.RIGHT) {
-            newLocName = "East of " + oldLocName;
-        } else {
-            System.out.println("Arah tidak valid.");
-            return;
-        }
-        this.location.setName(newLocName); 
-        System.out.println(this.name + " pindah ke " + this.location.getName() + ".");
-    }
 
     public void openInventory() {
         System.out.println("\n--- Inventory " + this.name + " ---");
@@ -693,70 +640,5 @@ public class Player {
 
     public String showLocation() {
         return this.name + " berada di " + location.toString() + ".";
-    }
-
-    public boolean selling(Item item, int quantity, ShippingBin shippingBin, Farm farm) {
-        if (item == null) {
-            System.out.println(this.name + ": Item tidak valid untuk dijual.");
-            return false;
-        }
-    
-        if (quantity <= 0) {
-            System.out.println(this.name + ": Jumlah item yang dijual harus lebih dari 0.");
-            return false;
-        }
-
-        if (!isNearShippingBin()) {
-            System.out.println(this.name + ": Anda harus berada di dekat shipping bin untuk menjual item.");
-            return false;
-        }
-
-        if (hasUsedShippingBinToday) {
-            System.out.println(this.name + ": Anda sudah menjual item hari ini. Tunggu sampai esok hari.");
-            return false;
-        }
-
-
-        if (!this.inventory.checkItemAndQuantity(item, quantity)) {
-            System.out.println(this.name + ": Anda tidak memiliki cukup " + item.getName() + " di inventory.");
-            return false;
-        }
-
-        // harus punya sell price > 0
-        if (item.getSellPrice() <= 0) {
-            System.out.println(this.name + ": " + item.getName() + " tidak bisa dijual.");
-            return false;
-        }
-
-        System.out.println(this.name + " memasukkan " + quantity + " " + item.getName() + " ke shipping bin.");
-
-        // stop time buat selling
-        time.stopTime();
-
-        // pake shipping bin buat nambahin item yg udh valid dijual
-        shippingBin.addItem(item, quantity, this);
-
-        System.out.println("Item berhasil dimasukkan ke shipping bin. Item akan dijual pada malam hari.");
-        System.out.println("Perkiraan pendapatan: " + (item.getSellPrice() * quantity) + " gold.");
-
-        // ubah boolean penggunaan shippingbin jadi true
-        hasUsedShippingBinToday = true;
-
-        // waktu +15 menit abis jualan
-        time.addTime(15);
-        
-        // Lanjutkan waktu
-        time.resumeTime();
-
-        System.out.println("Waktu game bertambah 15 menit karena proses penjualan.");
-        return true;
-    }
-
-    private boolean isNearShippingBin() {
-    // shipping bin ada di farm dan berjarak 1 petak dari rumah
-        if (!(this.location instanceof FarmLocation)) {
-            return false;
-        }
-        return true;
     }
 }
