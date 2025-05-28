@@ -7,8 +7,9 @@ public class Map {
     static final char TILLABLE = '.';
     static final char TILLED = 't';
     static final char PLANTED = 'v';
+    static final char WATERED = 'w';
     static final char HARVESTABLE = 'c';
-    static final char WITHERED = 'w';
+    static final char WITHERED = 'x';
     static final char HOUSE = 'h';
     static final char BIN = 's';
     static final char POND = 'o';
@@ -337,6 +338,10 @@ public class Map {
     }
 
     public boolean isWithered(){
+        return this.currentTile == 'x';
+    }
+
+    public boolean isWatered(){
         return this.currentTile == 'w';
     }
 

@@ -70,8 +70,9 @@ public class Main {
             System.out.println("- WASD: Move player");
             System.out.println("- T: Till soil");
             System.out.println("- R: Recover land");
-            System.out.println("- P: Plant crops");
-            System.out.println("- HR: Harvest crops");
+            System.out.println("- P: Plant crop");
+            System.out.println("- Wa: Water crop");
+            System.out.println("- HR: Harvest crop");
             System.out.println("- Q: Quit game");
 
             // if the player is near a structure, show additional controls
@@ -145,6 +146,17 @@ public class Main {
                         message = "You planted seeds!";
                     } else {
                         message = "Cannot plant here! Till the soil first.";
+                    }
+                }
+                case "wa" -> {
+                    // water crops, kayaknya perlu thread?
+                    if(gameMap.isWatered()){
+                        message = "The plant is already watered";
+                    } else if(gameMap.isPlanted()){
+                        gameMap.setCurrentTile('w');
+                        message = "You watered the crop!";
+                    } else {
+                        message = "There's no plant to water";
                     }
                 }
                 case "hr" -> {
@@ -315,8 +327,9 @@ public class Main {
                     case Map.HOUSE -> System.out.print(ANSI_RED + "h " + ANSI_RESET);
                     case Map.BIN -> System.out.print(ANSI_YELLOW + "s " + ANSI_RESET);
                     case Map.POND -> System.out.print(ANSI_BLUE + "o " + ANSI_RESET);
+                    case Map.WATERED -> System.out.print(ANSI_BLUE + "x " + ANSI_RESET);
                     case Map.HARVESTABLE -> System.out.println(ANSI_CYAN + "c " + ANSI_RESET);
-                    case Map.WITHERED -> System.out.print("w ");
+                    case Map.WITHERED -> System.out.print("x ");
                     case Map.PLAYER -> System.out.print("P ");
                     default -> System.out.print(map[row][col] + " ");
                 }
@@ -336,6 +349,7 @@ public class Main {
             case Map.HOUSE -> "House";
             case Map.BIN -> "Storage Bin";
             case Map.POND -> "Pond";
+            case Map.WATERED -> "Watered";
             case Map.HARVESTABLE -> "Harvestable";
             case Map.WITHERED -> "Withered Plant";
             case Map.PLAYER -> "Player";
