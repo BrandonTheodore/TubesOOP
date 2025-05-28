@@ -386,7 +386,7 @@ public class Player {
                     return false;
                 }
                 
-                Item harvestedCrop = plantedSeed.getCropType();
+                Item harvestedCrop = plantedSeed.getResultCrop();
                 this.inventory.addItem(harvestedCrop, 1);
                 System.out.println("Hasil panen " + harvestedCrop.getName() + " ditambahkan ke inventory.");
                 time.addTime(5);
@@ -433,9 +433,9 @@ public class Player {
 
         if (this.inventory.removeItem(foodToEat, quantityToConsume)) {
             addEnergy(energyGain);
+            time.addTime(5);
             System.out.println(this.name + " makan " + foodToEat.getName() + " dan mendapatkan " + energyGain + " energi.");
             return true;
-            time.addTime(5);
         }
         return false;
     }
@@ -515,7 +515,7 @@ public class Player {
         time.stopTime();
 
         Season currentSeason = farm.getSeason(); //ini apa dibawah2nya juga
-        Weather currentWeather = farm.gettWeather();
+        Weather currentWeather = farm.getWeather();
         farm.showTime();
 
         List<Fish> allPossibleFish = new java.util.ArrayList<>();
@@ -539,7 +539,7 @@ public class Player {
 
         if (catchableFish.isEmpty()) {
             System.out.println(this.name + " memancing... tapi tidak ada ikan yang bisa ditangkap di kondisi ini. Anda hanya mendapatkan sampah!");
-            this.inventory.addItem(new Item("Sampah", 1, 1, ItemCategory.OTHER), 1);
+            this.inventory.addItem(new Item("Sampah", 1, 1, ItemCategory.MISC), 1);
             time.addTime(15); 
             time.resumeTime();
             return true;
