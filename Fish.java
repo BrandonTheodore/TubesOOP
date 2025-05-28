@@ -5,12 +5,12 @@ import java.time.LocalTime;
 public class Fish extends Item {
     private List<Season> seasons;
     private List<Weather> weathers;
-    private List<LocationFish> locations;
+    private List<Location> locations;
     private LocalTime timeStart;
     private LocalTime timeEnd;
     private Rarity rarity;
    
-    public Fish(String name, int sellPrice, Rarity rarity, List<Season> seasons, List<Weather> weathers, List<LocationFish> locations, LocalTime timeStart, LocalTime timeEnd) {
+    public Fish(String name, int sellPrice, Rarity rarity, List<Season> seasons, List<Weather> weathers, List<Location> locations, LocalTime timeStart, LocalTime timeEnd) {
         super(name, 0, calculateSellPrice(rarity, seasons.size(), calculateHourRange(timeStart, timeEnd), weathers.size(), locations.size()), ItemCategory.FISH);
         this.rarity = rarity;
         this.seasons = seasons;
@@ -28,7 +28,7 @@ public class Fish extends Item {
         return weathers;
     }
    
-    public List<LocationFish> getLocations() {
+    public List<Location> getLocations() {
         return locations;
     }
    
@@ -45,7 +45,7 @@ public class Fish extends Item {
     }
 
    
-    public boolean isCatchable(Season currentSeason, Weather currentWeather, LocationFish currentLocation, LocalTime currentTime) {
+    public boolean isCatchable(Season currentSeason, Weather currentWeather, Location currentLocation, LocalTime currentTime) {
         // season weather location hrs match
         boolean seasonMatch = seasons.contains(currentSeason);
         boolean weatherMatch = weathers.contains(currentWeather);
