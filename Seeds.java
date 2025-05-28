@@ -1,7 +1,9 @@
 public class Seeds extends Item {
     private Season season;
     private int daysToHarvest; 
-    private Crops resultCrop; 
+    private Crops resultCrop;
+    private int lastWatered;
+    private String status; 
     
     public Seeds(String name, int buyPrice, Season season, int daysToHarvest, Crops resultCrop) {
         // harga jual seed adalah setengah harga belinya
@@ -9,12 +11,29 @@ public class Seeds extends Item {
         this.season = season;
         this.daysToHarvest = daysToHarvest;
         this.resultCrop = resultCrop;
+        this.lastWatered = 0;
+        this.status = "Fresh";
+    }
+
+    public String getStatus(){
+        return status;
+    }
+
+    public void setStatus(String status){
+        this.status = status;
     }
     
     public Season getSeason() {
         return season;
     }
+
+    public int getLastWatered(){
+        return lastWatered;
+    }
     
+    public void setLastWatered(int water){
+        this.lastWatered = water;
+    }
     public int getDaysToHarvest() {
         return daysToHarvest;
     }

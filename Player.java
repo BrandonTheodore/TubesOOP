@@ -1,10 +1,7 @@
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -22,6 +19,10 @@ public class Player {
     private boolean hasUsedShippingBinToday;
     private Time time;
 
+    private ShippingBin shippingBin;
+    private Seeds[][] seedMap;
+    private boolean[][] wateredMap;
+
     private static final int MAX_ENERGY = 100;
     private static final int MIN_ENERGY_BEFORE_SLEEP = -20;
     private static final double ENERGY_PENALTY_THRESHOLD_PERCENTAGE = 0.10;
@@ -38,15 +39,6 @@ public class Player {
 
 
     public Player(String name, Gender gender, Farm farm, Time time, Location location) {
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Nama pemain tidak boleh kosong.");
-        }
-        if (gender == null) {
-            throw new IllegalArgumentException("Jenis kelamin pemain tidak boleh null.");
-        }
-        if (farm.getName() == null || farm.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Nama farm tidak boleh kosong.");
-        }
 
         this.name = name;
         this.gender = gender;
@@ -55,9 +47,19 @@ public class Player {
         this.partner = null;
         this.gold = 0;
         this.inventory = new Inventory();
-        this.time = time; 
+        this.time = time;
+
         this.hasUsedShippingBinToday = false;
         this.location = location;
+        this.shippingBin = new ShippingBin(time);
+
+        this.seedMap = new Seeds[32][32];
+
+        this.wateredMap = new boolean[32][32];
+    }
+
+    public ShippingBin getShippingBin(){
+        return shippingBin;
     }
 
     public String getName() {
@@ -201,146 +203,81 @@ public class Player {
         }
     }
 
-    public boolean plant(Seeds seedToPlant, int numSeeds) {
-        if (seedToPlant == null) {
-            System.out.println(this.name + ": Tidak ada seed untuk ditanam.");
-            return false;
-        }
-        if (seedToPlant.getCategory() != ItemCategory.SEED) {
-            System.out.println(this.name + ": " + seedToPlant.getName() + " bukan kategori seed.");
-            return false;
-        }
-        if (!(this.location instanceof FarmLocation)) {
-            System.out.println(this.name + ": Anda hanya bisa menanam di Farm!");
-            return false;
-        }
-        if (!this.inventory.checkItemAndQuantity(seedToPlant, numSeeds)) {
-            System.out.println(this.name + ": Anda tidak memiliki cukup " + seedToPlant.getName() + " di inventory.");
-            return false;
-        }
-
-        FarmLocation currentFarm = (FarmLocation) this.location;
-        int actualSeedsPlanted = 0;
-
-        for (int i = 0; i < numSeeds; i++) {
-            Tile tileToPlantOn = currentFarm.findTileByStatus(TileStatus.SOIL); // Cari tile berstatus SOIL
-            if (tileToPlantOn == null) {
-                System.out.println(this.name + ": Tidak ada lagi tanah 'soil' yang siap tanam di sini.");
-                break;
-            }
-
-            int energyCost = PLANT_ENERGY_COST_PER_SEED;
-            if (consumeEnergy(energyCost)) {
-                System.out.println(this.name + " menanam " + seedToPlant.getName() + " di tile " + tileToPlantOn.getCoordinates() + ".");
-                tileToPlantOn.setStatus(TileStatus.PLANTED); 
-                tileToPlantOn.setPlantedCrop(seedToPlant);
-                this.inventory.removeItem(seedToPlant, 1);
-                actualSeedsPlanted++;
-                time.addTime(5);
-            } else {
-                System.out.println(this.name + " terlalu lelah untuk menanam lebih banyak seed.");
-                break;
-            }
-        }
-
-        if (actualSeedsPlanted > 0) {
-            System.out.println(this.name + " berhasil menanam " + actualSeedsPlanted + " " + seedToPlant.getName() + ".");
-            return true;
-        } else {
-            System.out.println(this.name + " tidak berhasil menanam seed satupun.");
-            return false;
-        }
-    }
-
-    public boolean watering(int numTiles) {
-        if (this.equippedTool == null || this.equippedTool.getType() != EquipmentType.WATERING_CAN) {
-            System.out.println("Gunakan Watering Can untuk menyiram tanaman!");
-            return false;
-        }
-        if (!(this.location instanceof FarmLocation)) {
-            System.out.println("Pergi ke Farm terlebih dahulu untuk menyiram tanaman!");
-            return false;
-        }
-
-        FarmLocation currentFarm = (FarmLocation) this.location;
-        int actualTilesWatered = 0;
-
-        for (int i = 0; i < numTiles; i++) {
-            Tile tileToWater = currentFarm.findTileByStatus(TileStatus.PLANTED);
-            if (tileToWater == null) {
-                System.out.println(this.name + ": Tidak ada lagi tanah 'planted' yang bisa disiram di sini.");
-                break;
-            }
-
-            int energyCost = WATER_ENERGY_COST_PER_TILE;
-            if (consumeEnergy(energyCost)) {
-                System.out.println(this.name + " menyiram tile " + tileToWater.getCoordinates() + ".");
-                tileToWater.setStatus(TileStatus.WATERED);
-                actualTilesWatered++;
-                time.addTime(5);
-            } else {
-                System.out.println(this.name + " terlalu lelah untuk menyiram lebih banyak tanah.");
-                break;
-            }
-        }
-
-        if (actualTilesWatered > 0) {
-            System.out.println(this.name + " berhasil menyiram " + actualTilesWatered + " tile.");
-            return true;
-        } else {
-            System.out.println(this.name + " tidak berhasil menyiram tanah satupun.");
-            return false;
-        }
-    }
-
-    public boolean harvest(int numCrops) {
-        if (!(this.location instanceof FarmLocation)) {
-            System.out.println("Pergi ke farm untuk memanen!");
-            return false;
-        }
-        FarmLocation currentFarm = (FarmLocation) this.location;
-        int actualCropsHarvested = 0;
-
-        for (int i = 0; i < numCrops; i++) {
-            Tile tileToHarvest = currentFarm.findHarvestableTile();
-            if (tileToHarvest == null) {
-                System.out.println("Tidak ada lagi tanaman yang siap panen di sini.");
-                break;
-            }
-
-            int energyCost = HARVESTING_ENERGY_COST_PER_CROP;
-            if (consumeEnergy(energyCost)) {
-                System.out.println(this.name + " memanen tanaman dari tile " + tileToHarvest.getCoordinates() + ".");
-                
-                // Dapatkan jenis hasil panen dari seed yang ditanam
-                Seeds plantedSeed = tileToHarvest.getPlantedSeed();
-                if (plantedSeed == null) {
-                    System.out.println("Error: Tile seharusnya punya seed tapi tidak ada.");
-                    tileToHarvest.setStatus(TileStatus.SOIL);
-                    return false;
+    public void cropProgress(Seeds seed, Map map){
+        int timer = seed.getDaysToHarvest();
+        int i = 0;
+        while(i < timer){
+            boolean first = true;
+            while(true){
+                LocalTime waktu = time.getCurrentGameTime();
+                if(waktu.isAfter(LocalTime.of(00, 00)) && waktu.isBefore(LocalTime.of(01, 00)) && first){
+                    System.out.println("Day Changed");
+                    int lastWatered = seed.getLastWatered();
+                    lastWatered++;
+                    seed.setLastWatered(lastWatered);
+                    if(lastWatered >= 2){
+                        System.out.println("Plant has withered!");
+                        seed.setStatus("Withered");
+                        map.setCurrentTile('x');
+                    }
+                    first = false;
+                    i++;
                 }
-                
-                Item harvestedCrop = plantedSeed.getResultCrop();
-                this.inventory.addItem(harvestedCrop, 1);
-                System.out.println("Hasil panen " + harvestedCrop.getName() + " ditambahkan ke inventory.");
-                time.addTime(5);
-
-                tileToHarvest.setStatus(TileStatus.SOIL);
-                tileToHarvest.setPlantedSeed(null);
-                actualCropsHarvested++;
-            } else {
-                System.out.println(this.name + " terlalu lelah untuk memanen lebih banyak.");
-                break;
+                if(waktu.isAfter(LocalTime.of(01, 00))){
+                    break;
+                }
             }
         }
+    }
 
-        if (actualCropsHarvested > 0) {
-            System.out.println(this.name + " berhasil memanen " + actualCropsHarvested + " tanaman.");
-            return true;
-        } else {
-            System.out.println(this.name + " tidak berhasil memanen tanaman satupun.");
-            return false;
+    public void plant(int playerX, int playerY, Seeds seed, Map map) {
+        if(!this.inventory.checkItem(seed)){
+            System.out.println("You have no " + seed + " in your inventory!");
+            return;
         }
+
+        if(this.energy < 5){
+            System.out.println("Terlalu lelah untuk melakukan plant");
+            return;
+        }
+
+        this.seedMap[playerY][playerX] = seed;
+        consumeEnergy(5);
+        this.time.addTime(5);
+        this.inventory.removeItem(seed, 1);
+        map.setCurrentTile('l'); 
+        Runnable task = () -> {
+            cropProgress(seed, map);
+        };
+
+        Thread thread = new Thread(task);
+        thread.start();        
+    }
+
+    public void watering(int playerX, int playerY, Seeds seed) {
+        if(this.energy < 5){
+            System.out.println("Terlalu lelah untuk melakukan watering");
+            return;
+        } else {
+            seed.setLastWatered(0);
+        }
+
+        consumeEnergy(5);
+        this.time.addTime(5);
+        wateredMap[playerY][playerX] = true;
+    }
+
+    public void harvest(int playerX, int playerY) {
+        if(this.energy < 5){
+            System.out.println("Terlalu lelah untuk melakukan harvest");
+            return;
+        }
+
+        Seeds seedHarvested = seedMap[playerY][playerX];
+        seedMap[playerY][playerX] = new Seeds(null, 0, null, 0, null);
+        consumeEnergy(5);
+        this.time.addTime(5);
+        this.inventory.addItem(seedHarvested.getResultCrop(), energy);
     }
 
     public boolean eat(Item food) {
