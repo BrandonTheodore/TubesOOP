@@ -1,5 +1,6 @@
 import java.util.Random;
 import java.util.Scanner;
+import java.util.List;
 
 public class Map {
     static final int WIDTH = 32;
@@ -362,7 +363,7 @@ public class Map {
      * masih bingung parameternya apa aja,
      * atau mending taro di player aja biar lebih gampang akses data-datanya
      */
-    public void worldMap(/*Player player, List<NPC> allNPC, Store store*/){
+    public void worldMap(Player player, List<NPC> allNPC, Store store){
         Scanner scanner = new Scanner(System.in);
         String message = "nothing";
         // player.visiting("WORLD MAP");
@@ -519,9 +520,11 @@ public class Map {
                             }
                             case "2" -> {
                                 while(true){
-                                    System.out.println("=== Item List ====");
+                                    // System.out.println("=== Item List ====");
+                                    // store.showItemsForSale();
 
-                                    // print list item dijual + harga
+                                    // System.out.println("=== R List ====");
+                                    store.showItemsForSale();
 
                                     if(message.equals("nothing")){
                                         System.out.println("System Message: ");
@@ -552,39 +555,24 @@ public class Map {
                                 }
                             }
                             case "3" -> {
-                                while(true){
-                                    System.out.println("=== Recipe List ===");
-                                    
-                                    // show recipe list name + price
+                                while (true) {
+                                    store.showRecipesForSale();
+                                    System.out.println("** Ketik 'b' untuk kembali **");
+                                    System.out.print("Nama resep yang ingin dibeli: ");
+                                    String recipeName = scanner.nextLine().toLowerCase();
 
-                                    if(message.equals("nothing")){
-                                        System.out.println("System Message: ");
+                                    if (recipeName.equals("b")) break;
+
+                                    boolean success = store.buyRecipe(player, recipeName);
+
+                                    if (success) {
+                                        System.out.println("Berhasil membeli resep '" + recipeName + "'.");
                                     } else {
-                                        System.out.print("System Message: ");
-                                        System.out.println(message);
-                                    }
-                                    System.out.println("");
-
-                                    System.out.println("** Type 'b' to exit this menu **");
-                                    System.out.println("** Type the correspending number to navigate **");
-
-                                    message = "nothing";
-
-                                    System.out.print("What recipe do you want to buy: ");
-                                    String input3 = scanner.nextLine().toLowerCase();
-
-                                    if(input3.equals("b")){
-                                        break;
-                                    }
-
-                                    if(isInteger(input3)){
-                                        System.out.println("Bought x Recipe!");
-                                    } else {
-                                        message = "Must input a number!";
+                                        System.out.println("Gagal membeli resep. Pastikan nama benar, resep belum dibeli, dan uang cukup.");
                                     }
                                 }
-
                             }
+
                             case "b" -> {
                                 message = "Back from Store menu";
                                 break;

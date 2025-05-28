@@ -37,6 +37,7 @@ public class Store {
             System.out.println(idx + entry.getKey().getName() + " : " + entry.getValue() + " coin");
             idx++;
         }
+        System.out.println("\n");
     }
 
     // Tampilkan daftar resep
@@ -47,6 +48,7 @@ public class Store {
             System.out.println(idx + entry.getKey().getRecipeName() + " : " + entry.getValue() + " coin");
             idx++;
         }
+        System.out.println("\n");
     }
 
     // Beli item
