@@ -137,4 +137,31 @@ public class RecipeManager {
         }
         return recipesForSale;
     }
+
+    public static List<Recipe> getUnlockedRecipes() {
+        List<Recipe> unlocked = new ArrayList<>();
+        for (Recipe recipe : allRecipes) {
+            if (recipe.isUnlocked()) {
+                unlocked.add(recipe);
+            }
+        }
+        return unlocked;
+    }
+
+    public static void printUnlockedRecipes() {
+        List<Recipe> unlockedRecipes = getUnlockedRecipes();
+
+        if (unlockedRecipes.isEmpty()) {
+            System.out.println("Belum ada resep yang terbuka.");
+            return;
+        }
+
+        System.out.println("=== Daftar Resep Terbuka ===");
+        int idx = 1;
+        for (Recipe recipe : unlockedRecipes) {
+            System.out.println(idx + ". " + recipe.getRecipeName());
+            idx++;
+        }
+        System.out.println("\n");
+    }
 }

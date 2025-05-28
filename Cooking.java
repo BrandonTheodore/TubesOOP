@@ -3,27 +3,30 @@ import java.util.Map;
 
 public class Cooking {
     public boolean cook(Player player, String recipeName, Misc fuelMiscItem, RecipeManager recipeManager, Time time) {
+        RecipeManager.printUnlockedRecipes();        
+        
         Recipe recipe = RecipeManager.getRecipeByName(recipeName);
+
         if (recipe == null) {
-            System.out.println(player.getName() + ": Resep '" + recipeName + "' tidak ditemukan.");
+            System.out.println("Resep '" + recipeName + "' tidak ditemukan.");
             return false;
         }
 
         if (!recipe.isUnlocked()) {
-            System.out.println(player.getName() + ": Resep '" + recipeName + "' masih terkunci (" + recipe.getUnlockInfo() + ").");
+            System.out.println("Resep '" + recipeName + "' masih terkunci (" + recipe.getUnlockInfo() + ").");
             return false;
         }
 
         if (fuelMiscItem == null) {
-            System.out.println(player.getName() + ": Bahan bakar tidak valid.");
+            System.out.println("Bahan bakar tidak valid.");
             return false;
         }
 
-        // Cek apakah player ada di rumah atau engga
-        if (!player.location.getName().equalsIgnoreCase("Home")) {
-            System.out.println(player.getName() + ": Anda harus berada di Rumah untuk memasak.");
-            return false;
-        }
+        // // Cek apakah player ada di rumah atau engga
+        // if (!player.location.getName().equalsIgnoreCase("Home")) {
+        //     System.out.println(player.getName() + ": Anda harus berada di Rumah untuk memasak.");
+        //     return false;
+        // }
 
         // Cek fuelnya valid atau engga
         if (fuelMiscItem.getCategory() != ItemCategory.MISC ||

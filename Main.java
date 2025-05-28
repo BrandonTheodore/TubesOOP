@@ -261,7 +261,7 @@ public class Main {
                 }
                 case "h" -> {
                     if(houseNearby){
-                        houseAction();
+                        houseAction(player, time);
                         message = "You exited the house";
                     } else {
                         message = "You are not near a house!";
@@ -352,12 +352,12 @@ public class Main {
         }
     }
 
-    public static void houseAction(/*Player player*/){
+    public static void houseAction(Player player, Time time){
         String message = "nothing";
         String input = "";
 
         while(true){
-            System.out.println("=== House Menu ===");
+            System.out.println("\n=== House Menu ===");
             System.out.println("1. Cooking");
             System.out.println("2. Sleeping");
             System.out.println("3. Watching");
@@ -380,8 +380,31 @@ public class Main {
             
             switch(input){
                 case "1" -> {
-                    message = "You're done cooking";
+                    Cooking cooking = new Cooking();
+                    RecipeManager recipeManager = new RecipeManager();
+                    RecipeManager.initRecipes();
+                    RecipeManager.printUnlockedRecipes();
+                    System.out.print("\nMasukkan nama resep yang ingin dimasak: ");
+                    String recipeName = scanner.nextLine();
+
+                    System.out.print("Gunakan bahan bakar apa? (firewood / coal): ");
+                    String fuelInput = scanner.nextLine().toLowerCase();
+
+                    Misc fuel = null;
+                    for (Item item : player.getInventory().getInventory().keySet()) {
+                        if (item instanceof Misc miscItem) {
+                            if ((fuelInput.equals("firewood") && miscItem.getType() == MiscType.FIREWOOD)
+                            || (fuelInput.equals("coal") && miscItem.getType() == MiscType.COAL)) {
+                                fuel = miscItem;
+                                break;
+                            }
+                        }
+                    }
+
+                    boolean success = cooking.cook(player, recipeName, fuel, recipeManager, time);
+                    message = success ? "Masakan berhasil dimulai!" : "Masakan gagal.";
                 }
+
                 case "2" -> {
                     message = "You slept";
                 }

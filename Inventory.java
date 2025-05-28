@@ -123,6 +123,12 @@ public class Inventory {
         for (Equipment equipment : equipmentManager.getAllEquipment()) {
             addItem(equipment, 1);
         }
+
+        // // Tambahkan bahan bakar awal buat nyoba di main
+        // Misc firewood = new Misc("Firewood", 0, 0, MiscType.FIREWOOD);
+        // Misc coal = new Misc("Coal", 0, 0, MiscType.COAL);
+        // addItem(firewood, 1);
+        // addItem(coal, 1);
     }
 
     // method untuk menampilkan inventory
