@@ -716,6 +716,7 @@ public class Player {
     }
 
     public boolean chatting(NPC npc) {
+        // convo di handle npc
         if (npc == null) {
             System.out.println("NPC tidak valid.");
             return false;
@@ -725,7 +726,7 @@ public class Player {
             System.out.println("Anda hanya dapat mengobrol dengan " + npc.getName() + " di rumahnya (" + (npc.getHomeLocation() != null ? npc.getHomeLocation().getName() : "lokasi tidak diketahui") + "). Anda saat ini di " + this.location.getName() + ".");
             return false;
         }
-        chatWith(this);
+        npc.chatWith(this);
     }
 
     public boolean gifting(NPC npc, Item item) {
