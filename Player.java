@@ -182,46 +182,13 @@ public class Player {
 
 
     //ACTIONS!!!!!
-    public boolean till(int numTiles) {
-        if (this.equippedTool == null || this.equippedTool.getType() != EquipmentType.HOE) {
-            System.out.println("Gunakan HOE untuk mengolah tanah.");
-            return false;
-        }
-        if (!(this.location instanceof FarmLocation)) {
-            System.out.println("Pergi ke farm terlebih dahulu untuk mengolah tanah!");
-            return false;
-        }
-
-        FarmLocation currentFarm = (FarmLocation) this.location;
-        int actualTilesTilled = 0;
-
-        for (int i = 0; i < numTiles; i++) {
-            Tile tileToTill = currentFarm.findUntilledLandTile(); 
-            if (tileToTill == null) {
-                System.out.println(this.name + ": Tidak ada lagi tanah 'land' yang bisa diolah di sini.");
-                break; 
-            }
-
-            int energyCost = TILL_ENERGY_COST_PER_TILE;
-
-            if (consumeEnergy(energyCost)) { 
-                System.out.println(this.name + " mengolah tile " + tileToTill.getCoordinates());
-                tileToTill.setStatus(TileStatus.SOIL);
-                actualTilesTilled++;
-                time.addTime(5);
-
-            } else {
-                System.out.println(this.name + " terlalu lelah untuk mengolah lebih banyak tanah.");
-                break;
-            }
-        }
-
-        if (actualTilesTilled > 0) {
-            System.out.println(this.name + " berhasil mengolah " + actualTilesTilled + " tile tanah.");
-            return true;
-        } else {
-            System.out.println(this.name + " tidak berhasil mengolah tanah satupun.");
-            return false;
+    public void till(int numTiles) {
+        int energyCost = TILL_ENERGY_COST_PER_TILE;
+        if (consumeEnergy(energyCost)) { 
+            time.addTime(5);
+        } 
+        else {
+            System.out.println(this.name + " terlalu lelah untuk mengolah lebih banyak tanah.");
         }
     }
 
