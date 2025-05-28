@@ -563,29 +563,9 @@ public class Player {
             System.out.println(this.name + " terlalu lelah untuk menikah.");
             return false;
         }
-
-        // // --- Validasi Prasyarat Pernikahan ---
-        // if (this.partner == null || !this.partner.equals(npc.getName())) {
-        //     System.out.println(this.name + " tidak bertunangan dengan " + npc.getName() + ".");
-        //     return false;
-        // }
-        // if (npc.getRelationshipStatus() != NPC.RelationshipStatus.FIANCE) {
-        //     System.out.println(this.name + ": " + npc.getName() + " belum berstatus fiance.");
-        //     return false;
-        // }
-        // if (!npc.readyForMarriage()) {
-        //     System.out.println(this.name + ": " + npc.getName() + " belum siap menikah (perlu minimal " + NPC.MIN_DAYS_AS_FIANCE_FOR_MARRIAGE + " hari setelah tunangan). Hari ini adalah hari ke-" + npc.getDaysSinceFiance() + ".");
-        //     return false;
-        // }
-
         System.out.println(this.name + " menikah dengan " + npc.getName() + "!");
         npc.marryPlayer(this); 
         this.setPartner(npc.getName()); 
-
-        // LocalTime skipTimeToNight = LocalTime.of(22, 0);
-        // time.setTime(skipTimeToNight);
-        this.setLocation(new Location("Home")); 
-        // System.out.println(this.name + " dan " + npc.getName() + " menghabiskan waktu bersama. Anda kembali ke " + this.location.getName() + " pada pukul 22.00.");
 
         System.out.println("Selamat, " + this.name + " dan " + npc.getName() + " resmi menikah!");
         return true;
@@ -639,16 +619,10 @@ public class Player {
         }
     }
 
-    public boolean chatting(NPC npc) {
+    public void chatting(NPC npc) {
         // convo di handle npc
         if (npc == null) {
             System.out.println("NPC tidak valid.");
-            return false;
-        }
-
-        if (npc.getHomeLocation() == null || !this.location.equals(npc.getHomeLocation())) {
-            System.out.println("Anda hanya dapat mengobrol dengan " + npc.getName() + " di rumahnya (" + (npc.getHomeLocation() != null ? npc.getHomeLocation().getName() : "lokasi tidak diketahui") + "). Anda saat ini di " + this.location.getName() + ".");
-            return false;
         }
         npc.chatWith(this);
     }
