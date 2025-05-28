@@ -390,7 +390,7 @@ public class Map {
                 case "1" -> {
                     while(true){
                         System.out.println("=== NPC's House ===");
-                        System.out.println("1. Mayor Tedi");
+                        System.out.println("1. Mayor Tadi");
                         System.out.println("2. Caroline");
                         System.out.println("3. Perry");
                         System.out.println("4. Dasco");
@@ -407,28 +407,28 @@ public class Map {
                         }
                         System.out.println("");
 
-                        System.out.print("NPC to visit and chat with: ");
+                        System.out.print("NPC to visit: ");
                         String input2 = scanner.nextLine().toLowerCase();
 
                         switch(input2) {
                             case "1" -> {
-                                System.out.println("Chatting with Mayor Tedi..");
+                                NPCAction("Mayor Tadi");
                                 message = "Done chatting with Mayor Tadi";
                             }
                             case "2" -> {
-                                System.out.println("Chatting with Caroline...");
+                                NPCAction("Caroline");
                                 message = "Done chatting with Caroline";
                             }
                             case "3" -> {
-                                System.out.println("Chatting with Perry...");
+                                NPCAction("Perry");
                                 message = "Done chatting with Perry";
                             }
                             case "4" -> {
-                                System.out.println("Chatting with Dasco...");
+                                NPCAction("Dasco");
                                 message = "Done chatting with Dasco";
                             }
                             case "5" -> {
-                                System.out.println("Chatting with Abigail...");
+                                NPCAction("Abigail");
                                 message = "Done chatting with Abigail";
                             }
                             case "b" -> {
@@ -492,7 +492,7 @@ public class Map {
                 case "3" -> {
                     while(true){
                         System.out.println("=== Store ===");
-                        System.out.println("1. Visit and Chat with Emily");
+                        System.out.println("1. Visit Emily");
                         System.out.println("2. Buy Item");
                         System.out.println("3. Buy Recipe");
                         System.out.println("** Type 'b' to go to the previous section **");
@@ -514,8 +514,8 @@ public class Map {
 
                         switch(input2){
                             case "1" -> {
-                                System.out.println("Chatting with Emily...");
-                                message = "Done chatting with Emily";
+                                NPCAction("Emily");
+                                message = "Done meeting with Emily";
                             }
                             case "2" -> {
                                 while(true){
@@ -573,14 +573,14 @@ public class Map {
                                     System.out.print("What recipe do you want to buy: ");
                                     String input3 = scanner.nextLine().toLowerCase();
 
+                                    if(input3.equals("b")){
+                                        break;
+                                    }
+
                                     if(isInteger(input3)){
                                         System.out.println("Bought x Recipe!");
                                     } else {
                                         message = "Must input a number!";
-                                    }
-
-                                    if(input3.equals("b")){
-                                        break;
                                     }
                                 }
 
@@ -609,6 +609,59 @@ public class Map {
             if(input.equals("back")){
                 scanner.close();
                 break;
+            }
+        }
+    }
+
+    public void NPCAction(String npcName /*NPC npc, Player player*/){
+        Scanner scanner = new Scanner(System.in);
+        String message = "nothing";
+        
+        while(true){
+            if(npcName.equals("Emily")){
+                System.out.println("=== " + npcName + "'s Store ===");
+            } else {
+                System.out.println("=== " + npcName + "'s House ===");
+            }
+            System.out.println("1. Chatting");
+            System.out.println("2. Gifting");
+            System.out.println("3. Propose");
+            System.out.println("4. Marry");
+
+            System.out.println("");
+            if(message.equals("nothing")){
+                System.out.println("System Message: ");
+            } else {
+                System.out.print("System Message: ");
+                System.out.println(message);
+            }
+            System.out.println("");
+
+            System.out.println("** Type 'b' to exit this menu **");
+            System.out.println("** Type the correspending number to navigate **");
+
+            message = "nothing";
+
+            System.out.print("Action to do: ");
+            String input = scanner.nextLine().toLowerCase();
+        
+            switch(input){
+                case "1" -> {
+                    message = "You have chat with " + npcName + "!";
+                }
+                case "2" -> {
+                    message = "You have gifted " + npcName + " an item!";
+                }
+                case "3" -> {
+                    message = "You have proposed " + npcName +"!";
+                }
+                case "4" -> {
+                    message = "You are now married with " + npcName + "!";
+                }
+                case "b" -> {
+                    return;
+                }
+                default -> message = "Action is not valid!";
             }
         }
     }
