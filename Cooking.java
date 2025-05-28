@@ -90,7 +90,7 @@ public class Cooking {
         int foodQuantity = (fuelMiscItem.getType() == MiscType.COAL) ? 2 : 1;
         player.getInventory().addItem(recipe.getFood(), foodQuantity);
 
-        System.out.println(player.getName() + ": Memasak '" + recipeName + "' selesai! Kamu dapat " + foodQuantity + "x " + recipe.getResultFood().getName() + ".");
+        System.out.println(player.getName() + ": Memasak '" + recipeName + "' selesai! Kamu dapat " + foodQuantity + "x " + recipe.getFood().getName() + ".");
         System.out.println("Kamu bisa melakukan aktivitas lain sekarang.");
         return true;
     }
