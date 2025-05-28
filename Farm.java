@@ -3,7 +3,6 @@ import java.util.Random;
 
 public class Farm {
     private String name;
-    private Player player;
     private Map farmMap;
     private Time time;
     private Day day;
@@ -12,9 +11,8 @@ public class Farm {
     private int dayCount;
     private int rainyDay;
 
-    public Farm(String farm, Player player){
+    public Farm(String farm){
         this.name = farm;
-        this.player = player;
         this.farmMap = new Map();
         this.time = new Time();
         this.day = Day.MONDAY;
@@ -26,10 +24,6 @@ public class Farm {
 
     public String getName(){
         return name;
-    }
-
-    public Player getPlayer(){
-        return player;
     }
 
     public Map getfarmMap(){

@@ -8,6 +8,7 @@
 // }
 
 import java.lang.*;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -26,7 +27,58 @@ public class Main {
     static Scanner scanner = new Scanner(System.in);
     
     public static void main(String[] args) throws InterruptedException {
-        Map gameMap = new Map();
+        System.out.println("Do you want to play the game? (y/n) ");
+        String inp = scanner.nextLine().toLowerCase();
+        if(inp.equals("n")){
+            System.out.println("bye");
+            return;
+        }
+
+        System.out.println("Input your name (1 try only): ");
+        String inputName = scanner.nextLine();
+
+        Gender gender;
+
+        while (true) {
+            System.out.println("Input your gender (m/f): ");
+            String inputGender = scanner.nextLine().toLowerCase();
+            if(inputGender.equals("m")){
+                // init player male
+                gender = Gender.MALE;
+                break;
+            } else if(inputGender.equals("f")){
+                // init player female 
+                gender = Gender.FEMALE;
+                break;
+            } else {
+                System.out.println("Gender must be Male(m)/Female(f)");
+            }
+        }
+
+        System.out.println("Input your farm name: ");
+        String inputFarmName = scanner.nextLine();
+
+        Farm farm = new Farm(inputFarmName);
+        Time time = new Time();
+
+        Player player = new Player(inputName, gender, farm, time, Location.Farm);
+
+        CropsManager cropsManager = new CropsManager();
+        EquipmentManager equipmentManager = new EquipmentManager();
+        FishManager fishManager = new FishManager();
+        FoodManager foodManager = new FoodManager();
+        MiscManager miscManager = new MiscManager();
+        RecipeManager recipeManager = new RecipeManager();
+        SeedsManager seedsManager = new SeedsManager();
+        NPCManager npcManager = new NPCManager();
+
+        System.out.println("");
+        System.out.println("Generating " + player.getName() + "'s game, please wait...");
+        Thread.sleep(7000);
+
+        List<String> allSeedName = seedsManager.getAllSeedsNames();
+
+        Map gameMap = player.getFarm().getfarmMap();
         
         // Generate the initial map
         try {
@@ -123,6 +175,9 @@ public class Main {
                 case "t" -> {
                     // Till soil if possible
                     if (gameMap.isTillable()) {
+
+                        player.till();
+
                         gameMap.setCurrentTile('t');
                         message = "You tilled the soil!";
                     } else {
@@ -132,6 +187,9 @@ public class Main {
                 case "r" -> {
                     // recover land
                     if(gameMap.isTilled()){
+
+                        player.recoverLand();
+                        
                         gameMap.setCurrentTile('.');
                         message = "You recovered the land!";
                     } else if (gameMap.isPlanted() || gameMap.isHarvestReady()){
@@ -143,8 +201,32 @@ public class Main {
                 case "p" -> {
                     // Plant on tilled soil
                     if (gameMap.isTilled()) {
-                        gameMap.setCurrentTile('v');
-                        message = "You planted seeds!";
+                        while(true){
+                            System.out.println("** Press 'b' to get back **");
+                            System.out.print("Seed to plant (Match Case): ");
+                            boolean seedFound = false;
+                            String inputSeed = scanner.nextLine();
+
+                            if(inputSeed.equals("b")){
+                                break;
+                            }
+
+                            for(String seed : allSeedName){
+                                if(inputSeed.equals(seed)){
+                                    seedFound = true;
+                                    break;
+                                }
+                            }
+
+                            if(seedFound){
+                                player.plant(gameMap.getPlayerX(), gameMap.getPlayerY(), seedsManager.getSeedsByName(inputSeed), gameMap);
+                                message = "You planted seeds!";
+                                break;
+                            } else {
+                                System.out.println("Seed not found!");
+                            }
+                        }
+                        message = "";
                     } else {
                         message = "Cannot plant here! Till the soil first.";
                     }
@@ -162,7 +244,8 @@ public class Main {
                 }
                 case "hr" -> {
                     if(gameMap.isHarvestReady()){
-                        gameMap.setCurrentTile('.');
+                        player.harvest(gameMap.getPlayerX(), gameMap.getPlayerY());
+                        // gameMap.setCurrentTile('.');
                         message = "You harvested the crops!";
                     } else if (gameMap.isPlanted()) {
                         message = "Crop is not ready for harvest";
@@ -186,6 +269,7 @@ public class Main {
                 }
                 case "f" -> {
                     if(pondNearby){
+                        player.fishing();
                         System.out.println("Fishing in a Pond..");
                         message = "You got a fish/trash from the pond";
                     } else {
