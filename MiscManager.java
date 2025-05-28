@@ -15,4 +15,13 @@ public class MiscManager {
     public List<Misc> getAllMiscs() {
         return new ArrayList<>(allMiscs); // return copy dari array allMiscs
     }
+
+    public Misc getMiscByName(String name) {
+        for (Misc misc : allMiscs) {
+            if (misc.getName().equalsIgnoreCase(name)) {
+                return misc;
+            }
+        }
+        return null;
+    }
 }

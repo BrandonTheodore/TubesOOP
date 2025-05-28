@@ -1,7 +1,6 @@
 import java.util.*;
 import java.util.Map;
 
-// di player inisiasi RecipeManager treus taro di param 
 public class Cooking {
     public boolean cook(Player player, String recipeName, Misc fuelMiscItem, RecipeManager recipeManager, Time time) {
         Recipe recipe = RecipeManager.getRecipeByName(recipeName);
@@ -20,38 +19,36 @@ public class Cooking {
             return false;
         }
 
-        // Cek lokasi: Harus di "Home"
+        // Lokasi harus Home
         if (!player.location.getName().equalsIgnoreCase("Home")) {
             System.out.println(player.getName() + ": Anda harus berada di Rumah untuk memasak.");
             return false;
         }
-        // if (HAS_STOVE) {
-        //     if (player.equippedTool == null || player.equippedTool.getType() != EquipmentType.STOVE) {
-        //         System.out.println(player.getName() + ": Anda harus memiliki Stove yang di-equip untuk memasak.");
-        //         return false;
-        //     }
-        // }
 
-        // --- Cek Bahan Bakar ---
-        if (fuelMiscItem.getCategory() != ItemCategory.MISC || (fuelMiscItem.getType() != MiscType.FIREWOOD && fuelMiscItem.getType() != MiscType.COAL)) {
+        // Cek fuel valid
+        if (fuelMiscItem.getCategory() != ItemCategory.MISC ||
+            (fuelMiscItem.getType() != MiscType.FIREWOOD && fuelMiscItem.getType() != MiscType.COAL)) {
             System.out.println(player.getName() + ": " + fuelMiscItem.getName() + " bukan bahan bakar yang valid (harus Firewood atau Coal).");
             return false;
         }
+
+        // Cek fuel ada
         if (!player.getInventory().checkItemAndQuantity(fuelMiscItem, 1)) {
             System.out.println(player.getName() + ": Anda tidak memiliki cukup " + fuelMiscItem.getName() + " di inventory.");
             return false;
         }
 
-        // --- Consume Energi Awal ---
-        if (player.getEnergy() < (-10)) {
-             System.out.println(player.getName() + ": Energi tidak cukup (" + player.getEnergy() + ") untuk memulai memasak.");
-             return false;
+        // Cek energi
+        if (player.getEnergy() < 10) {
+            System.out.println(player.getName() + ": Energi tidak cukup (" + player.getEnergy() + ") untuk memulai memasak.");
+            return false;
         }
 
         player.setEnergy(player.getEnergy() - 10);
         System.out.println(player.getName() + ": Memulai memasak '" + recipeName + "'. Energi berkurang 10. Sisa energi: " + player.getEnergy() + ".");
-        time.addTime(60); 
+        time.addTime(60);
 
+        // Cek dan buang bahan-bahan
         for (Map.Entry<String, Integer> entry : ingredients.entrySet()) {
             String name = entry.getKey();
             int quantity = entry.getValue();
@@ -86,13 +83,15 @@ public class Cooking {
             }
         }
 
+        // Buang bahan bakar
         player.getInventory().removeItem(fuelMiscItem, 1);
 
-        // CookingTask cookingTask = new CookingTask(player, recipe, recipe.getResultFood(), fuelMiscItem, COOKING_DURATION_MINUTES);
-        // gameManager.addCookingTask(cookingTask);
+        // 💡 Tambahkan makanan hasil sesuai fuel
+        int foodQuantity = (fuelMiscItem.getType() == MiscType.COAL) ? 2 : 1;
+        player.getInventory().addItem(recipe.getFood(), foodQuantity);
 
-        System.out.println(player.getName() + ": Memasak '" + recipeName + "' telah dimulai secara pasif. Akan selesai dalam 1 jam game.");
-        System.out.println("Anda dapat melakukan aktivitas lain sekarang.");
+        System.out.println(player.getName() + ": Memasak '" + recipeName + "' selesai! Kamu dapat " + foodQuantity + "x " + recipe.getResultFood().getName() + ".");
+        System.out.println("Kamu bisa melakukan aktivitas lain sekarang.");
         return true;
     }
 }

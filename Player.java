@@ -386,7 +386,7 @@ public class Player {
                     return false;
                 }
                 
-                Item harvestedCrop = plantedSeed.getCropType();
+                Item harvestedCrop = plantedSeed.getResultCrop();
                 this.inventory.addItem(harvestedCrop, 1);
                 System.out.println("Hasil panen " + harvestedCrop.getName() + " ditambahkan ke inventory.");
                 time.addTime(5);
@@ -433,9 +433,9 @@ public class Player {
 
         if (this.inventory.removeItem(foodToEat, quantityToConsume)) {
             addEnergy(energyGain);
+            time.addTime(5);
             System.out.println(this.name + " makan " + foodToEat.getName() + " dan mendapatkan " + energyGain + " energi.");
             return true;
-            time.addTime(5);
         }
         return false;
     }
@@ -515,7 +515,7 @@ public class Player {
         time.stopTime();
 
         Season currentSeason = farm.getSeason(); //ini apa dibawah2nya juga
-        Weather currentWeather = farm.gettWeather();
+        Weather currentWeather = farm.getWeather();
         farm.showTime();
 
         List<Fish> allPossibleFish = new java.util.ArrayList<>();
@@ -539,7 +539,7 @@ public class Player {
 
         if (catchableFish.isEmpty()) {
             System.out.println(this.name + " memancing... tapi tidak ada ikan yang bisa ditangkap di kondisi ini. Anda hanya mendapatkan sampah!");
-            this.inventory.addItem(new Item("Sampah", 1, 1, ItemCategory.OTHER), 1);
+            this.inventory.addItem(new Misc("Sampah", 0, 0, MiscType.OTHER),1);
             time.addTime(15); 
             time.resumeTime();
             return true;
@@ -614,13 +614,23 @@ public class Player {
         }
     }
 
-    public boolean propose(NPC npc) {
-
-        Misc proposalRing = new Misc("Proposal Ring", 1000, 1000, MiscType.PROPOSAL_RING);
-        int quantityOfRing = 1;
-
+    public void propose(NPC npc) {
         System.out.println(this.name + " melamar " + npc.getName() + "!");
-
+        
+        // Ambil proposal ring dari MiscManager
+        MiscManager miscManager = new MiscManager();
+        Misc proposalRing = miscManager.getMiscByName("proposal ring");
+        
+        if (proposalRing == null) {
+            System.out.println("Error: Proposal Ring tidak ditemukan di system.");
+            return;
+        }
+        
+        if (!this.inventory.checkItemByName("proposal ring")) {
+            System.out.println(this.name + " tidak memiliki Proposal Ring di inventory.");
+            return;
+        }
+        
         npc.receiveProposal(this);
     }
 
@@ -706,6 +716,7 @@ public class Player {
     }
 
     public boolean chatting(NPC npc) {
+        // convo di handle npc
         if (npc == null) {
             System.out.println("NPC tidak valid.");
             return false;
@@ -715,7 +726,7 @@ public class Player {
             System.out.println("Anda hanya dapat mengobrol dengan " + npc.getName() + " di rumahnya (" + (npc.getHomeLocation() != null ? npc.getHomeLocation().getName() : "lokasi tidak diketahui") + "). Anda saat ini di " + this.location.getName() + ".");
             return false;
         }
-        chatWith(this);
+        npc.chatWith(this);
     }
 
     public boolean gifting(NPC npc, Item item) {
