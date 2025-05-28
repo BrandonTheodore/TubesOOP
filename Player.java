@@ -1,4 +1,5 @@
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -518,26 +519,16 @@ public class Player {
         Weather currentWeather = farm.getWeather();
         farm.showTime();
 
-        List<Fish> allPossibleFish = new java.util.ArrayList<>();
-        allPossibleFish.add(new Fish("Ikan Mas", 0, Rarity.COMMON,
-            Arrays.asList(Season.SPRING, Season.SUMMER), Arrays.asList(Weather.SUNNY, Weather.CLOUDY), Arrays.asList(LocationFish.POND, LocationFish.RIVER), "06:00", "18:00"));
-        allPossibleFish.add(new Fish("Ikan Lele", 0, Rarity.REGULAR,
-            Arrays.asList(Season.SPRING, Season.SUMMER, Season.AUTUMN), Arrays.asList(Weather.RAINY, Weather.CLOUDY), Arrays.asList(LocationFish.RIVER, LocationFish.LAKE), "18:00", "02:00"));
-        allPossibleFish.add(new Fish("Ikan Tuna", 0, Rarity.RARE,
-            Arrays.asList(Season.SUMMER, Season.AUTUMN), Arrays.asList(Weather.SUNNY), Arrays.asList(LocationFish.OCEAN), "09:00", "17:00"));
-        allPossibleFish.add(new Fish("Ikan Salmon", 0, Rarity.EPIC,
-            Arrays.asList(Season.AUTUMN), Arrays.asList(Weather.SUNNY, Weather.RAINY), Arrays.asList(LocationFish.RIVER), "08:00", "16:00"));
-        allPossibleFish.add(new Fish("Legendary Fish", 0, Rarity.LEGENDARY,
-            Arrays.asList(Season.WINTER), Arrays.asList(Weather.SNOWY), Arrays.asList(LocationFish.LAKE), "00:00", "23:59"));
-
-        List<Fish> catchableFish = new java.util.ArrayList<>();
-        for (Fish f : allPossibleFish) {
-            if (f.isCatchable(currentSeason, currentWeather, currentLocationFish, currentTime)) {
-                catchableFish.add(f);
+        FishManager fishies = new FishManager();
+        List<Fish> allFishies = fishies.getAllFish();
+        List<Fish> catchableFishies = new ArrayList<>();
+        for (Fish f : allFishies) {
+            if (f.isCatchable(currentSeason, currentWeather, currentLocationFish, time.getCurrentGameTime())) {
+                catchableFishies.add(f);
             }
         }
 
-        if (catchableFish.isEmpty()) {
+        if (catchableFishies.isEmpty()) {
             System.out.println(this.name + " memancing... tapi tidak ada ikan yang bisa ditangkap di kondisi ini. Anda hanya mendapatkan sampah!");
             this.inventory.addItem(new Misc("Sampah", 0, 0, MiscType.OTHER),1);
             time.addTime(15); 
@@ -546,7 +537,7 @@ public class Player {
         }
 
         Random rand = new Random();
-        Fish caughtFish = catchableFish.get(rand.nextInt(catchableFish.size())); // Pilih ikan secara acak
+        Fish caughtFish = catchableFishies.get(rand.nextInt(catchableFishies.size())); // Pilih ikan secara acak
 
         System.out.println("Anda merasakan tarikan kuat! Ini mungkin " + caughtFish.getName() + " (" + caughtFish.getFishRarity() + ")!");
 
@@ -606,7 +597,7 @@ public class Player {
         if (guessedCorrectly) {
             this.inventory.addItem(caughtFish, 1);
             System.out.println(this.name + " berhasil menangkap " + caughtFish.getName() + " (" + caughtFish.getFishRarity() + ")!");
-            System.out.println("Harga jual: " + caughtFish.getValue() + " gold.");
+            System.out.println("Harga jual: " + caughtFish.getSellPrice() + " gold.");
             return true;
         } else {
             System.out.println("Anda gagal menebak angka. Ikan " + caughtFish.getName() + " berhasil lolos!");
