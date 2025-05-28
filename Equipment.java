@@ -21,6 +21,7 @@ public class Equipment extends Item {
         isEquipped = equipped;
     }
 
+    @Override
     public void useItem(Player player, Item item) {
         if (player != null) {
             switch(type) {

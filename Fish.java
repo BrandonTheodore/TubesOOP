@@ -88,6 +88,7 @@ public class Fish extends Item {
         return Math.max(hourRange, 1);
     }
    
+    @Override
     public void useItem(Player player, Item item) {
         if (player != null) {
             Inventory inventory = player.getInventory();

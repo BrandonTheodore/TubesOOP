@@ -10,6 +10,7 @@ public class Food extends Item {
         return energyValue;
     }
 
+    @Override
     public void useItem(Player player, Item item) {
         if (player != null) {
             Inventory inventory = player.getInventory();
