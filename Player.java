@@ -539,7 +539,7 @@ public class Player {
 
         if (catchableFish.isEmpty()) {
             System.out.println(this.name + " memancing... tapi tidak ada ikan yang bisa ditangkap di kondisi ini. Anda hanya mendapatkan sampah!");
-            this.inventory.addItem(new Item("Sampah", 1, 1, ItemCategory.MISC), 1);
+            this.inventory.addItem(new Misc("Sampah", 0, 0, MiscType.OTHER),1);
             time.addTime(15); 
             time.resumeTime();
             return true;
@@ -614,13 +614,23 @@ public class Player {
         }
     }
 
-    public boolean propose(NPC npc) {
-
-        Misc proposalRing = new Misc("Proposal Ring", 1000, 1000, MiscType.PROPOSAL_RING);
-        int quantityOfRing = 1;
-
+    public void propose(NPC npc) {
         System.out.println(this.name + " melamar " + npc.getName() + "!");
-
+        
+        // Ambil proposal ring dari MiscManager
+        MiscManager miscManager = new MiscManager();
+        Misc proposalRing = miscManager.getMiscByName("proposal ring");
+        
+        if (proposalRing == null) {
+            System.out.println("Error: Proposal Ring tidak ditemukan di system.");
+            return;
+        }
+        
+        if (!this.inventory.checkItemByName("proposal ring")) {
+            System.out.println(this.name + " tidak memiliki Proposal Ring di inventory.");
+            return;
+        }
+        
         npc.receiveProposal(this);
     }
 
