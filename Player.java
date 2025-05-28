@@ -35,7 +35,6 @@ public class Player {
     private static final int MARRY_ENERGY_COST = 80;
     private static final int WATCHING_ENERGY_COST = 5;
     private static final int VISIT_ENERGY_COST = 10;
-    private static final int CHAT_ENERGY_COST = 3;
 
 
     public Player(String name, Gender gender, Farm farm, Time time, Location location) {
