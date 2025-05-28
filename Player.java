@@ -411,36 +411,7 @@ public class Player {
     public boolean fishing() {
         System.out.println(this.name + " mulai memancing...");
 
-        // --- 1. Validasi Lokasi Memancing ---
-        LocationFish currentLocationFish = null;
-        boolean isValidFishingLocation = false;
-
-        // Cek jika di FarmLocation dan dekat Pond (jarak 1 tile dari Pond)
-        if (this.location instanceof FarmLocation) {
-            FarmLocation currentFarm = (FarmLocation) this.location;
-            currentLocationFish = LocationFish.POND;
-            isValidFishingLocation = true;
-            System.out.println("Memancing di Pond (di dalam Farm).");
-        } else if (this.location.getName().equalsIgnoreCase("Mountain Lake") ||
-                   this.location.getName().equalsIgnoreCase("Forest River") ||
-                   this.location.getName().equalsIgnoreCase("Ocean")) {
-            if (this.location.getName().equalsIgnoreCase("Mountain Lake")) {
-                currentLocationFish = LocationFish.LAKE;
-            } else if (this.location.getName().equalsIgnoreCase("Forest River")) {
-                currentLocationFish = LocationFish.RIVER;
-            } else if (this.location.getName().equalsIgnoreCase("Ocean")) {
-                currentLocationFish = LocationFish.OCEAN;
-            }
-            isValidFishingLocation = true;
-            System.out.println("Memancing di " + this.location.getName() + ".");
-        }
-
-        if (!isValidFishingLocation || currentLocationFish == null) {
-            System.out.println(this.name + ": Anda tidak berada di lokasi memancing yang valid.");
-            return false;
-        }
-
-        // --- 2. Konsumsi Energi dan Hentikan Waktu ---
+        // Konsumsi Energi dan Hentikan Waktu ---
         if (!consumeEnergy(FISHING_ENERGY_COST)) {
             System.out.println(this.name + " terlalu lelah untuk memancing.");
             return false; 
@@ -456,7 +427,7 @@ public class Player {
         List<Fish> allFishies = fishies.getAllFish();
         List<Fish> catchableFishies = new ArrayList<>();
         for (Fish f : allFishies) {
-            if (f.isCatchable(currentSeason, currentWeather, currentLocationFish, time.getCurrentGameTime())) {
+            if (f.isCatchable(currentSeason, currentWeather, this.getLocation(), time.getCurrentGameTime())) {
                 catchableFishies.add(f);
             }
         }
@@ -524,6 +495,7 @@ public class Player {
                 System.out.println("Tebakan Anda terlalu tinggi.");
             }
         }
+        scanner.close();
         time.addTime(15); 
         time.resumeTime(); 
 
