@@ -406,10 +406,13 @@ public class Main {
                 }
 
                 case "2" -> {
-                    message = "You slept";
+                    player.sleep();
+                    message = "Kamu tidur dan energi kamu di-reset sesuai kondisi.";
                 }
+
                 case "3" -> {
-                    message = "You watched blablalba";
+                    player.watching();
+                    message = "You watched a movie!";
                 }
                 case "b" -> {
                     return;
