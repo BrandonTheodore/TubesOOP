@@ -182,19 +182,19 @@ public class Map {
         boolean walkable = false;
         boolean bound = isOutOfBound(input);
         if(input.equals("w") && !bound){
-            if(this.map[this.playerY - 1][this.playerX] == TILLABLE || this.map[this.playerY - 1][this.playerX] == TILLED || this.map[this.playerY - 1][this.playerX] == PLANTED){
+            if(this.map[this.playerY - 1][this.playerX] == TILLABLE || this.map[this.playerY - 1][this.playerX] == TILLED || this.map[this.playerY - 1][this.playerX] == PLANTED || this.map[this.playerY - 1][this.playerX] == HARVESTABLE || this.map[this.playerY - 1][this.playerX] == WITHERED){
                 walkable = true;
             }
         } else if(input.equals("a") && !bound){
-            if(this.map[this.playerY][this.playerX - 1] == TILLABLE || this.map[this.playerY][this.playerX - 1] == TILLED || this.map[this.playerY][this.playerX - 1] == PLANTED){
+            if(this.map[this.playerY][this.playerX - 1] == TILLABLE || this.map[this.playerY][this.playerX - 1] == TILLED || this.map[this.playerY][this.playerX - 1] == PLANTED || this.map[this.playerY - 1][this.playerX] == HARVESTABLE || this.map[this.playerY - 1][this.playerX] == WITHERED){
                 walkable = true;
             }
         } else if(input.equals("s") && !bound){
-            if(this.map[this.playerY + 1][this.playerX] == TILLABLE || this.map[this.playerY + 1][this.playerX] == TILLED || this.map[this.playerY + 1][this.playerX] == PLANTED){
+            if(this.map[this.playerY + 1][this.playerX] == TILLABLE || this.map[this.playerY + 1][this.playerX] == TILLED || this.map[this.playerY + 1][this.playerX] == PLANTED || this.map[this.playerY - 1][this.playerX] == HARVESTABLE || this.map[this.playerY - 1][this.playerX] == WITHERED){
                 walkable = true;
             }
         } else if(input.equals("d") && !bound){
-            if(this.map[this.playerY][this.playerX + 1] == TILLABLE || this.map[this.playerY][this.playerX + 1] == TILLED || this.map[this.playerY][this.playerX + 1] == PLANTED){
+            if(this.map[this.playerY][this.playerX + 1] == TILLABLE || this.map[this.playerY][this.playerX + 1] == TILLED || this.map[this.playerY][this.playerX + 1] == PLANTED || this.map[this.playerY - 1][this.playerX] == HARVESTABLE || this.map[this.playerY - 1][this.playerX] == WITHERED){
                 walkable = true;
             }
         } 
