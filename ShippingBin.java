@@ -4,24 +4,28 @@ import java.util.Map;
 public class ShippingBin {
     private final int maxSlot = 16;
     private Map<Item, Integer> bin;
+    private Time time;
 
-    public ShippingBin(){
+    public ShippingBin(Time time){
         this.bin = new HashMap<>();
+        this.time = time;
     }
 
     /**
      * add item to bin,
      * if already in bin add quantity
      */
-    public void addItem(Item item, int quantity, Player player) {
+    public void sellItem(Item item, int quantity, Player player) {
         // mungkin checkItem ngecheck itemnya ada di inventory sekaligus quantitynya
         if(item == null || player.getInventory().checkItemByName(item.getName())){
             System.out.println("Invalid item name!");
             return;
         } else if (quantity <= 0){
             System.out.println("Quantity must be more than 0!");
+            return;
         } else if (player.getInventory().checkItemAndQuantity(item, quantity)) {
             System.out.println("You don't have enough " + item.getName() + " in your inventory!");
+            return;
         }
 
         if (this.bin.containsKey(item)) {
@@ -35,13 +39,14 @@ public class ShippingBin {
                 System.out.println("Bin is full!");
             }
         }
+        time.addTime(15);
     }
 
     /**
      * add player gold,
      * clear bin
      */
-    public void sellBin(Player player) {
+    public void getGoldFromSale(Player player) {
         if(this.bin.isEmpty()){
             System.out.println("");
         }
