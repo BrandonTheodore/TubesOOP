@@ -315,8 +315,9 @@ public class Main {
                     case Map.HOUSE -> System.out.print(ANSI_RED + "h " + ANSI_RESET);
                     case Map.BIN -> System.out.print(ANSI_YELLOW + "s " + ANSI_RESET);
                     case Map.POND -> System.out.print(ANSI_BLUE + "o " + ANSI_RESET);
-                    case Map.WITHERED -> System.out.print(ANSI_CYAN + "w " + ANSI_RESET);
-                    case Map.PLAYER -> System.out.print(ANSI_RED + "P " + ANSI_RESET);
+                    case Map.HARVESTABLE -> System.out.println(ANSI_CYAN + "c " + ANSI_RESET);
+                    case Map.WITHERED -> System.out.print("w ");
+                    case Map.PLAYER -> System.out.print("P ");
                     default -> System.out.print(map[row][col] + " ");
                 }
             }
@@ -335,6 +336,7 @@ public class Main {
             case Map.HOUSE -> "House";
             case Map.BIN -> "Storage Bin";
             case Map.POND -> "Pond";
+            case Map.HARVESTABLE -> "Harvestable";
             case Map.WITHERED -> "Withered Plant";
             case Map.PLAYER -> "Player";
             case '\0' -> "Edge of Map";
