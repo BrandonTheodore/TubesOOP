@@ -232,8 +232,8 @@ public class Player {
     }
 
     public void plant(int playerX, int playerY, Seeds seed, Map map) {
-        if(!this.inventory.checkItem(seed)){
-            System.out.println("You have no " + seed + " in your inventory!");
+        if(!this.inventory.checkItemAndQuantity(seed, 1)){
+            System.out.println("You have no " + seed.getName() + " in your inventory!");
             return;
         }
 
@@ -417,6 +417,7 @@ public class Player {
                 guess = scanner.nextInt();
             } catch (InputMismatchException e) {
                 System.out.println("Input tidak valid. Masukkan angka.");
+                scanner.nextLine();
                 attempt--;
                 continue;
             }

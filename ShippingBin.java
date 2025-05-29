@@ -17,13 +17,13 @@ public class ShippingBin {
      */
     public void sellItem(Item item, int quantity, Player player) {
         // mungkin checkItem ngecheck itemnya ada di inventory sekaligus quantitynya
-        if(item == null || player.getInventory().checkItemByName(item.getName())){
+        if(item == null || !player.getInventory().checkItemByName(item.getName())){
             System.out.println("Invalid item name!");
             return;
         } else if (quantity <= 0){
             System.out.println("Quantity must be more than 0!");
             return;
-        } else if (player.getInventory().checkItemAndQuantity(item, quantity)) {
+        } else if (!player.getInventory().checkItemAndQuantity(item, quantity)) {
             System.out.println("You don't have enough " + item.getName() + " in your inventory!");
             return;
         }
@@ -80,7 +80,7 @@ public class ShippingBin {
             Item item = entry.getKey();
             int quantity = entry.getValue();
             totalSellPrice += item.getSellPrice() * quantity;
-            System.out.printf("%-15s %-10s\n", item, quantity);
+            System.out.printf("%-15s %-10s\n", item.getName(), quantity);
         }
 
         System.out.println("Total Sell Price: " + totalSellPrice);

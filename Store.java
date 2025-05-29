@@ -1,6 +1,6 @@
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Store {
     private Map<Item, Integer> itemsForSale;
@@ -129,5 +129,27 @@ public class Store {
         }
         System.out.println("Resep tidak ditemukan.");
         return false;
+    }
+
+    public String getItemNameByIndex(int index){
+        int idx = 1;
+        for (Map.Entry<Item, Integer> entry : itemsForSale.entrySet()) {
+            if(idx == index){
+                return entry.getKey().getName();
+            }
+            idx++;
+        }
+        return null;
+    }
+
+    public String getRecipeNameByIndex(int index){
+        int idx = 1;
+        for (Map.Entry<Recipe, Integer> entry : recipesForSale.entrySet()) {
+            if (idx == index) {
+                return entry.getKey().getRecipeName();
+            }
+            idx++;
+        }
+        return null;
     }
 }
