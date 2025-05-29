@@ -72,6 +72,7 @@ public class Main {
         RecipeManager recipeManager = new RecipeManager();
         SeedsManager seedsManager = new SeedsManager();
         NPCManager npcManager = new NPCManager();
+        npcManager.initNPC(time);
 
         System.out.println("");
         System.out.println("Generating " + player.getName() + "'s game, please wait...");
