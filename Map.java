@@ -522,7 +522,6 @@ public class Map {
                             }
                             case "2" -> {
                                 while(true){
-                                    System.out.println("=== Item List ====");
                                     store.showItemsForSale();
                                     if(message.equals("nothing")){
                                         System.out.println("System Message: ");
