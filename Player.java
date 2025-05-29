@@ -204,9 +204,10 @@ public class Player {
         }
     }
 
-    public void cropProgress(Seeds seed, Map map){
+    public void cropProgress(int playerX, int playerY, Seeds seed, Map map){
         int timer = seed.getDaysToHarvest();
         int i = 0;
+        boolean withered = false;
         while(i < timer){
             boolean first = true;
             while(true){
@@ -215,11 +216,13 @@ public class Player {
                     System.out.println("Day Changed");
                     int lastWatered = seed.getLastWatered();
                     lastWatered++;
+                    map.setTile('l', playerX, playerY);
                     seed.setLastWatered(lastWatered);
                     if(lastWatered >= 2){
                         System.out.println("Plant has withered!");
                         seed.setStatus("Withered");
-                        map.setCurrentTile('x');
+                        withered = true;
+                        map.setTile('x', playerX, playerY);
                     }
                     first = false;
                     i++;
@@ -228,6 +231,9 @@ public class Player {
                     break;
                 }
             }
+        }
+        if(!withered){
+            map.setTile('c', playerX, playerY);
         }
     }
 
@@ -248,14 +254,14 @@ public class Player {
         this.inventory.removeItem(seed, 1);
         map.setCurrentTile('l'); 
         Runnable task = () -> {
-            cropProgress(seed, map);
+            cropProgress(playerX, playerY, seed, map);
         };
 
         Thread thread = new Thread(task);
         thread.start();        
     }
 
-    public void watering(int playerX, int playerY, Seeds seed) {
+    public void watering(int playerX, int playerY, Seeds seed, Map map) {
         if(this.energy < 5){
             System.out.println("Terlalu lelah untuk melakukan watering");
             return;
@@ -266,6 +272,7 @@ public class Player {
         consumeEnergy(5);
         this.time.addTime(5);
         wateredMap[playerY][playerX] = true;
+        map.setCurrentTile('w');
     }
 
     public void harvest(int playerX, int playerY) {
@@ -275,10 +282,10 @@ public class Player {
         }
 
         Seeds seedHarvested = seedMap[playerY][playerX];
-        seedMap[playerY][playerX] = new Seeds(null, 0, null, 0, null);
         consumeEnergy(5);
         this.time.addTime(5);
         this.inventory.addItem(seedHarvested.getResultCrop(), energy);
+        seedMap[playerY][playerX] = new Seeds("temp", 0, Season.FALL, 0, new Crops("temp", 0, 0, 0));
     }
 
     public boolean eat(Item food) {
