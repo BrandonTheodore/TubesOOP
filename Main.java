@@ -63,6 +63,7 @@ public class Main {
         Store store = new Store();
 
         Player player = new Player(inputName, gender, farm, time, Location.FARM);
+        player.addGold(9999);
 
         CropsManager cropsManager = new CropsManager();
         EquipmentManager equipmentManager = new EquipmentManager();
@@ -70,15 +71,18 @@ public class Main {
         FoodManager foodManager = new FoodManager();
         MiscManager miscManager = new MiscManager();
         RecipeManager recipeManager = new RecipeManager();
-        SeedsManager seedsManager = new SeedsManager();
         NPCManager npcManager = new NPCManager();
-        npcManager.initNPC(time);
+        SeedsManager seedsManager = new SeedsManager();
+
+        NPCManager.initNPC(time);
+        // NPCManager npcManager = new NPCManager();
 
         System.out.println("");
         System.out.println("Generating " + player.getName() + "'s game, please wait...");
         Thread.sleep(2000);
 
         List<String> allSeedName = seedsManager.getAllSeedsNames();
+        List<Seeds> allSeeds = seedsManager.getAllSeeds();
         // List<Item> itemToBeSold = itemDijual();
 
         Map gameMap = player.getFarm().getfarmMap();
@@ -129,6 +133,7 @@ public class Main {
             System.out.println("- P: Plant crop");
             System.out.println("- Wa: Water crop");
             System.out.println("- Hr: Harvest crop");
+            System.out.println("- Eat: eat food");
             System.out.println("- Q: Quit game");
             System.out.println("- En: Show energy");
             System.out.println("- Time: Show time");
@@ -182,9 +187,7 @@ public class Main {
                 case "t" -> {
                     // Till soil if possible
                     if (gameMap.isTillable()) {
-
                         player.till();
-
                         gameMap.setCurrentTile('t');
                         message = "You tilled the soil!";
                     } else {
@@ -226,10 +229,10 @@ public class Main {
 
                             if(seedFound){
                                 player.plant(gameMap.getPlayerX(), gameMap.getPlayerY(), seedsManager.getSeedsByName(inputSeed), gameMap);
-                                message = "You planted a seed!";
+                                Thread.sleep(3000);
                                 break;
                             } else {
-                                System.out.println("Seed not found!");
+                                message = "Seed not found!";
                             }
                         }
                     } else {
@@ -277,8 +280,13 @@ public class Main {
                 }
                 case "f" -> {
                     if(pondNearby){
-                        player.fishing(Location.POND);
-                        message = "You're done Fishing in the pond.";
+                        boolean fished = player.fishing(Location.POND);
+                        if(fished){
+                            message = "You're done Fishing in the pond.";
+                        } else {
+                            message = "Fishing failed";
+                        }
+                        Thread.sleep(2000);
                     } else {
                         message = "You are not near a pond!";
                     }
@@ -291,11 +299,21 @@ public class Main {
                         message = "You are not near a shipping bin!";
                     }
                 }
+                case "eat" -> {
+                    System.out.println("Food to eat (Match Case): ");
+                    input = scanner.nextLine();
+                    boolean ate = player.eat(foodManager.getFoodByName(input));
+                    if(ate){
+                        message = "You have eatan a " + input + "!";
+                    } else {
+                        message = input + " is not a food";
+                    }
+                }
                 case "en" -> {
                     message = Integer.toString(player.getEnergy()) + " energy points left";
                 }
                 case "time" -> {
-                    message = player.getTime().getCurrentGameTime().toString();
+                    message = "\nSeason -> " + player.getFarm().getSeason().toString() + "\nWeather -> " + player.getFarm().getWeather().toString() + "\nDay Today -> "+ player.getFarm().getDay().toString() +"\nTime -> " + player.getTime().getCurrentGameTime().toString() + "\nDay Count -> " + player.getFarm().getDayCount() + "\n";
                 }
                 case "inv" -> {
                     player.getInventory().printInventory();

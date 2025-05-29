@@ -445,6 +445,7 @@ public class Map {
                 }
                 case "2" -> {
                     while(true){
+                        boolean fished = false;
                         System.out.println("=== Fishing Locations ===");
                         System.out.println("1. Forest River");
                         System.out.println("2. Mountain Lake");
@@ -466,19 +467,28 @@ public class Map {
 
                         switch(input2){
                             case "1" -> {
-                                player.fishing(Location.FOREST_RIVER);
-                                // System.out.println("Fishing in Forest River...");
-                                message = "Done fishing at Forest River";
+                                fished = player.fishing(Location.FOREST_RIVER);
+                                if(fished){
+                                    message = "Fished at a Forest River";
+                                } else {
+                                    message = "Failed to fish at a Forest River";
+                                }
                             } 
                             case "2" -> {
-                                player.fishing(Location.MOUNTAIN_LAKE);
-                                // System.out.println("FIshing in Mountain Lake...");
-                                message = "Done fishing at Mountain Lake";
+                                fished = player.fishing(Location.MOUNTAIN_LAKE);
+                                if(fished){
+                                    message = "Fished at a Mountain Lake";
+                                } else {
+                                    message = "Failed to fish at a Mountain Lake";
+                                }
                             }
                             case "3" -> {
-                                player.fishing(Location.OCEAN);
-                                // System.out.println("Fishing in the Ocean...");
-                                message = "Done fishing at the Ocean";
+                                fished = player.fishing(Location.OCEAN);
+                                if(fished){
+                                    message = "Fished on the Ocean";
+                                } else {
+                                    message = "Failed to Fish on the Ocean";
+                                }
                             }
                             case "b" -> {
                                 message = "Back from Fishing Locations menu";
@@ -532,6 +542,10 @@ public class Map {
                                     System.out.println("");
 
                                     message = "nothing";
+                                    boolean success = false;
+                                    int inputQ = 0;
+                                    String inputQuantity = "";
+                                    int intItemName = 0;
 
                                     System.out.println("** Type 'b' to exit this menu **");
                                     System.out.println("** Type the correspending number to navigate **");
@@ -544,10 +558,24 @@ public class Map {
                                     }
                                     
                                     if(isInteger(input3)){
+                                        intItemName = Integer.parseInt(input3);
                                         System.out.print("Item Quantity: ");
-                                        String input4 = scanner.nextLine().toLowerCase();
+                                        inputQuantity = scanner.nextLine().toLowerCase();
+                                        if(isInteger(inputQuantity)){
+                                            inputQ = Integer.parseInt(inputQuantity);
+                                            success = store.buyItem(player, store.getItemNameByIndex(intItemName), inputQ);
+                                        } else {
+                                            System.out.println("Quantity must be a number!");
+                                        }
                                     } else {
                                         message = "Must input a number!";
+                                        break;
+                                    }
+
+                                    if(success){
+                                        message = "Berhasil membeli " + store.getItemNameByIndex(intItemName) + " sebanyak " + inputQuantity;
+                                    } else {
+                                        message = "Gagal membeli item dari shop";
                                     }
                                 }
                             }
@@ -563,9 +591,9 @@ public class Map {
                                     boolean success = store.buyRecipe(player, recipeName);
 
                                     if (success) {
-                                        System.out.println("Berhasil membeli resep '" + recipeName + "'.");
+                                        message = "Berhasil membeli resep '" + recipeName + "'.";
                                     } else {
-                                        System.out.println("Gagal membeli resep. Pastikan nama benar, resep belum dibeli, dan uang cukup.");
+                                        message = "Gagal membeli resep. Pastikan nama benar, resep belum dibeli, dan uang cukup.";
                                     }
                                 }
                             }
