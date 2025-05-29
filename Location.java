@@ -1,6 +1,6 @@
 public enum Location {
-    Farm, 
-    WorldMap,
+    FARM, 
+    WORLDMAP,
     MOUNTAIN_LAKE,
     FOREST_RIVER,
     POND,

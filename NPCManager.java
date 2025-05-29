@@ -94,7 +94,7 @@ public class NPCManager {
         return allNPC;
     }
 
-    public static NPC getNPCByName(String name) {
+    public NPC getNPCByName(String name) {
         for (NPC npc : allNPC) {
             if (npc.getName().equalsIgnoreCase(name)) {
                 return npc;

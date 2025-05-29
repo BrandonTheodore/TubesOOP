@@ -330,7 +330,7 @@ public class Map {
     }
 
     public boolean isPlanted(){
-        return this.currentTile == 'v';
+        return this.currentTile == 'l';
     }
 
     public boolean isHarvestReady(){
@@ -362,7 +362,7 @@ public class Map {
      * masih bingung parameternya apa aja,
      * atau mending taro di player aja biar lebih gampang akses data-datanya
      */
-    public void worldMap(/*Player player, List<NPC> allNPC, Store store*/){
+    public void worldMap(Player player, NPCManager npcManager, Store store){
         Scanner scanner = new Scanner(System.in);
         String message = "nothing";
         // player.visiting("WORLD MAP");
@@ -412,23 +412,23 @@ public class Map {
 
                         switch(input2) {
                             case "1" -> {
-                                NPCAction("Mayor Tadi");
+                                NPCAction("Mayor Tadi", npcManager, player);
                                 message = "Done chatting with Mayor Tadi";
                             }
                             case "2" -> {
-                                NPCAction("Caroline");
+                                NPCAction("Caroline", npcManager, player);
                                 message = "Done chatting with Caroline";
                             }
                             case "3" -> {
-                                NPCAction("Perry");
+                                NPCAction("Perry", npcManager, player);
                                 message = "Done chatting with Perry";
                             }
                             case "4" -> {
-                                NPCAction("Dasco");
+                                NPCAction("Dasco", npcManager, player);
                                 message = "Done chatting with Dasco";
                             }
                             case "5" -> {
-                                NPCAction("Abigail");
+                                NPCAction("Abigail", npcManager, player);
                                 message = "Done chatting with Abigail";
                             }
                             case "b" -> {
@@ -514,15 +514,13 @@ public class Map {
 
                         switch(input2){
                             case "1" -> {
-                                NPCAction("Emily");
+                                NPCAction("Emily", npcManager, player);
                                 message = "Done meeting with Emily";
                             }
                             case "2" -> {
                                 while(true){
                                     System.out.println("=== Item List ====");
-
-                                    // print list item dijual + harga
-
+                                    store.showItemsForSale();
                                     if(message.equals("nothing")){
                                         System.out.println("System Message: ");
                                     } else {
@@ -554,9 +552,7 @@ public class Map {
                             case "3" -> {
                                 while(true){
                                     System.out.println("=== Recipe List ===");
-                                    
-                                    // show recipe list name + price
-
+                                    store.showRecipesForSale();
                                     if(message.equals("nothing")){
                                         System.out.println("System Message: ");
                                     } else {
@@ -595,7 +591,6 @@ public class Map {
                         if(input2.equals("b")){
                             break;
                         }
-                        
                     }
                 }
                 case "back" -> {
@@ -607,13 +602,12 @@ public class Map {
             }
 
             if(input.equals("back")){
-                scanner.close();
                 break;
             }
         }
     }
 
-    public void NPCAction(String npcName /*NPC npc, Player player*/){
+    public void NPCAction(String npcName, NPCManager npcManager, Player player){
         Scanner scanner = new Scanner(System.in);
         String message = "nothing";
         
@@ -647,16 +641,22 @@ public class Map {
         
             switch(input){
                 case "1" -> {
-                    message = "You have chat with " + npcName + "!";
+                    player.chatting(npcManager.getNPCByName(npcName));
+                    // message = "You have chat with " + npcName + "!";
                 }
                 case "2" -> {
-                    message = "You have gifted " + npcName + " an item!";
+                    System.out.println("Item to gift (Match Case): ");
+                    String itemToGift = scanner.nextLine();
+                    player.gifting(npcManager.getNPCByName(npcName), player.getInventory().getItemByName(itemToGift));
+                    // message = "You have gifted " + npcName + " an item!";
                 }
                 case "3" -> {
-                    message = "You have proposed " + npcName +"!";
+                    player.propose(npcManager.getNPCByName(npcName));
+                    // message = "You have proposed " + npcName +"!";
                 }
                 case "4" -> {
-                    message = "You are now married with " + npcName + "!";
+                    player.marry(npcManager.getNPCByName(npcName));
+                    // message = "You are now married with " + npcName + "!";
                 }
                 case "b" -> {
                     return;

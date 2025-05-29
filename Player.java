@@ -62,6 +62,10 @@ public class Player {
         return shippingBin;
     }
 
+    public Seeds getSeedFromSeedMap(int playerX, int playerY){
+        return seedMap[playerY][playerX];
+    }
+
     public String getName() {
         return name; 
     }
@@ -92,9 +96,6 @@ public class Player {
     }
 
     public void setGender(Gender gender) {
-        if (gender == null) {
-            throw new IllegalArgumentException("Jenis kelamin tidak boleh null.");
-        }
         this.gender = gender;
     }
 
@@ -345,7 +346,7 @@ public class Player {
 
 
 
-    public boolean fishing() {
+    public boolean fishing(Location location) {
         System.out.println(this.name + " mulai memancing...");
 
         // Konsumsi Energi dan Hentikan Waktu ---
@@ -364,7 +365,7 @@ public class Player {
         List<Fish> allFishies = fishies.getAllFish();
         List<Fish> catchableFishies = new ArrayList<>();
         for (Fish f : allFishies) {
-            if (f.isCatchable(currentSeason, currentWeather, this.getLocation(), time.getCurrentGameTime())) {
+            if (f.isCatchable(currentSeason, currentWeather, location, time.getCurrentGameTime())) {
                 catchableFishies.add(f);
             }
         }

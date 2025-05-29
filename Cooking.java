@@ -1,4 +1,3 @@
-import java.util.*;
 import java.util.Map;
 
 public class Cooking {
@@ -16,12 +15,6 @@ public class Cooking {
 
         if (fuelMiscItem == null) {
             System.out.println(player.getName() + ": Bahan bakar tidak valid.");
-            return false;
-        }
-
-        // Cek apakah player ada di rumah atau engga
-        if (!player.location.getName().equalsIgnoreCase("Home")) {
-            System.out.println(player.getName() + ": Anda harus berada di Rumah untuk memasak.");
             return false;
         }
 
