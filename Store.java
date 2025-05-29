@@ -31,25 +31,38 @@ public class Store {
 
     // Tampilkan daftar item
     public void showItemsForSale() {
-        System.out.println("ITEM FOR SALE:");
+        System.out.println("================== ITEMS FOR SALE ================");
+        System.out.println("--------------------------------------------------");
+        System.out.printf("| %-5s | %-25s | %-10s |\n", "No", "Item", "Harga");
+        System.out.println("--------------------------------------------------");
+
         int idx = 1;
         for (Map.Entry<Item, Integer> entry : itemsForSale.entrySet()) {
-            System.out.println(idx + entry.getKey().getName() + " : " + entry.getValue() + " coin");
+            System.out.printf("| %-5d | %-25s | %-10d |\n", 
+                idx, entry.getKey().getName(), entry.getValue());
             idx++;
         }
-        System.out.println("\n");
+        System.out.println("--------------------------------------------------");
+        System.out.println();
     }
 
     // Tampilkan daftar resep
     public void showRecipesForSale() {
-        System.out.println("RECIPES FOR SALE:");
+        System.out.println("=============== RECIPES FOR SALE =================");
+        System.out.println("--------------------------------------------------");
+        System.out.printf("| %-5s | %-25s | %-10s |\n", "No", "Recipe", "Harga");
+        System.out.println("--------------------------------------------------");
+
         int idx = 1;
         for (Map.Entry<Recipe, Integer> entry : recipesForSale.entrySet()) {
-            System.out.println(idx + entry.getKey().getRecipeName() + " : " + entry.getValue() + " coin");
+            System.out.printf("| %-5d | %-25s | %-10d |\n", 
+                idx, entry.getKey().getRecipeName(), entry.getValue());
             idx++;
         }
-        System.out.println("\n");
+        System.out.println("--------------------------------------------------");
+        System.out.println();
     }
+
 
     // Beli item
     public boolean buyOneItem(Player player, String itemName) {
