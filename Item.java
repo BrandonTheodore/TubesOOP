@@ -31,10 +31,10 @@ public abstract class Item {
 
     public static List<Item> itemDijual(){
         List<Item> itemsDijual = new ArrayList<>();
-        FishManager fishlist = new FishManager();
-        for (Fish fish : fishlist.getAllFish()) {
-            itemsDijual.add(fish);
-        }
+        // FishManager fishlist = new FishManager();
+        // for (Fish fish : fishlist.getAllFish()) {
+        //     itemsDijual.add(fish);
+        // }
         SeedsManager seedlist = new SeedsManager();
         for(Seeds seeds : seedlist.getAllSeeds()){
             itemsDijual.add(seeds);
