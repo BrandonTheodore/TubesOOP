@@ -1,6 +1,5 @@
 import java.util.Random;
 import java.util.Scanner;
-import java.util.List;
 
 public class Map {
     static final int WIDTH = 32;
@@ -467,15 +466,18 @@ public class Map {
 
                         switch(input2){
                             case "1" -> {
-                                System.out.println("Fishing in Forest River...");
+                                player.fishing(Location.FOREST_RIVER);
+                                // System.out.println("Fishing in Forest River...");
                                 message = "Done fishing at Forest River";
                             } 
                             case "2" -> {
-                                System.out.println("FIshing in Mountain Lake...");
+                                player.fishing(Location.MOUNTAIN_LAKE);
+                                // System.out.println("FIshing in Mountain Lake...");
                                 message = "Done fishing at Mountain Lake";
                             }
                             case "3" -> {
-                                System.out.println("Fishing in the Ocean...");
+                                player.fishing(Location.OCEAN);
+                                // System.out.println("Fishing in the Ocean...");
                                 message = "Done fishing at the Ocean";
                             }
                             case "b" -> {

@@ -417,7 +417,6 @@ public class Player {
                 guess = scanner.nextInt();
             } catch (InputMismatchException e) {
                 System.out.println("Input tidak valid. Masukkan angka.");
-                scanner.next(); 
                 attempt--;
                 continue;
             }
@@ -432,7 +431,6 @@ public class Player {
                 System.out.println("Tebakan Anda terlalu tinggi.");
             }
         }
-        scanner.close();
         time.addTime(15); 
         time.resumeTime(); 
 
