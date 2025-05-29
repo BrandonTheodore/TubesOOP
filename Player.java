@@ -313,10 +313,9 @@ public class Player {
     }
 
     public void sleep() {
-        System.out.println(this.name + " tertidur pulas...");
+        System.out.println("\n" + this.name + " tertidur pulas...");
 
         int energyBeforeSleep = this.energy;
-
         if (energyBeforeSleep <= 0) { 
             // Bonus jika energi persis 0 saat tidur
             if (energyBeforeSleep == 0) {

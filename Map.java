@@ -1,5 +1,6 @@
 import java.util.Random;
 import java.util.Scanner;
+import java.util.List;
 
 public class Map {
     static final int WIDTH = 32;
@@ -550,37 +551,24 @@ public class Map {
                                 }
                             }
                             case "3" -> {
-                                while(true){
-                                    System.out.println("=== Recipe List ===");
+                                while (true) {
                                     store.showRecipesForSale();
-                                    if(message.equals("nothing")){
-                                        System.out.println("System Message: ");
+                                    System.out.println("** Ketik 'b' untuk kembali **");
+                                    System.out.print("Nama resep yang ingin dibeli: ");
+                                    String recipeName = scanner.nextLine().toLowerCase();
+
+                                    if (recipeName.equals("b")) break;
+
+                                    boolean success = store.buyRecipe(player, recipeName);
+
+                                    if (success) {
+                                        System.out.println("Berhasil membeli resep '" + recipeName + "'.");
                                     } else {
-                                        System.out.print("System Message: ");
-                                        System.out.println(message);
-                                    }
-                                    System.out.println("");
-
-                                    System.out.println("** Type 'b' to exit this menu **");
-                                    System.out.println("** Type the correspending number to navigate **");
-
-                                    message = "nothing";
-
-                                    System.out.print("What recipe do you want to buy: ");
-                                    String input3 = scanner.nextLine().toLowerCase();
-
-                                    if(input3.equals("b")){
-                                        break;
-                                    }
-
-                                    if(isInteger(input3)){
-                                        System.out.println("Bought x Recipe!");
-                                    } else {
-                                        message = "Must input a number!";
+                                        System.out.println("Gagal membeli resep. Pastikan nama benar, resep belum dibeli, dan uang cukup.");
                                     }
                                 }
-
                             }
+
                             case "b" -> {
                                 message = "Back from Store menu";
                                 break;

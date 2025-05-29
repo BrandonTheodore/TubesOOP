@@ -377,7 +377,7 @@ public class Main {
         String input = "";
 
         while(true){
-            System.out.println("=== House Menu ===");
+            System.out.println("\n=== House Menu ===");
             System.out.println("1. Cooking");
             System.out.println("2. Sleeping");
             System.out.println("3. Watching");
@@ -400,60 +400,39 @@ public class Main {
             
             switch(input){
                 case "1" -> {
-                    while(true){
-                        System.out.println("Recipe to cook: ");
-                        String inputRecipeName = scanner.nextLine();
+                    Cooking cooking = new Cooking();
+                    RecipeManager recipeManager = new RecipeManager();
+                    RecipeManager.initRecipes();
+                    RecipeManager.printUnlockedRecipes();
+                    System.out.print("\nMasukkan nama resep yang ingin dimasak: ");
+                    String recipeName = scanner.nextLine();
 
-                        System.out.println("");
-                        System.out.println("1 coal for 2 portions");
-                        System.out.println("1 firewood for 1 portion");
-                        System.out.println("Fuel for cooking (coal/firewood): ");
-                        String inputFuelUsed = scanner.nextLine().toLowerCase();
+                    System.out.print("Gunakan bahan bakar apa? (firewood / coal): ");
+                    String fuelInput = scanner.nextLine().toLowerCase();
 
-                        cooking.cook(player, inputRecipeName, miscManager.getMiscByName(inputFuelUsed) , recipeManager, player.getTime());
+                    Misc fuel = null;
+                    for (Item item : player.getInventory().getInventory().keySet()) {
+                        if (item instanceof Misc miscItem) {
+                            if ((fuelInput.equals("firewood") && miscItem.getType() == MiscType.FIREWOOD)
+                            || (fuelInput.equals("coal") && miscItem.getType() == MiscType.COAL)) {
+                                fuel = miscItem;
+                                break;
+                            }
+                        }
                     }
-                    // while(true){
-                    //     System.out.println("=== Fuel for Cooking ===");
-                    //     System.out.println("1. Coal");
-                    //     System.out.println("2. Firewood");
-                    //     System.out.println("** Type 'b' to go to the previous section **");
-                    //     System.out.println("** Type the number based on the action! **");
 
-                    //     System.out.println("");
-                    //     if(message.equals("nothing")){
-                    //         System.out.println("System Message: ");
-                    //     } else {
-                    //         System.out.print("System Message: ");
-                    //         System.out.println(message);
-                    //     }
-                    //     System.out.println("");
-                    //     System.out.println("Fuel to use: ");
-                    //     input = scanner.nextLine().toLowerCase();
-
-                    //     if(input.equals("1")){
-                    //         if(!player.getInventory().checkItemAndQuantity(player.getInventory().getItemByName("coal"), 1)){
-                    //             message = "You don't even have 1 coal in your inventory";
-                    //             break;
-                    //         }
-
-                            
-                    //     } else if (input.equals("2")){
-                            
-                    //     } else if (input.equals("b")){
-                    //         message = "You did not cook.";
-                    //         break;
-                    //     } else {
-                    //         message = "Input invalid";
-                    //     }
-                    // }
+                    boolean success = cooking.cook(player, recipeName, fuel, recipeManager, time);
+                    message = success ? "Masakan berhasil dimulai!" : "Masakan gagal.";
                 }
+
                 case "2" -> {
                     player.sleep();
-                    message = "You slept";
+                    message = "Kamu tidur dan energi kamu di-reset sesuai kondisi.";
                 }
+
                 case "3" -> {
                     player.watching();
-                    message = "You watched blablalba";
+                    message = "You watched a movie!";
                 }
                 case "b" -> {
                     return;
