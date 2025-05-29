@@ -6,7 +6,7 @@ public class Map {
     static final int HEIGHT = 32;
     static final char TILLABLE = '.';
     static final char TILLED = 't';
-    static final char PLANTED = 'v';
+    static final char PLANTED = 'l';
     static final char WATERED = 'w';
     static final char HARVESTABLE = 'c';
     static final char WITHERED = 'x';
@@ -183,19 +183,19 @@ public class Map {
         boolean walkable = false;
         boolean bound = isOutOfBound(input);
         if(input.equals("w") && !bound){
-            if(this.map[this.playerY - 1][this.playerX] == TILLABLE || this.map[this.playerY - 1][this.playerX] == TILLED || this.map[this.playerY - 1][this.playerX] == PLANTED || this.map[this.playerY - 1][this.playerX] == HARVESTABLE || this.map[this.playerY - 1][this.playerX] == WITHERED){
+            if(this.map[this.playerY - 1][this.playerX] == TILLABLE || this.map[this.playerY - 1][this.playerX] == TILLED || this.map[this.playerY - 1][this.playerX] == PLANTED || this.map[this.playerY - 1][this.playerX] == WATERED || this.map[this.playerY - 1][this.playerX] == HARVESTABLE || this.map[this.playerY - 1][this.playerX] == WITHERED){
                 walkable = true;
             }
         } else if(input.equals("a") && !bound){
-            if(this.map[this.playerY][this.playerX - 1] == TILLABLE || this.map[this.playerY][this.playerX - 1] == TILLED || this.map[this.playerY][this.playerX - 1] == PLANTED || this.map[this.playerY - 1][this.playerX] == HARVESTABLE || this.map[this.playerY - 1][this.playerX] == WITHERED){
+            if(this.map[this.playerY][this.playerX - 1] == TILLABLE || this.map[this.playerY][this.playerX - 1] == TILLED || this.map[this.playerY][this.playerX - 1] == PLANTED || this.map[this.playerY][this.playerX - 1] == WATERED || this.map[this.playerY][this.playerX - 1] == HARVESTABLE || this.map[this.playerY][this.playerX - 1] == WITHERED){
                 walkable = true;
             }
         } else if(input.equals("s") && !bound){
-            if(this.map[this.playerY + 1][this.playerX] == TILLABLE || this.map[this.playerY + 1][this.playerX] == TILLED || this.map[this.playerY + 1][this.playerX] == PLANTED || this.map[this.playerY - 1][this.playerX] == HARVESTABLE || this.map[this.playerY - 1][this.playerX] == WITHERED){
+            if(this.map[this.playerY + 1][this.playerX] == TILLABLE || this.map[this.playerY + 1][this.playerX] == TILLED || this.map[this.playerY + 1][this.playerX] == PLANTED || this.map[this.playerY + 1][this.playerX] == WATERED || this.map[this.playerY + 1][this.playerX] == HARVESTABLE || this.map[this.playerY + 1][this.playerX] == WITHERED){
                 walkable = true;
             }
         } else if(input.equals("d") && !bound){
-            if(this.map[this.playerY][this.playerX + 1] == TILLABLE || this.map[this.playerY][this.playerX + 1] == TILLED || this.map[this.playerY][this.playerX + 1] == PLANTED || this.map[this.playerY - 1][this.playerX] == HARVESTABLE || this.map[this.playerY - 1][this.playerX] == WITHERED){
+            if(this.map[this.playerY][this.playerX + 1] == TILLABLE || this.map[this.playerY][this.playerX + 1] == TILLED || this.map[this.playerY][this.playerX + 1] == PLANTED || this.map[this.playerY][this.playerX + 1] == WATERED || this.map[this.playerY][this.playerX + 1] == HARVESTABLE || this.map[this.playerY][this.playerX + 1] == WITHERED){
                 walkable = true;
             }
         } 

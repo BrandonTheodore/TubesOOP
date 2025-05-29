@@ -82,7 +82,7 @@ public class Main {
         Thread.sleep(2000);
 
         List<String> allSeedName = seedsManager.getAllSeedsNames();
-        List<Seeds> allSeeds = seedsManager.getAllSeeds();
+        // List<Seeds> allSeeds = seedsManager.getAllSeeds();
         // List<Item> itemToBeSold = itemDijual();
 
         Map gameMap = player.getFarm().getfarmMap();
@@ -196,7 +196,7 @@ public class Main {
                 }
                 case "r" -> {
                     // recover land
-                    if(gameMap.isTilled() || gameMap.isWithered()){
+                    if(gameMap.isTilled()){
                         player.recoverLand();
                         gameMap.setCurrentTile('.');
                         message = "You recovered the land!";
@@ -244,8 +244,7 @@ public class Main {
                     if(gameMap.isWatered()){
                         message = "The plant is already watered";
                     } else if(gameMap.isPlanted()){
-                        player.watering(gameMap.getPlayerY(), gameMap.getPlayerX(), player.getSeedFromSeedMap(gameMap.getPlayerX(), gameMap.getPlayerY()));
-                        // gameMap.setCurrentTile('w');
+                        player.watering(gameMap.getPlayerY(), gameMap.getPlayerX(), player.getSeedFromSeedMap(gameMap.getPlayerX(), gameMap.getPlayerY()), gameMap);
                         message = "You watered the crop!";
                     } else {
                         message = "There's no plant to water";
@@ -313,7 +312,9 @@ public class Main {
                     message = Integer.toString(player.getEnergy()) + " energy points left";
                 }
                 case "time" -> {
-                    message = "\nSeason -> " + player.getFarm().getSeason().toString() + "\nWeather -> " + player.getFarm().getWeather().toString() + "\nDay Today -> "+ player.getFarm().getDay().toString() +"\nTime -> " + player.getTime().getCurrentGameTime().toString() + "\nDay Count -> " + player.getFarm().getDayCount() + "\n";
+                    player.getFarm().showTime();
+                    System.out.println("** Press enter to go back **");
+                    input = scanner.nextLine();
                 }
                 case "inv" -> {
                     player.getInventory().printInventory();
@@ -348,8 +349,8 @@ public class Main {
                     case Map.HOUSE -> System.out.print(ANSI_RED + "h " + ANSI_RESET);
                     case Map.BIN -> System.out.print(ANSI_YELLOW + "s " + ANSI_RESET);
                     case Map.POND -> System.out.print(ANSI_BLUE + "o " + ANSI_RESET);
-                    case Map.WATERED -> System.out.print(ANSI_BLUE + "x " + ANSI_RESET);
-                    case Map.HARVESTABLE -> System.out.println(ANSI_CYAN + "c " + ANSI_RESET);
+                    case Map.WATERED -> System.out.print(ANSI_BLUE + "w " + ANSI_RESET);
+                    case Map.HARVESTABLE -> System.out.print(ANSI_CYAN + "c " + ANSI_RESET);
                     case Map.WITHERED -> System.out.print("x ");
                     case Map.PLAYER -> System.out.print("P ");
                     default -> System.out.print(map[row][col] + " ");
@@ -370,7 +371,7 @@ public class Main {
             case Map.HOUSE -> "House";
             case Map.BIN -> "Storage Bin";
             case Map.POND -> "Pond";
-            case Map.WATERED -> "Watered";
+            case Map.WATERED -> "Watered Plant";
             case Map.HARVESTABLE -> "Harvestable";
             case Map.WITHERED -> "Withered Plant";
             case Map.PLAYER -> "Player";
