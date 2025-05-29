@@ -630,9 +630,9 @@ public class Map {
         
         while(true){
             if(npcName.equals("Emily")){
-                System.out.println("=== " + npcName + "'s Store ===");
+                System.out.println("\n=== " + npcName + "'s Store ===");
             } else {
-                System.out.println("=== " + npcName + "'s House ===");
+                System.out.println("\n=== " + npcName + "'s House ===");
             }
             System.out.println("1. Chatting");
             System.out.println("2. Gifting");
