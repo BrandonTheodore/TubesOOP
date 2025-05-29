@@ -111,20 +111,21 @@ public class Inventory {
     }
 
     private void initStartingItems() {
-        // Ambil Parsnips Seeds dari SeedsManager
         SeedsManager seedsManager = new SeedsManager();
-        Seeds parsnipSeeds = seedsManager.getSeedsByName("Parsnips Seeds");
+
+        // Tambahin seeds
+        Seeds parsnipSeeds = seedsManager.getSeedsByName("Parsnip Seeds");
         if (parsnipSeeds != null) {
             addItem(parsnipSeeds, 15);
         }
 
-        // Tambahkan semua equipment dari EquipmentManager
+        // Tambahin equipment awal
         EquipmentManager equipmentManager = new EquipmentManager();
         for (Equipment equipment : equipmentManager.getAllEquipment()) {
             addItem(equipment, 1);
         }
 
-        // // Tambahkan bahan bakar awal buat nyoba di main
+        // // Tambah fuel buat nyoba di main
         // Misc firewood = new Misc("Firewood", 0, 0, MiscType.FIREWOOD);
         // Misc coal = new Misc("Coal", 0, 0, MiscType.COAL);
         // addItem(firewood, 1);
