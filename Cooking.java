@@ -1,4 +1,3 @@
-import java.util.*;
 import java.util.Map;
 
 public class Cooking {
@@ -21,13 +20,7 @@ public class Cooking {
             System.out.println("Bahan bakar tidak valid.");
             return false;
         }
-
-        // // Cek apakah player ada di rumah atau engga
-        // if (!player.location.getName().equalsIgnoreCase("Home")) {
-        //     System.out.println(player.getName() + ": Anda harus berada di Rumah untuk memasak.");
-        //     return false;
-        // }
-
+      
         // Cek fuelnya valid atau engga
         if (fuelMiscItem.getCategory() != ItemCategory.MISC ||
             (fuelMiscItem.getType() != MiscType.FIREWOOD && fuelMiscItem.getType() != MiscType.COAL)) {

@@ -8,8 +8,7 @@
 // }
 
 import java.lang.*;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Driver class for the updated Map implementation of a farming game.
@@ -60,8 +59,10 @@ public class Main {
 
         Farm farm = new Farm(inputFarmName);
         Time time = new Time();
+        Cooking cooking = new Cooking();
+        Store store = new Store();
 
-        Player player = new Player(inputName, gender, farm, time, Location.Farm);
+        Player player = new Player(inputName, gender, farm, time, Location.FARM);
 
         CropsManager cropsManager = new CropsManager();
         EquipmentManager equipmentManager = new EquipmentManager();
@@ -74,9 +75,10 @@ public class Main {
 
         System.out.println("");
         System.out.println("Generating " + player.getName() + "'s game, please wait...");
-        Thread.sleep(7000);
+        Thread.sleep(2000);
 
         List<String> allSeedName = seedsManager.getAllSeedsNames();
+        // List<Item> itemToBeSold = itemDijual();
 
         Map gameMap = player.getFarm().getfarmMap();
         
@@ -124,9 +126,13 @@ public class Main {
             System.out.println("- T: Till soil");
             System.out.println("- R: Recover land");
             System.out.println("- P: Plant crop");
-            System.out.println("- WA: Water crop");
-            System.out.println("- HR: Harvest crop");
+            System.out.println("- Wa: Water crop");
+            System.out.println("- Hr: Harvest crop");
             System.out.println("- Q: Quit game");
+            System.out.println("- En: Show energy");
+            System.out.println("- Time: Show time");
+            System.out.println("- Inv: Show inventory");
+            System.out.println("- Gold: Show gold");
 
             // if the player is near a structure, show additional controls
             for(int i = 0; i < 4; i++){
@@ -161,7 +167,7 @@ public class Main {
                             System.out.print("Do you want to exit the farm? (y/n) ");
                             input = scanner.nextLine().toLowerCase();
                             if(input.equals("y")){
-                                gameMap.worldMap();
+                                gameMap.worldMap(player, npcManager, store);
                                 message = "Home sweet Farm!";
                                 break;
                             } else {
@@ -186,10 +192,8 @@ public class Main {
                 }
                 case "r" -> {
                     // recover land
-                    if(gameMap.isTilled()){
-
+                    if(gameMap.isTilled() || gameMap.isWithered()){
                         player.recoverLand();
-                        
                         gameMap.setCurrentTile('.');
                         message = "You recovered the land!";
                     } else if (gameMap.isPlanted() || gameMap.isHarvestReady()){
@@ -208,6 +212,7 @@ public class Main {
                             String inputSeed = scanner.nextLine();
 
                             if(inputSeed.equals("b")){
+                                message = "Plant cancelled";
                                 break;
                             }
 
@@ -220,13 +225,12 @@ public class Main {
 
                             if(seedFound){
                                 player.plant(gameMap.getPlayerX(), gameMap.getPlayerY(), seedsManager.getSeedsByName(inputSeed), gameMap);
-                                message = "You planted seeds!";
+                                message = "You planted a seed!";
                                 break;
                             } else {
                                 System.out.println("Seed not found!");
                             }
                         }
-                        message = "";
                     } else {
                         message = "Cannot plant here! Till the soil first.";
                     }
@@ -236,7 +240,8 @@ public class Main {
                     if(gameMap.isWatered()){
                         message = "The plant is already watered";
                     } else if(gameMap.isPlanted()){
-                        gameMap.setCurrentTile('w');
+                        player.watering(gameMap.getPlayerY(), gameMap.getPlayerX(), player.getSeedFromSeedMap(gameMap.getPlayerX(), gameMap.getPlayerY()));
+                        // gameMap.setCurrentTile('w');
                         message = "You watered the crop!";
                     } else {
                         message = "There's no plant to water";
@@ -256,12 +261,14 @@ public class Main {
                     }
                 }
                 case "q" -> {
-                    System.out.println("Quitting game. Goodbye!");
+                    System.out.println("Quitting game...");
+                    Thread.sleep(5000);
+                    System.out.println("Goodbye!!");
                     running = false;
                 }
                 case "h" -> {
                     if(houseNearby){
-                        houseAction(player, time);
+                        houseAction(player, cooking, recipeManager, miscManager);
                         message = "You exited the house";
                     } else {
                         message = "You are not near a house!";
@@ -269,20 +276,33 @@ public class Main {
                 }
                 case "f" -> {
                     if(pondNearby){
-                        player.fishing();
-                        System.out.println("Fishing in a Pond..");
-                        message = "You got a fish/trash from the pond";
+                        player.fishing(Location.POND);
+                        message = "You're done Fishing.";
                     } else {
                         message = "You are not near a pond!";
                     }
                 }
                 case "sb" -> {
                     if(shippingBinNearby){
-                        shippingBinAction();
+                        shippingBinAction(player);
                         message = "You exited the Shipping Bin";
                     } else {
                         message = "You are not near a shipping bin!";
                     }
+                }
+                case "en" -> {
+                    message = Integer.toString(player.getEnergy()) + " energy points left";
+                }
+                case "time" -> {
+                    message = player.getTime().getCurrentGameTime().toString();
+                }
+                case "inv" -> {
+                    player.getInventory().printInventory();
+                    System.out.println("** Press enter to go back **");
+                    input = scanner.nextLine();
+                }
+                case "gold" -> {
+                    message = "You now have " + Integer.toString(player.getGold()) + " gold";
                 }
                 default -> message = "Unknown command.";
             }
@@ -352,7 +372,7 @@ public class Main {
         }
     }
 
-    public static void houseAction(Player player, Time time){
+    public static void houseAction(Player player, Cooking cooking, RecipeManager recipeManager, MiscManager miscManager){
         String message = "nothing";
         String input = "";
 
@@ -371,8 +391,8 @@ public class Main {
                 System.out.print("System Message: ");
                 System.out.println(message);
             }
-
             System.out.println("");
+
             System.out.print("Action to do: ");
             input = scanner.nextLine().toLowerCase();
 
@@ -422,15 +442,13 @@ public class Main {
         }
     }
 
-    public static void shippingBinAction(/*Player player */){
+    public static void shippingBinAction(Player player){
         String message = "nothing";
-        String input = "";
 
         while (true) { 
             System.out.println("=== Shipping Bin Menu ==="); 
             System.out.println("1. Add item to Shipping Bin");
             System.out.println("2. Show current items, quantity, and price in Shipping Bin");
-            System.out.println("3. Sell Shipping Bin");
             System.out.println("** Type 'b' to go to the previous section **");
             System.out.println("** Type the number based on the action! **");
 
@@ -445,59 +463,45 @@ public class Main {
 
             message = "nothing";
             
-            input = scanner.nextLine().toLowerCase();
-            boolean inputIsInteger = isInteger(input);
+            String input = scanner.nextLine().toLowerCase();
 
-            if(input.equals("b")){
-                break;
-            }
+            switch(input) {
+                case "1" -> {
+                    System.out.println("** Type 'b' to go to the previous section **");
+                    System.out.println("What item do you want to add?");
+                    System.out.print("Item name (Match Case): ");
+                    String inputItemName = scanner.nextLine();
 
-            if(inputIsInteger){
-                switch(input) {
-                    case "1" -> {
-                        System.out.println("What item do you want to add?");
-                        System.out.print("Input item name: ");
-                        input = scanner.nextLine();
-                        while(true){
-                            System.out.println("** Type 'b' to go to the previous section **");
-                            System.out.println("How much of this item do you want to add?");
-                            System.out.print("Input Item Quantity: "); 
-                            input = scanner.nextLine().toLowerCase();
-                            inputIsInteger = isInteger(input);
+                    while(true){
+                        System.out.println("** Type 'b' to go to the previous section **");
+                        System.out.println("How much of this item do you want to add?");
+                        System.out.print("Input Item Quantity: "); 
+                        input = scanner.nextLine().toLowerCase();
+                        boolean inputIsInteger = isInteger(input);
 
-                            if(input.equals("b")){
-                                break;
-                            }
-
-                            if(inputIsInteger){
-                                int itemQuantity = Integer.parseInt(input);
-                                message = "Item x added to the shipping bin";
-                                break;
-                            } else {
-                                System.out.println("Input must be an integer!");
-                            }
+                        if(input.equals("b")){
+                            break;
                         }
-                    }
-                    case "2" -> {
-                        while (true) { 
-                            System.out.println("=== Current Shipping Bin ===");
-                            System.out.println("** Type 'b' to go to the previous section **");
-                            input = scanner.nextLine().toLowerCase();
 
-                            if(input.equals("b")){
-                                break;
-                            }
+                        if(inputIsInteger){
+                            int itemQuantity = Integer.parseInt(input);
+                            player.getShippingBin().sellItem(player.getInventory().getItemByName(inputItemName), itemQuantity, player);
+                            break;
+                        } else {
+                            System.out.println("Input must be an integer!");
                         }
-                    }
-                    case "3" -> {
-                        System.out.println("Shipping Bin Sold!");
-                    }
-                    case "b" -> {
-                        break;
                     }
                 }
-            } else {
-                message = "Input must be a number";
+                case "2" -> {
+                    System.out.println("=== Current Shipping Bin ===");
+                    player.getShippingBin().printBin();
+                    System.out.println("** Type anything to go back **");
+                    input = scanner.nextLine();
+                }
+                case "b" -> {
+                    return;
+                }
+                default -> message = "Invalid input";
             }
         }
     }

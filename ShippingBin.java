@@ -67,6 +67,11 @@ public class ShippingBin {
      * print shipping bin
      */
     public void printBin(){
+        if(bin.isEmpty()){
+            System.out.println("Shipping Bin is empty");
+            return;
+        }
+
         System.out.printf("%-15s %-10s\n", "Item", "Quantity");
         System.out.println("-----------------------------");
 
