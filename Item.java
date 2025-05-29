@@ -59,4 +59,19 @@ public abstract class Item {
     }
 
     public abstract void useItem(Player player, Item item);
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Item other = (Item) obj;
+        return this.name.equalsIgnoreCase(other.name); // atau pakai ID, dsb
+    }
+
+    @Override
+    public int hashCode() {
+        return name.toLowerCase().hashCode(); // supaya konsisten dengan equals()
+    }
+
 }
