@@ -277,7 +277,7 @@ public class Main {
                 case "f" -> {
                     if(pondNearby){
                         player.fishing(Location.POND);
-                        message = "You're done Fishing.";
+                        message = "You're done Fishing in the pond.";
                     } else {
                         message = "You are not near a pond!";
                     }
