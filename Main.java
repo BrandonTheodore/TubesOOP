@@ -400,8 +400,6 @@ public class Main {
             
             switch(input){
                 case "1" -> {
-                    Cooking cooking = new Cooking();
-                    RecipeManager recipeManager = new RecipeManager();
                     RecipeManager.initRecipes();
                     RecipeManager.printUnlockedRecipes();
                     System.out.print("\nMasukkan nama resep yang ingin dimasak: ");
@@ -421,7 +419,7 @@ public class Main {
                         }
                     }
 
-                    boolean success = cooking.cook(player, recipeName, fuel, recipeManager, time);
+                    boolean success = cooking.cook(player, recipeName, fuel, recipeManager, player.getTime());
                     message = success ? "Masakan berhasil dimulai!" : "Masakan gagal.";
                 }
 
