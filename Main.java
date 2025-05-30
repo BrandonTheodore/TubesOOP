@@ -57,9 +57,9 @@ public class Main {
         System.out.println("Input your farm name: ");
         String inputFarmName = scanner.nextLine();
 
-        Farm farm = new Farm(inputFarmName);
-        farm.runThread();
         Time time = new Time();
+        Farm farm = new Farm(inputFarmName, time);
+        farm.runThread();
         Cooking cooking = new Cooking();
         Store store = new Store();
 

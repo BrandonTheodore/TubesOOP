@@ -12,10 +12,10 @@ public class Farm {
     private int seasonCount;
     private int rainyDay;
 
-    public Farm(String farm){
+    public Farm(String farm, Time time){
         this.name = farm;
         this.farmMap = new Map();
-        this.time = new Time();
+        this.time = time;
         this.day = Day.MONDAY;
         this.season = Season.SPRING;
         this.weather = Weather.SUNNY;
