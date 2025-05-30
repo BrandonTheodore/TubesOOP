@@ -1,3 +1,4 @@
+import java.time.LocalTime;
 import java.util.Map;
 
 public class Cooking {
@@ -79,7 +80,11 @@ public class Cooking {
         }
 
         player.setEnergy(player.getEnergy() - 10);
-        time.addTime(60);
+        Runnable task = () -> {
+            cookTimer(time);
+        };
+        Thread thread = new Thread(task);
+        thread.start();
         player.getInventory().removeItem(fuelMiscItem, 1);
         player.getInventory().addItem(recipe.getFood(), portion);
 
@@ -89,5 +94,17 @@ public class Cooking {
         System.out.println("Waktu berlalu 1 jam. Anda dapat melakukan aktivitas lain sekarang.");
 
         return true;
+    }
+
+    public void cookTimer(Time time){
+        LocalTime waktuAwal = time.getCurrentGameTime();
+        while(true){
+            LocalTime waktuSekarang = time.getCurrentGameTime();
+            long minutes = java.time.Duration.between(waktuAwal, waktuSekarang).toMinutes();
+            if(minutes >= 60){
+                break;
+            }
+        }
+        
     }
 }
