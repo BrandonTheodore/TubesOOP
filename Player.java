@@ -372,7 +372,12 @@ public class Player {
             System.out.println(this.name + " bangun dengan energi penuh (" + this.energy + ")!");
         }
         LocalTime skipTimeToMorning = LocalTime.of(6, 0);
+        if(time.getCurrentGameTime().isBefore(LocalTime.of(23, 59)) || time.getCurrentGameTime().equals(LocalTime.of(23, 59))){
+            farm.setDay(farm.getDay().nextDay());
+            farm.setDayCount(farm.getDayCount() + 1);
+        }
         time.setTime(skipTimeToMorning);
+        farm.changeDay();
         System.out.println("Waktu game maju sampai pagi."); //harus ditambahin
     }
 

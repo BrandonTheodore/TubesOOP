@@ -40,6 +40,10 @@ public class Farm {
         return day;
     }
 
+    public void setDay(Day day){
+        this.day = day;
+    }
+
     public Season getSeason(){
         return season;
     }
@@ -56,16 +60,17 @@ public class Farm {
         return dayCount;
     }
 
+    public void setDayCount(int day){
+        this.dayCount = day;
+    }
+
     public int getSeasonCount(){
         return this.seasonCount;
     }
 
     public void changeDay(){
         Random rand = new Random();
-        time.changeStartGameTime(LocalTime.of(6, 0));
         time.changeStartRealTime(System.nanoTime()); 
-        this.day = day.nextDay();
-        this.dayCount++;
         int randomNumber = rand.nextInt(1000);
         if(dayCount % 10 == 1){
             changeSeason();
@@ -73,7 +78,37 @@ public class Farm {
         if(randomNumber % 2 == 0 || (dayCount > 8 && rainyDay < 2)){
             changeWeather();
         }
-        System.out.println("Day has changed!");
+        if(time.getCurrentGameTime().isAfter(LocalTime.of(05, 59))){
+            System.out.println("Day has changed!");
+        }
+    }
+
+    public void updateDay(){
+        while(true){
+            boolean first = true;
+            while(true){
+                LocalTime waktu = time.getCurrentGameTime();
+                if(waktu.isAfter(LocalTime.of(00, 00)) && waktu.isBefore(LocalTime.of(01, 00)) && first){
+                    System.out.println("Day Changed");
+                    this.day = day.nextDay();
+                    this.dayCount++;
+                    first = false;
+                }
+                if(waktu.isAfter(LocalTime.of(01, 00))){
+                    break;
+                }
+            }
+        }
+        
+    }
+
+    public void runThread(){
+        Runnable task = () -> {
+            updateDay();
+        };
+
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     public void changeSeason(){
