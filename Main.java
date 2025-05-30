@@ -81,6 +81,7 @@ public class Main {
         System.out.println("Generating " + player.getName() + "'s game, please wait...");
         Thread.sleep(2000);
 
+        List<NPC> allNPC = npcManager.getAllNPC();
         List<String> allSeedName = seedsManager.getAllSeedsNames();
         // List<Seeds> allSeeds = seedsManager.getAllSeeds();
         // List<Item> itemToBeSold = itemDijual();
@@ -97,9 +98,19 @@ public class Main {
         boolean running = true;
         String input;
         String message = "nothing";
+        int goldThreshold = 17209;
+        boolean endgameStatsShown = false;
         
         // Game loop
         while (running) {
+
+            if((player.getIsMarried() || player.getGold() >= goldThreshold) && !endgameStatsShown){
+                printEndgameStats(player, store, allNPC);
+                endgameStatsShown = true;
+                System.out.println("** Press enter to continue playing **");
+                scanner.nextLine();
+            }
+
             // Print the map with color
             printColorMap(gameMap.getMap());
             
@@ -187,9 +198,9 @@ public class Main {
                 case "t" -> {
                     // Till soil if possible
                     if (gameMap.isTillable()) {
-                        player.till();
-                        gameMap.setCurrentTile('t');
-                        message = "You tilled the soil!";
+                        player.till(gameMap);
+                        Thread.sleep(1000);
+                        // message = "You tilled the soil!";
                     } else {
                         message = "Cannot till here!";
                     }
@@ -197,9 +208,9 @@ public class Main {
                 case "r" -> {
                     // recover land
                     if(gameMap.isTilled()){
-                        player.recoverLand();
-                        gameMap.setCurrentTile('.');
-                        message = "You recovered the land!";
+                        player.recoverLand(gameMap);
+                        Thread.sleep(1000);
+                        // message = "You recovered the land!";
                     } else if (gameMap.isPlanted() || gameMap.isHarvestReady()){
                         message = "The soil is already used for planting!";
                     } else {
@@ -229,7 +240,7 @@ public class Main {
 
                             if(seedFound){
                                 player.plant(gameMap.getPlayerX(), gameMap.getPlayerY(), seedsManager.getSeedsByName(inputSeed), gameMap);
-                                Thread.sleep(3000);
+                                Thread.sleep(1500);
                                 break;
                             } else {
                                 message = "Seed not found!";
@@ -244,17 +255,17 @@ public class Main {
                     if(gameMap.isWatered()){
                         message = "The plant is already watered";
                     } else if(gameMap.isPlanted()){
-                        player.watering(gameMap.getPlayerY(), gameMap.getPlayerX(), player.getSeedFromSeedMap(gameMap.getPlayerX(), gameMap.getPlayerY()), gameMap);
-                        message = "You watered the crop!";
+                        player.watering(gameMap.getPlayerX(), gameMap.getPlayerY(), player.getSeedFromSeedMap(gameMap.getPlayerX(), gameMap.getPlayerY()), gameMap);
+                        Thread.sleep(1000);
+                        // message = "You watered the crop!";
                     } else {
                         message = "There's no plant to water";
                     }
                 }
                 case "hr" -> {
                     if(gameMap.isHarvestReady()){
-                        player.harvest(gameMap.getPlayerX(), gameMap.getPlayerY());
-                        // gameMap.setCurrentTile('.');
-                        message = "You harvested the crops!";
+                        player.harvest(gameMap.getPlayerX(), gameMap.getPlayerY(), gameMap);
+                        // message = "You harvested the crops!";
                     } else if (gameMap.isPlanted()) {
                         message = "Crop is not ready for harvest";
                     } else if (gameMap.isWithered()) {
@@ -265,7 +276,7 @@ public class Main {
                 }
                 case "q" -> {
                     System.out.println("Quitting game...");
-                    Thread.sleep(5000);
+                    Thread.sleep(3000);
                     System.out.println("Goodbye!!");
                     running = false;
                 }
@@ -323,6 +334,12 @@ public class Main {
                 }
                 case "gold" -> {
                     message = "You now have " + Integer.toString(player.getGold()) + " gold";
+                }
+                case "honi" -> {
+                    player.addGold(17209 - 9999 - 10);
+                }
+                case "mani" -> {
+                    player.addGold(100);
                 }
                 default -> message = "Unknown command.";
             }
@@ -460,13 +477,14 @@ public class Main {
         }
     }
 
-    public static void shippingBinAction(Player player){
+    public static void shippingBinAction(Player player) throws InterruptedException {
         String message = "nothing";
 
         while (true) { 
             System.out.println("=== Shipping Bin Menu ==="); 
             System.out.println("1. Add item to Shipping Bin");
-            System.out.println("2. Show current items, quantity, and price in Shipping Bin");
+            System.out.println("2. Sell Shipping Bin (once per day)");
+            System.out.println("3. Show current items, quantity, and price in Shipping Bin");
             System.out.println("** Type 'b' to go to the previous section **");
             System.out.println("** Type the number based on the action! **");
 
@@ -503,7 +521,8 @@ public class Main {
 
                         if(inputIsInteger){
                             int itemQuantity = Integer.parseInt(input);
-                            player.getShippingBin().sellItem(player.getInventory().getItemByName(inputItemName), itemQuantity, player);
+                            player.getShippingBin().addItem(player.getInventory().getItemByName(inputItemName), itemQuantity, player);
+                            Thread.sleep(1500);
                             break;
                         } else {
                             System.out.println("Input must be an integer!");
@@ -511,16 +530,45 @@ public class Main {
                     }
                 }
                 case "2" -> {
+                    player.getShippingBin().sell(player);
+                    Thread.sleep(1500);
+                    message = "Looking for someone to buy your Shipping Bin";
+                }
+                case "3" -> {
                     System.out.println("=== Current Shipping Bin ===");
                     player.getShippingBin().printBin();
                     System.out.println("** Type anything to go back **");
-                    input = scanner.nextLine();
+                    scanner.nextLine();
                 }
                 case "b" -> {
                     return;
                 }
                 default -> message = "Invalid input";
             }
+        }
+    }
+
+    public static void printEndgameStats(Player player, Store store, List<NPC> allNPC){
+        double seasonAverageIncome = player.getShippingBin().getTotalIncome() / player.getFarm().getSeasonCount();
+        double seasonAverageExpenditure = store.getTotalExpenditure() / player.getFarm().getSeasonCount();
+
+        System.out.println(player.getName() + "'s Endgame Stats");
+        System.out.println("Total Income                : " + player.getShippingBin().getTotalIncome() + " gold");
+        System.out.println("Total Expenditure           : " + store.getTotalExpenditure() + " gold");
+        System.out.println("Season Average Income       : " + String.format("%.2f", seasonAverageIncome) + " gold/season");
+        System.out.println("Season Average Expenditure  : " + String.format("%.2f", seasonAverageExpenditure) + "gold/season");
+        System.out.println("Total Days Played           : " + player.getFarm().getDayCount() + " days played");
+        System.out.println("Total Crops Harvested       : " + player.getTotalCropHarvested() + " crops");
+        System.out.println("Total Fish Caught           : " + player.getTotalFishCaught() + " fish'");
+        System.out.println();
+
+        System.out.println("NPC Status");
+        for(NPC npc : allNPC){
+            System.out.println(npc.getName() + "'s stats");
+            System.out.println("Relationship Status : " + npc.getRelationshipStatus().toString());
+            System.out.println("Chatting Frequency  : " + npc.getChattingFrequency());
+            System.out.println("Gifting Frequency   : " + npc.getGiftingFrequency());
+            System.out.println("Visiting Frequency  : " + npc.getVisitingFrequency());
         }
     }
 }

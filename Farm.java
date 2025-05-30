@@ -9,6 +9,7 @@ public class Farm {
     private Season season;
     private Weather weather;
     private int dayCount;
+    private int seasonCount;
     private int rainyDay;
 
     public Farm(String farm){
@@ -19,6 +20,7 @@ public class Farm {
         this.season = Season.SPRING;
         this.weather = Weather.SUNNY;
         this.dayCount = 1;
+        this.seasonCount = 1;
         this.rainyDay = 0;
     }
 
@@ -54,6 +56,10 @@ public class Farm {
         return dayCount;
     }
 
+    public int getSeasonCount(){
+        return this.seasonCount;
+    }
+
     public void changeDay(){
         Random rand = new Random();
         time.changeStartGameTime(LocalTime.of(6, 0));
@@ -72,6 +78,7 @@ public class Farm {
 
     public void changeSeason(){
         this.season = season.nextSeason();
+        this.seasonCount++;
         System.out.println("Season has changed!");
     }
 

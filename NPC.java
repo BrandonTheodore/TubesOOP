@@ -4,13 +4,17 @@ import java.util.*;
 public class NPC {
     private String name;
     private int heartPoints;
-    private RelationshipStatus relationshipStatus;
     private List<String> lovedItems;
     private List<String> likedItems;
     private List<String> hatedItems;
     private int proposalTime;
     private int marryTime;
     private Time time;
+
+    private RelationshipStatus relationshipStatus;
+    private int chattingFrequency;
+    private int giftingFrequency;
+    private int visitingFrequency;
 
     // konstruktor
     public NPC(String name, Time time) {
@@ -21,10 +25,34 @@ public class NPC {
         this.likedItems = new ArrayList<>();
         this.hatedItems = new ArrayList<>();
         this.time = time;
+
+        this.chattingFrequency = 0;
+        this.giftingFrequency = 0;
+        this.visitingFrequency = 0;
     }
 
     public String getName() {
         return name;
+    }
+
+    public int getHeartPoints(){
+        return this.heartPoints;
+    }
+
+    public int getChattingFrequency(){
+        return this.chattingFrequency;
+    }
+
+    public int getGiftingFrequency(){
+        return this.giftingFrequency;
+    }
+
+    public int getVisitingFrequency(){
+        return this.visitingFrequency;
+    }
+
+    public void incrementVisitingFrequency(){
+        this.visitingFrequency++;
     }
 
     public void addLovedItems(String itemName) {
@@ -100,6 +128,8 @@ public class NPC {
         } else {
             System.out.println("Okay thanks");
         }
+
+        this.giftingFrequency++;
         
         // hapus item dari inventory player
         player.getInventory().removeItem(item, 1);
@@ -156,6 +186,7 @@ public class NPC {
         player.consumeEnergy(10);
         time.addTime(10); // tambah waktu 10 menit
         heartPoints += 10;
+        this.chattingFrequency++;
 
         System.out.println(player.getName() + " : ....");
         System.out.println(name + " : ....");

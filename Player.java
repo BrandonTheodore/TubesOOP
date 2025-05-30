@@ -19,9 +19,12 @@ public class Player {
     private boolean hasUsedShippingBinToday;
     private Time time;
 
+    private int totalCropHarvested;
+    private int totalFishCaught;
+    boolean isMarried;
+
     private ShippingBin shippingBin;
     private Seeds[][] seedMap;
-    private boolean[][] wateredMap;
 
     private static final int MAX_ENERGY = 100;
     private static final int MIN_ENERGY_BEFORE_SLEEP = -20;
@@ -49,13 +52,14 @@ public class Player {
         this.inventory = new Inventory();
         this.time = time;
 
-        this.hasUsedShippingBinToday = false;
+        this.totalCropHarvested = 0;
+        this.totalFishCaught = 0;
+        this.isMarried = false;
+        
         this.location = location;
         this.shippingBin = new ShippingBin(time);
 
         this.seedMap = new Seeds[32][32];
-
-        this.wateredMap = new boolean[32][32];
     }
 
     public ShippingBin getShippingBin(){
@@ -93,6 +97,18 @@ public class Player {
 
     public Time getTime() {
         return time;
+    }
+
+    public int getTotalCropHarvested(){
+        return this.totalCropHarvested;
+    }
+
+    public int getTotalFishCaught(){
+        return this.totalFishCaught;
+    }
+
+    public boolean getIsMarried(){
+        return this.isMarried;
     }
 
     public void setGender(Gender gender) {
@@ -185,39 +201,47 @@ public class Player {
 
 
     //ACTIONS!!!!!
-    public void till() {
+    public void till(Map map) {
         int energyCost = TILL_ENERGY_COST_PER_TILE;
         if (consumeEnergy(energyCost)) { 
             time.addTime(5);
+            map.setCurrentTile('t');
+            System.out.println("Till successful");
         } 
         else {
             System.out.println(this.name + " terlalu lelah untuk mengolah lebih banyak tanah.");
         }
     }
 
-    public void recoverLand() {
+    public void recoverLand(Map map) {
         int energyCost = RECOVER_ENERGY_COST_PER_TILE;
         if (consumeEnergy(energyCost)) {
             time.addTime(5);
+            map.setCurrentTile('.');
+            System.out.println("Recovered tilled land");
         } else {
             System.out.println(this.name + " terlalu lelah untuk memulihkan lebih banyak tanah.");
         }
     }
 
-    public void cropProgress(int playerX, int playerY, Seeds seed, Map map){
+    public void cropProgress(int playerX, int playerY, Seeds seed, Map map) {
         int timer = seed.getDaysToHarvest();
         int i = 0;
         boolean withered = false;
-        while(i < timer){
+        int lastWatered = 0;
+        char[][] currentMap = map.getMap();
+        while(i <= timer){
             boolean first = true;
             while(true){
                 LocalTime waktu = time.getCurrentGameTime();
                 if(waktu.isAfter(LocalTime.of(00, 00)) && waktu.isBefore(LocalTime.of(01, 00)) && first){
-                    System.out.println("Day Changed");
-                    int lastWatered = seed.getLastWatered();
-                    lastWatered++;
+                    if(currentMap[playerY][playerX] == 'w'){
+                        lastWatered = 0;
+                    } else {
+                        lastWatered++;
+                    }
+                    // lastWatered = seed.getLastWatered();
                     map.setTile('l', playerX, playerY);
-                    seed.setLastWatered(lastWatered);
                     if(lastWatered >= 2){
                         System.out.println("Plant has withered!");
                         seed.setStatus("Withered");
@@ -271,11 +295,10 @@ public class Player {
 
         consumeEnergy(5);
         this.time.addTime(5);
-        wateredMap[playerY][playerX] = true;
         map.setCurrentTile('w');
     }
 
-    public void harvest(int playerX, int playerY) {
+    public void harvest(int playerX, int playerY, Map map) {
         if(this.energy < 5){
             System.out.println("Terlalu lelah untuk melakukan harvest");
             return;
@@ -284,8 +307,11 @@ public class Player {
         Seeds seedHarvested = seedMap[playerY][playerX];
         consumeEnergy(5);
         this.time.addTime(5);
-        this.inventory.addItem(seedHarvested.getResultCrop(), energy);
+        this.inventory.addItem(seedHarvested.getResultCrop(), seedHarvested.getResultCrop().getCropPerPanen());
+        this.totalCropHarvested += seedHarvested.getResultCrop().getCropPerPanen();
         seedMap[playerY][playerX] = new Seeds("temp", 0, Season.FALL, 0, new Crops("temp", 0, 0, 0));
+        map.setCurrentTile('.');
+        System.out.println("Crop harvested");
     }
 
     public boolean eat(Item food) {
@@ -446,6 +472,7 @@ public class Player {
             this.inventory.addItem(caughtFish, 1);
             System.out.println(this.name + " berhasil menangkap " + caughtFish.getName() + " (" + caughtFish.getFishRarity() + ")!");
             System.out.println("Harga jual: " + caughtFish.getSellPrice() + " gold.");
+            this.totalFishCaught++;
             return true;
         } else {
             System.out.println("Anda gagal menebak angka. Ikan " + caughtFish.getName() + " berhasil lolos!");
@@ -483,6 +510,7 @@ public class Player {
         this.setPartner(npc.getName()); 
 
         System.out.println("Selamat, " + this.name + " dan " + npc.getName() + " resmi menikah!");
+        this.isMarried = true;
         return true;
     }
 
@@ -498,11 +526,12 @@ public class Player {
         }
     }
 
-    public void visiting(String location) {
+    public void visiting(Location location) {
         if (consumeEnergy(VISIT_ENERGY_COST)) {
             System.out.println(this.name + " mengunjungi " + location);
             time.addTime(15);
             System.out.println("Jalan 15 menit nih, cape juga.");
+            this.location = location;
         } else {
             System.out.println(this.name + " kecapean buat ke " + location + " skip dulu dah.");
         }

@@ -5,6 +5,7 @@ import java.util.Map;
 public class Store {
     private Map<Item, Integer> itemsForSale;
     private Map<Recipe, Integer> recipesForSale;
+    private int totalExpenditure;
 
     public Store() {
         itemsForSale = new HashMap<>();
@@ -15,8 +16,13 @@ public class Store {
             // Misalnya kita kasih harga default 50, atau bisa item.getPrice()
             itemsForSale.put(item, item.getBuyPrice()); // asumsi ada getPrice()
         }
-
+    
         recipesForSale = RecipeManager.recipeYangDijual();
+        this.totalExpenditure = 0;
+    }
+
+    public int getTotalExpenditure(){
+        return this.totalExpenditure;
     }
 
     // // Tambahkan item untuk dijual
@@ -103,6 +109,7 @@ public class Store {
                 player.removeGold(totalPrice);
                 player.getInventory().addItem(entry.getKey(), quantity);
                 System.out.println("Kamu membeli " + quantity + " " + itemName + ".");
+                this.totalExpenditure += totalPrice;
                 return true;
             }
         }
@@ -124,6 +131,7 @@ public class Store {
                 entry.getKey().setUnlocked(true); // resep terbuka
                 // player.unlockRecipe(entry.getKey()); // set recipenya biar true
                 System.out.println("Kamu membeli resep " + recipeName);
+                this.totalExpenditure += price;
                 return true;
             }
         }
