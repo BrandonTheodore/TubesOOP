@@ -510,12 +510,13 @@ public class Player {
             System.out.println(this.name + " terlalu lelah untuk menikah.");
             return false;
         }
-        System.out.println(this.name + " menikah dengan " + npc.getName() + "!");
-        npc.marryPlayer(this); 
-        this.setPartner(npc.getName()); 
+        // System.out.println(this.name + " menikah dengan " + npc.getName() + "!");
+        // npc.marryPlayer(this); 
+        // this.setPartner(npc.getName()); 
 
-        System.out.println("Selamat, " + this.name + " dan " + npc.getName() + " resmi menikah!");
-        this.isMarried = true;
+        // System.out.println("Selamat, " + this.name + " dan " + npc.getName() + " resmi menikah!");
+        // this.isMarried = true;
+        npc.marryPlayer(this);
         return true;
     }
 
