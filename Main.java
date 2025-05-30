@@ -180,6 +180,7 @@ public class Main {
             System.out.println("- e     : eat food");
             System.out.println("- time  : Show time");
             System.out.println("- inv   : Show inventory");
+            System.out.println("- idle  : Idle");
             System.out.println("- q     : Quit game");
 
             // if the player is near a structure, show additional controls
