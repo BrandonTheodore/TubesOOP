@@ -62,7 +62,7 @@ public class ShippingBin {
      */
     public void sell(Player player) {
         if(this.hasBeenUsed){
-            System.out.println("Shippinh bin has been sold today!");
+            System.out.println("Shipping bin has been sold today!");
             return;
         }
 
