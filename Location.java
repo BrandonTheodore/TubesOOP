@@ -1,8 +1,14 @@
 public enum Location {
-    FARM, 
+    FARM,
     WORLDMAP,
+    POND,
     MOUNTAIN_LAKE,
     FOREST_RIVER,
-    POND,
-    OCEAN;
+    OCEAN,
+    MAYOR_TADI_HOUSE,
+    CAROLINE_HOUSE,
+    PERRY_HOUSE,
+    DASCO_HOUSE,
+    ABIGAIL_HOUSE,
+    STORE;
 }

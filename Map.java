@@ -116,17 +116,17 @@ public class Map {
         }
     }
 
-    /*
-     * print map
-     */
-    public void printMap() {
-        for(int row = 0; row < HEIGHT; row++) {
-            for(int col = 0; col < WIDTH; col++) {
-                System.out.print(map[row][col] + " ");
-            }
-            System.out.println();
-        }
-    }
+    // /*
+    //  * print map
+    //  */
+    // public void printMap() {
+    //     for(int row = 0; row < HEIGHT; row++) {
+    //         for(int col = 0; col < WIDTH; col++) {
+    //             System.out.print(map[row][col] + " ");
+    //         }
+    //         System.out.println();
+    //     }
+    // }
 
     /*
      * check if an object is already places in the map
@@ -365,6 +365,7 @@ public class Map {
     public void worldMap(Player player, NPCManager npcManager, Store store){
         Scanner scanner = new Scanner(System.in);
         String message = "nothing";
+        player.visiting(Location.WORLDMAP);
         // player.visiting("WORLD MAP");
 
         while(true){
@@ -400,7 +401,7 @@ public class Map {
 
                         System.out.println("");
                         if(message.equals("nothing")){
-                                System.out.println("System Message: ");
+                            System.out.println("System Message: ");
                         } else {
                             System.out.print("System Message: ");
                             System.out.println(message);
@@ -412,24 +413,34 @@ public class Map {
 
                         switch(input2) {
                             case "1" -> {
+                                player.visiting(Location.MAYOR_TADI_HOUSE);
+                                npcManager.getNPCByName("Mayor Tadi").incrementVisitingFrequency();
                                 NPCAction("Mayor Tadi", npcManager, player);
-                                message = "Done chatting with Mayor Tadi";
+                                message = "Done ... with Mayor Tadi";
                             }
                             case "2" -> {
+                                player.visiting(Location.CAROLINE_HOUSE);
+                                npcManager.getNPCByName("Caroline").incrementVisitingFrequency();
                                 NPCAction("Caroline", npcManager, player);
-                                message = "Done chatting with Caroline";
+                                message = "Done ... with Caroline";
                             }
                             case "3" -> {
+                                player.visiting(Location.PERRY_HOUSE);
+                                npcManager.getNPCByName("Perry").incrementVisitingFrequency();
                                 NPCAction("Perry", npcManager, player);
-                                message = "Done chatting with Perry";
+                                message = "Done ... with Perry";
                             }
                             case "4" -> {
+                                player.visiting(Location.DASCO_HOUSE);
+                                npcManager.getNPCByName("Dasco").incrementVisitingFrequency();
                                 NPCAction("Dasco", npcManager, player);
-                                message = "Done chatting with Dasco";
+                                message = "Done ... with Dasco";
                             }
                             case "5" -> {
+                                player.visiting(Location.ABIGAIL_HOUSE);
+                                npcManager.getNPCByName("Abigail").incrementVisitingFrequency();
                                 NPCAction("Abigail", npcManager, player);
-                                message = "Done chatting with Abigail";
+                                message = "Done ... with Abigail";
                             }
                             case "b" -> {
                                 message = "Back from NPC's house menu";
@@ -467,6 +478,7 @@ public class Map {
 
                         switch(input2){
                             case "1" -> {
+                                player.visiting(Location.FOREST_RIVER);
                                 fished = player.fishing(Location.FOREST_RIVER);
                                 if(fished){
                                     message = "Fished at a Forest River";
@@ -475,6 +487,7 @@ public class Map {
                                 }
                             } 
                             case "2" -> {
+                                player.visiting(Location.MOUNTAIN_LAKE);
                                 fished = player.fishing(Location.MOUNTAIN_LAKE);
                                 if(fished){
                                     message = "Fished at a Mountain Lake";
@@ -483,6 +496,7 @@ public class Map {
                                 }
                             }
                             case "3" -> {
+                                player.visiting(Location.OCEAN);
                                 fished = player.fishing(Location.OCEAN);
                                 if(fished){
                                     message = "Fished on the Ocean";
@@ -503,6 +517,7 @@ public class Map {
                     }
                 }
                 case "3" -> {
+                    player.visiting(Location.STORE);
                     while(true){
                         System.out.println("=== Store ===");
                         System.out.println("1. Visit Emily");
@@ -527,6 +542,7 @@ public class Map {
 
                         switch(input2){
                             case "1" -> {
+                                npcManager.getNPCByName("Emily").incrementVisitingFrequency();
                                 NPCAction("Emily", npcManager, player);
                                 message = "Done meeting with Emily";
                             }
@@ -638,6 +654,7 @@ public class Map {
             System.out.println("2. Gifting");
             System.out.println("3. Propose");
             System.out.println("4. Marry");
+            System.out.println("5. Show " + npcName + "'s heart points");
 
             System.out.println("");
             if(message.equals("nothing")){
@@ -674,6 +691,11 @@ public class Map {
                 case "4" -> {
                     player.marry(npcManager.getNPCByName(npcName));
                     // message = "You are now married with " + npcName + "!";
+                }
+                case "5" -> {
+                    System.out.println(npcName + " has " + npcManager.getNPCByName(npcName).getHeartPoints() + " heart points");
+                    System.out.println("** Press enter to go back **");
+                    input = scanner.nextLine();
                 }
                 case "b" -> {
                     return;
