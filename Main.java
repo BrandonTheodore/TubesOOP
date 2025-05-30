@@ -56,7 +56,7 @@ public class Main {
 
         System.out.println("Input your farm name: ");
         String inputFarmName = scanner.nextLine();
-
+        System.out.println("");
         Time time = new Time();
         Farm farm = new Farm(inputFarmName, time);
         farm.runThread();
@@ -341,6 +341,9 @@ public class Main {
                 }
                 case "mani" -> {
                     player.addGold(100);
+                }
+                case "x" -> {
+                    time.addTime(60);
                 }
                 default -> message = "Unknown command.";
             }
