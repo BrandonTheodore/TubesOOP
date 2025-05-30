@@ -58,6 +58,7 @@ public class Main {
         String inputFarmName = scanner.nextLine();
 
         Farm farm = new Farm(inputFarmName);
+        farm.runThread();
         Time time = new Time();
         Cooking cooking = new Cooking();
         Store store = new Store();
