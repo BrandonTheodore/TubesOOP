@@ -3,7 +3,7 @@ import java.util.Map;
 
 public class Cooking {
     public boolean cook(Player player, String recipeName, Misc fuelMiscItem, RecipeManager recipeManager, Time time) {
-        RecipeManager.printUnlockedRecipes();        
+        // RecipeManager.printUnlockedRecipes();        
         
         Recipe recipe = RecipeManager.getRecipeByName(recipeName);
 

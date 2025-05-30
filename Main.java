@@ -72,6 +72,7 @@ public class Main {
         FoodManager foodManager = new FoodManager();
         MiscManager miscManager = new MiscManager();
         RecipeManager recipeManager = new RecipeManager();
+        RecipeManager.initRecipes();
         NPCManager npcManager = new NPCManager();
         SeedsManager seedsManager = new SeedsManager();
 
@@ -438,7 +439,7 @@ public class Main {
             
             switch(input){
                 case "1" -> {
-                    RecipeManager.initRecipes();
+                    // RecipeManager.initRecipes();
                     RecipeManager.printUnlockedRecipes();
                     System.out.print("\nMasukkan nama resep yang ingin dimasak: ");
                     String recipeName = scanner.nextLine();
