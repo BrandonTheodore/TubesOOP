@@ -356,6 +356,7 @@ public class Main {
                         idle.setIdle(new Humming());
                     }
                     idle.idling();
+                    Thread.sleep(1000);
                 }
                 default -> message = "Unknown command.";
             }
