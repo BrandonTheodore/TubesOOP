@@ -27,8 +27,8 @@ public class NPCManager {
         }
 
         NPC caroline = new NPC("Caroline", time);
-        caroline.addLovedItems("Firewood");
-        caroline.addLovedItems("Coal");
+        caroline.addLovedItems("firewood");
+        caroline.addLovedItems("coal");
         caroline.addLikedItems("Potato");
         caroline.addLikedItems("Wheat");
         caroline.addHatedItems("Hot Pepper");
@@ -65,7 +65,7 @@ public class NPCManager {
         emily.addLikedItems("Catfish");
         emily.addLikedItems("Salmon");
         emily.addLikedItems("Sardine");
-        emily.addHatedItems("Coal");
+        emily.addHatedItems("coal");
         emily.addHatedItems("Wood");
 
         NPC abigail = new NPC("Abigail", time);
