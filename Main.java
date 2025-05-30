@@ -62,6 +62,9 @@ public class Main {
         farm.runThread();
         Cooking cooking = new Cooking();
         Store store = new Store();
+        Idle idle = new Idle(new Watering());
+        Random rand = new Random();
+        int randomNumber = rand.nextInt(1000);
 
         Player player = new Player(inputName, gender, farm, time, Location.FARM);
         player.addGold(9999);
@@ -345,6 +348,14 @@ public class Main {
                 }
                 case "x" -> {
                     time.addTime(60);
+                }
+                case "idle" -> {
+                    if(randomNumber % 2 == 0){
+                        idle.setIdle(new Humming());
+                    } else {
+                        idle.setIdle(new Humming());
+                    }
+                    idle.idling();
                 }
                 default -> message = "Unknown command.";
             }
