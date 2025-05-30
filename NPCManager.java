@@ -27,8 +27,8 @@ public class NPCManager {
         }
 
         NPC caroline = new NPC("Caroline", time);
-        caroline.addLovedItems("Firewood");
-        caroline.addLovedItems("Coal");
+        caroline.addLovedItems("firewood");
+        caroline.addLovedItems("coal");
         caroline.addLikedItems("Potato");
         caroline.addLikedItems("Wheat");
         caroline.addHatedItems("Hot Pepper");
@@ -65,7 +65,7 @@ public class NPCManager {
         emily.addLikedItems("Catfish");
         emily.addLikedItems("Salmon");
         emily.addLikedItems("Sardine");
-        emily.addHatedItems("Coal");
+        emily.addHatedItems("coal");
         emily.addHatedItems("Wood");
 
         NPC abigail = new NPC("Abigail", time);
@@ -74,7 +74,7 @@ public class NPCManager {
         abigail.addLovedItems("Pumpkin");
         abigail.addLovedItems("Grape");
         abigail.addLovedItems("Cranberry");
-        abigail.addLikedItems("Beguette");
+        abigail.addLikedItems("Baguette");
         abigail.addLikedItems("Pumpkin Pie");
         abigail.addLikedItems("Wine");
         abigail.addHatedItems("Hot Pepper");
@@ -82,12 +82,101 @@ public class NPCManager {
         abigail.addHatedItems("Parsnip");
         abigail.addHatedItems("Wheat");
 
+        NPC vincent = new NPC("Vincent", time);
+        vincent.addLovedItems("Grape");
+        vincent.addLovedItems("firewood");
+        vincent.addLovedItems("Baguette");
+        vincent.addHatedItems("Wheat");
+        vincent.addHatedItems("Hot Pepper");
+
+        NPC abil = new NPC("Abil", time);
+        abil.addLovedItems("Wheat");
+        abil.addLovedItems("coal");
+        abil.addLovedItems("Hot Pepper");
+        abil.addHatedItems("Blueberry");
+        abil.addHatedItems("Wine");
+
+        NPC aul = new NPC("Aul", time);
+        aul.addLovedItems("Melon");
+        aul.addLovedItems("Pumpkin");
+        aul.addLovedItems("Baguette");
+        aul.addHatedItems("firewood");
+        aul.addHatedItems("coal");
+
+        NPC nazhif = new NPC("Nazhif", time);
+        nazhif.addLikedItems("Catfish");
+        nazhif.addLikedItems("Salmon");
+        nazhif.addLikedItems("Sardine");
+        nazhif.addHatedItems("Grape");
+        nazhif.addHatedItems("Cauliflower");
+
+        NPC syafiq = new NPC("Syafiq", time);
+        syafiq.addLikedItems("Fish Stew");
+        syafiq.addLikedItems("Baguette");
+        caroline.addHatedItems("Potato");
+        caroline.addHatedItems("Wheat");
+        caroline.addHatedItems("Hot Pepper");
+
+        NPC farhan = new NPC("Farhan", time);
+        farhan.addLikedItems("Crimsonfish");
+        farhan.addLikedItems("Glacierfish");
+        farhan.addLikedItems("Pumpkin Pie");
+        farhan.addHatedItems("Pufferfish");
+        farhan.addHatedItems("Salmon");
+
+        NPC bt = new NPC("BT", time);
+        bt.addLovedItems("Pumpkin Pie");
+        bt.addLikedItems("Blueberry");
+        bt.addLikedItems("Wheat");
+        bt.addHatedItems("Coal");
+        bt.addHatedItems("Salmon");
+
+        NPC arra = new NPC("Arra", time);
+        arra.addLovedItems("Wheat");
+        arra.addLikedItems("Salmon");
+        arra.addLikedItems("Pumpkin Pie");
+        arra.addHatedItems("Potato");
+        arra.addHatedItems("Sardine");
+
+        NPC fino = new NPC("Fino", time);
+        fino.addLovedItems("Glacierfish");
+        fino.addLikedItems("Pufferfish");
+        fino.addLikedItems("Pumpkin Pie");
+        fino.addHatedItems("Blueberry");
+        fino.addHatedItems("Salmon");
+
+        NPC mahesa = new NPC("Mahesa", time);
+        mahesa.addLovedItems("Hot Papper");
+        mahesa.addLikedItems("Cranberry");
+        mahesa.addLikedItems("Baguette");
+        mahesa.addHatedItems("Blueberry");
+        mahesa.addHatedItems("Sardine");
+
+        NPC ken = new NPC("Kenlyn", time);
+        ken.addLovedItems("Fish Sandwich");
+        ken.addLikedItems("Salmon");
+        ken.addLikedItems("Cat Fish");
+        ken.addHatedItems("Blueberry");
+        ken.addHatedItems("Grape");
+        
+
         allNPC.add(mayorTadi);
         allNPC.add(caroline);
         allNPC.add(perry);
         allNPC.add(dasco);
         allNPC.add(emily);
         allNPC.add(abigail);
+        allNPC.add(vincent);
+        allNPC.add(abil);
+        allNPC.add(aul);
+        allNPC.add(nazhif);
+        allNPC.add(syafiq);
+        allNPC.add(farhan);
+        allNPC.add(bt);
+        allNPC.add(arra);
+        allNPC.add(fino);
+        allNPC.add(mahesa);
+        allNPC.add(ken);
     }
 
     public static List<NPC> getAllNPC() {

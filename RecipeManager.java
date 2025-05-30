@@ -5,6 +5,9 @@ public class RecipeManager {
     private static List<Recipe> allRecipes = new ArrayList<>();
     private static FoodManager foodm = new FoodManager();
     private static FishManager fishm = new FishManager();
+    private static SeedsManager seedsm = new SeedsManager();
+    private static CropsManager cropsm = new CropsManager();
+    private static MiscManager miscm = new MiscManager();
 
     public static void initRecipes() {
         Recipe baguette = new Recipe("Baguette");
@@ -124,19 +127,31 @@ public class RecipeManager {
         item = fishm.getFishByName(name);
         if (item != null) return item;
 
+        item = foodm.getFoodByName(name);
+        if (item != null) return item;
+
+        item = seedsm.getSeedsByName(name);
+        if (item != null) return item;
+
+        item = cropsm.getCropsByName(name);
+        if (item != null) return item;
+
+        item = miscm.getMiscByName(name);
+        if (item != null) return item;
+
         return null; // gak ketemu
     }
 
-    public static Map<Recipe, Integer> recipeYangDijual() {
-        Map<Recipe, Integer> recipesForSale = new HashMap<>();
-        for (Recipe recipe : allRecipes) {
-            String name = recipe.getRecipeName();
-            if (name.equalsIgnoreCase("Fish n’ Chips") || name.equalsIgnoreCase("Fish Sandwich")) {
-                recipesForSale.put(recipe, 70);
-            }
-        }
-        return recipesForSale;
-    }
+    // public static Map<Recipe, Integer> recipeYangDijual() {
+    //     Map<Recipe, Integer> recipesForSale = new HashMap<>();
+    //     for (Recipe recipe : allRecipes) {
+    //         String name = recipe.getRecipeName();
+    //         if (name.equalsIgnoreCase("Fish n’ Chips") || name.equalsIgnoreCase("Fish Sandwich")) {
+    //             recipesForSale.put(recipe, 70);
+    //         }
+    //     }
+    //     return recipesForSale;
+    // }
 
     public static List<Recipe> getUnlockedRecipes() {
         List<Recipe> unlocked = new ArrayList<>();

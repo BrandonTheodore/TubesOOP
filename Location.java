@@ -10,5 +10,16 @@ public enum Location {
     PERRY_HOUSE,
     DASCO_HOUSE,
     ABIGAIL_HOUSE,
+    VINCENT_HOUSE,
+    ABIL_HOUSE,
+    AUL_HOUSE,
+    NAZHIF_HOUSE,
+    SYAFIQ_HOUSE,
+    FARHAN_HOUSE,
+    BT_HOUSE,
+    ARRA_HOUSE,
+    FINO_HOUSE,
+    MAHESA_HOUSE,
+    KENLYN_HOUSE,
     STORE;
 }

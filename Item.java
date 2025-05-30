@@ -1,3 +1,6 @@
+
+import java.util.List;
+import java.util.Objects;
 import java.util.ArrayList;
 import java.util.List;
 public abstract class Item {
@@ -61,17 +64,16 @@ public abstract class Item {
     public abstract void useItem(Player player, Item item);
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-
-        Item other = (Item) obj;
-        return this.name.equalsIgnoreCase(other.name); // atau pakai ID, dsb
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Item item = (Item) o;
+        return name.equals(item.name);
     }
 
     @Override
     public int hashCode() {
-        return name.toLowerCase().hashCode(); // supaya konsisten dengan equals()
+        return Objects.hash(name);
     }
 
     public final void play(){

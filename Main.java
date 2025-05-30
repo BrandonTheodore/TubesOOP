@@ -56,12 +56,15 @@ public class Main {
 
         System.out.println("Input your farm name: ");
         String inputFarmName = scanner.nextLine();
-
+        System.out.println("");
         Time time = new Time();
         Farm farm = new Farm(inputFarmName, time);
         farm.runThread();
         Cooking cooking = new Cooking();
         Store store = new Store();
+        Idle idle = new Idle(new Watering());
+        Random rand = new Random();
+        int randomNumber = rand.nextInt(1000);
 
         Player player = new Player(inputName, gender, farm, time, Location.FARM);
         player.addGold(9999);
@@ -73,6 +76,7 @@ public class Main {
         FoodManager foodManager = new FoodManager();
         MiscManager miscManager = new MiscManager();
         RecipeManager recipeManager = new RecipeManager();
+        RecipeManager.initRecipes();
         NPCManager npcManager = new NPCManager();
         SeedsManager seedsManager = new SeedsManager();
 
@@ -370,6 +374,16 @@ public class Main {
                 }
                 case "day" -> {
                     player.getFarm().changeDay();
+                    time.addTime(60);
+                }
+                case "idle" -> {
+                    if(randomNumber % 2 == 0){
+                        idle.setIdle(new Humming());
+                    } else {
+                        idle.setIdle(new Humming());
+                    }
+                    idle.idling();
+                    Thread.sleep(1000);
                 }
                 default -> message = "Unknown command.";
             }
@@ -467,7 +481,7 @@ public class Main {
             
             switch(input){
                 case "1" -> {
-                    RecipeManager.initRecipes();
+                    // RecipeManager.initRecipes();
                     RecipeManager.printUnlockedRecipes();
                     System.out.print("\nMasukkan nama resep yang ingin dimasak: ");
                     String recipeName = scanner.nextLine();

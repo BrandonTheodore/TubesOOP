@@ -113,7 +113,7 @@ public class NPC {
             return;
         }
 
-        String itemName = item.getName().toLowerCase();
+        String itemName = item.getName();
  
         // tambahin heart point
         if (lovedItems.contains(itemName)) {
