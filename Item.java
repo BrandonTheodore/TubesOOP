@@ -1,5 +1,5 @@
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 public abstract class Item {
     protected String name;
     protected int sellPrice;
@@ -74,4 +74,9 @@ public abstract class Item {
         return name.toLowerCase().hashCode(); // supaya konsisten dengan equals()
     }
 
+    public final void play(){
+        printItemStats();
+    }
+
+    abstract void printItemStats();
 }

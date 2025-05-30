@@ -28,4 +28,13 @@ public class Food extends Item {
             }
         }
     }
+
+    @Override
+    void printItemStats(){
+        System.out.println("Name: " + this.name);
+        System.out.println("Buy Price: " + this.buyPrice + "g");
+        System.out.println("Sell Price: " + this.sellPrice + "g");
+        System.out.println("Item Category: " + this.getCategory().toString());
+        System.out.println("Energy Value: " + this.energyValue);
+    }
 }
