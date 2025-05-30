@@ -1,6 +1,8 @@
+
 import java.util.List;
 import java.util.Objects;
 import java.util.ArrayList;
+import java.util.List;
 public abstract class Item {
     protected String name;
     protected int sellPrice;
@@ -73,4 +75,10 @@ public abstract class Item {
     public int hashCode() {
         return Objects.hash(name);
     }
+
+    public final void play(){
+        printItemStats();
+    }
+
+    abstract void printItemStats();
 }

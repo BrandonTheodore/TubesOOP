@@ -1,6 +1,6 @@
+import java.lang.*;
 import java.time.LocalTime;
 import java.util.*;
-import java.lang.*;
 public class Time {
     private final int accelerationFactor;
     private LocalTime startGameTime;
@@ -132,7 +132,6 @@ public class Time {
                 case "a" :
                     time.addTime(60);
             }
-
         }
     }
 }
