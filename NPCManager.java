@@ -123,6 +123,41 @@ public class NPCManager {
         farhan.addLikedItems("Pumpkin Pie");
         farhan.addHatedItems("Pufferfish");
         farhan.addHatedItems("Salmon");
+
+        NPC bt = new NPC("BT", time);
+        bt.addLovedItems("Pumpkin Pie");
+        bt.addLikedItems("Blueberry");
+        bt.addLikedItems("Wheat");
+        bt.addHatedItems("Coal");
+        bt.addHatedItems("Salmon");
+
+        NPC arra = new NPC("Arra", time);
+        arra.addLovedItems("Wheat");
+        arra.addLikedItems("Salmon");
+        arra.addLikedItems("Pumpkin Pie");
+        arra.addHatedItems("Potato");
+        arra.addHatedItems("Sardine");
+
+        NPC fino = new NPC("Fino", time);
+        fino.addLovedItems("Glacierfish");
+        fino.addLikedItems("Pufferfish");
+        fino.addLikedItems("Pumpkin Pie");
+        fino.addHatedItems("Blueberry");
+        fino.addHatedItems("Salmon");
+
+        NPC mahesa = new NPC("Mahesa", time);
+        mahesa.addLovedItems("Hot Papper");
+        mahesa.addLikedItems("Cranberry");
+        mahesa.addLikedItems("Baguette");
+        mahesa.addHatedItems("Blueberry");
+        mahesa.addHatedItems("Sardine");
+
+        NPC ken = new NPC("Kenlyn", time);
+        ken.addLovedItems("Fish Sandwich");
+        ken.addLikedItems("Salmon");
+        ken.addLikedItems("Cat Fish");
+        ken.addHatedItems("Blueberry");
+        ken.addHatedItems("Grape");
         
 
         allNPC.add(mayorTadi);
@@ -137,8 +172,11 @@ public class NPCManager {
         allNPC.add(nazhif);
         allNPC.add(syafiq);
         allNPC.add(farhan);
-
-
+        allNPC.add(bt);
+        allNPC.add(arra);
+        allNPC.add(fino);
+        allNPC.add(mahesa);
+        allNPC.add(ken);
     }
 
     public static List<NPC> getAllNPC() {
