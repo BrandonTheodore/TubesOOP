@@ -62,9 +62,13 @@ public class Main {
         farm.runThread();
         Cooking cooking = new Cooking();
         Store store = new Store();
+        Idle idle = new Idle(new Watering());
+        Random rand = new Random();
+        int randomNumber = rand.nextInt(1000);
 
         Player player = new Player(inputName, gender, farm, time, Location.FARM);
         player.addGold(9999);
+        player.sleepAtTwo();
 
         CropsManager cropsManager = new CropsManager();
         EquipmentManager equipmentManager = new EquipmentManager();
@@ -83,7 +87,7 @@ public class Main {
         System.out.println("Generating " + player.getName() + "'s game, please wait...");
         Thread.sleep(2000);
 
-        List<NPC> allNPC = npcManager.getAllNPC();
+        List<NPC> allNPC = NPCManager.getAllNPC();
         List<String> allSeedName = seedsManager.getAllSeedsNames();
         // List<Seeds> allSeeds = seedsManager.getAllSeeds();
         // List<Item> itemToBeSold = itemDijual();
@@ -113,6 +117,26 @@ public class Main {
                 scanner.nextLine();
             }
 
+            if(player.getHaveCaughtLegendaryFish()){
+                RecipeManager.getRecipeByName("The Legend of Spakbor").setUnlocked(true);
+            }
+
+            if(player.getTotalHarvest() == 1){
+                RecipeManager.getRecipeByName("Veggie Soup").setUnlocked(true);
+            }
+
+            if(player.getTotalFishCaught() == 10){
+                RecipeManager.getRecipeByName("Sashimi").setUnlocked(true);
+            }
+
+            if(player.getInventory().checkItemByName("Pufferfish")){
+                RecipeManager.getRecipeByName("Fugu").setUnlocked(true);
+            }
+
+            if(player.getInventory().checkItemByName("Hot Pepper")){
+                RecipeManager.getRecipeByName("Fish Stew").setUnlocked(true);
+            }
+
             // Print the map with color
             printColorMap(gameMap.getMap());
             
@@ -132,39 +156,45 @@ public class Main {
             }
             System.out.println("");
 
-            System.out.println("Player Coordinates: (" + gameMap.getPlayerX() + ", " + gameMap.getPlayerY() + ")");
-            System.out.println("Current tile: " + getTileDescription(currentTile));
-            System.out.println("Surroundings: Up[" + getTileDescription(surroundingTiles[0]) + 
+            System.out.println("Player Coordinates  : (" + gameMap.getPlayerX() + ", " + gameMap.getPlayerY() + ")");
+            System.out.println("Current tile        : " + getTileDescription(currentTile));
+            System.out.println("Surroundings        : Up[" + getTileDescription(surroundingTiles[0]) + 
                                "], Down[" + getTileDescription(surroundingTiles[1]) + 
                                "], Left[" + getTileDescription(surroundingTiles[2]) + 
                                "], Right[" + getTileDescription(surroundingTiles[3]) + "]");
+
+            System.out.println("");
+
+            System.out.println("Energy points   : " + player.getEnergy());
+            System.out.println("Gold            : " + player.getGold());
+
+            System.out.println("");
             
             System.out.println("Controls:");
-            System.out.println("- WASD: Move player");
-            System.out.println("- T: Till soil");
-            System.out.println("- R: Recover land");
-            System.out.println("- P: Plant crop");
-            System.out.println("- Wa: Water crop");
-            System.out.println("- Hr: Harvest crop");
-            System.out.println("- Eat: eat food");
-            System.out.println("- Q: Quit game");
-            System.out.println("- En: Show energy");
-            System.out.println("- Time: Show time");
-            System.out.println("- Inv: Show inventory");
-            System.out.println("- Gold: Show gold");
+            System.out.println("- wasd  : Move player");
+            System.out.println("- t     : Till soil");
+            System.out.println("- r     : Recover land");
+            System.out.println("- p     : Plant crop");
+            System.out.println("- wa    : Water crop");
+            System.out.println("- hr    : Harvest crop");
+            System.out.println("- e     : eat food");
+            System.out.println("- time  : Show time");
+            System.out.println("- inv   : Show inventory");
+            System.out.println("- idle  : Idle");
+            System.out.println("- q     : Quit game");
 
             // if the player is near a structure, show additional controls
             for(int i = 0; i < 4; i++){
                 if(surroundingTiles[i] == 'h'){
-                    System.out.println("- H: Open House action menu");
+                    System.out.println("- h     : Open House action menu");
                     houseNearby = true;
                 }
                 if(surroundingTiles[i] == 'o'){
-                    System.out.println("- F: Fish in the pond");
+                    System.out.println("- f     : Fish in the pond");
                     pondNearby = true;
                 }
                 if(surroundingTiles[i] == 's'){
-                    System.out.println("- SB: Open Shipping Bin menu");
+                    System.out.println("- sb    : Open Shipping Bin menu");
                     shippingBinNearby = true;
                 }
             }
@@ -311,7 +341,7 @@ public class Main {
                         message = "You are not near a shipping bin!";
                     }
                 }
-                case "eat" -> {
+                case "e" -> {
                     System.out.println("Food to eat (Match Case): ");
                     input = scanner.nextLine();
                     boolean ate = player.eat(foodManager.getFoodByName(input));
@@ -321,21 +351,15 @@ public class Main {
                         message = input + " is not a food";
                     }
                 }
-                case "en" -> {
-                    message = Integer.toString(player.getEnergy()) + " energy points left";
-                }
                 case "time" -> {
                     player.getFarm().showTime();
                     System.out.println("** Press enter to go back **");
-                    input = scanner.nextLine();
+                    scanner.nextLine();
                 }
                 case "inv" -> {
                     player.getInventory().printInventory();
                     System.out.println("** Press enter to go back **");
-                    input = scanner.nextLine();
-                }
-                case "gold" -> {
-                    message = "You now have " + Integer.toString(player.getGold()) + " gold";
+                    scanner.nextLine();
                 }
                 case "honi" -> {
                     player.addGold(17209 - 9999 - 10);
@@ -344,7 +368,23 @@ public class Main {
                     player.addGold(100);
                 }
                 case "x" -> {
+                    player.getTime().addTime(60);
+                }
+                case "season" -> {
+                    player.getFarm().getSeason();
+                }
+                case "day" -> {
+                    player.getFarm().changeDay();
                     time.addTime(60);
+                }
+                case "idle" -> {
+                    if(randomNumber % 2 == 0){
+                        idle.setIdle(new Humming());
+                    } else {
+                        idle.setIdle(new Humming());
+                    }
+                    idle.idling();
+                    Thread.sleep(1000);
                 }
                 default -> message = "Unknown command.";
             }
@@ -467,7 +507,7 @@ public class Main {
 
                 case "2" -> {
                     player.sleep();
-                    message = "Kamu tidur dan energi kamu di-reset sesuai kondisi.";
+                    return;
                 }
 
                 case "3" -> {

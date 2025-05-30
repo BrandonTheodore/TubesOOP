@@ -1,6 +1,6 @@
+import java.lang.*;
 import java.time.LocalTime;
 import java.util.*;
-import java.lang.*;
 public class Time {
     private final int accelerationFactor;
     private LocalTime startGameTime;
@@ -87,11 +87,37 @@ public class Time {
         this.startGameTime = time;
         this.startRealTimeNano = System.nanoTime();
     }
+    public void update(){
+        while(true){
+            boolean first = true;
+            while(true){
+                LocalTime time = getCurrentGameTime();
+                if(time.isAfter(LocalTime.of(00, 00)) && time.isBefore(LocalTime.of(01, 00)) && first){
+                    System.out.println("Day Changed");
+                    first = false;
+                }
+                if(time.isAfter(LocalTime.of(01, 00))){
+                    break;
+                }
+            }
+        }
+        
+    }
+
+    public void runThread(){
+        Runnable task = () -> {
+            update();
+        };
+
+        Thread thread = new Thread(task);
+        thread.start();
+    }
 
 
     public static void main(String[] args) throws InterruptedException {
         Time time = new Time();
         Scanner scan = new Scanner(System.in);
+        time.runThread();
         while(true){
             String input = scan.nextLine();
             switch(input){
@@ -103,8 +129,9 @@ public class Time {
                     break;
                 case "r" :
                     time.resumeTime();
+                case "a" :
+                    time.addTime(60);
             }
-
         }
     }
 }

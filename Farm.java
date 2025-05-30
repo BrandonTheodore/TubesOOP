@@ -89,7 +89,7 @@ public class Farm {
             while(true){
                 LocalTime waktu = time.getCurrentGameTime();
                 if(waktu.isAfter(LocalTime.of(00, 00)) && waktu.isBefore(LocalTime.of(01, 00)) && first){
-                    System.out.println("Day Changed");
+                    System.out.println("\nDay Changed");
                     this.day = day.nextDay();
                     this.dayCount++;
                     first = false;
@@ -99,7 +99,6 @@ public class Farm {
                 }
             }
         }
-        
     }
 
     public void runThread(){
@@ -123,10 +122,15 @@ public class Farm {
     }
 
     public void showTime(){
+        System.out.println("\nTime played:");
+        System.out.println(this.dayCount + " day(s) played");
+        System.out.println(this.seasonCount + " season(s) has passed");
+        System.out.println("");
+        System.out.println("Current game time:");
         System.out.println("Time : " + time.getFormattedGameTime());
         System.out.println("Today is " + day.toString());
-        System.out.println("Current season is " + season.toString());
         System.out.println("Today's weather is " + weather.toString());
+        System.out.println("Current season is " + season.toString());
     }
     
 }

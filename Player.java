@@ -21,7 +21,9 @@ public class Player {
 
     private int totalCropHarvested;
     private int totalFishCaught;
-    boolean isMarried;
+    private int totalHarvest;
+    private boolean isMarried;
+    private boolean haveCaughtLegendaryFish;
 
     private ShippingBin shippingBin;
     private Seeds[][] seedMap;
@@ -32,9 +34,6 @@ public class Player {
     private static final int ENERGY_BONUS_IF_ZERO = 10;
     private static final int TILL_ENERGY_COST_PER_TILE = 5;
     private static final int RECOVER_ENERGY_COST_PER_TILE = 5;
-    private static final int PLANT_ENERGY_COST_PER_SEED = 5;
-    private static final int WATER_ENERGY_COST_PER_TILE = 5;
-    private static final int HARVESTING_ENERGY_COST_PER_CROP = 5;
     private static final int FISHING_ENERGY_COST = 5;
     private static final int MARRY_ENERGY_COST = 80;
     private static final int WATCHING_ENERGY_COST = 5;
@@ -54,7 +53,9 @@ public class Player {
 
         this.totalCropHarvested = 0;
         this.totalFishCaught = 0;
+        this.totalHarvest = 0;
         this.isMarried = false;
+        this.haveCaughtLegendaryFish = false;
         
         this.location = location;
         this.shippingBin = new ShippingBin(time);
@@ -68,6 +69,10 @@ public class Player {
 
     public Seeds getSeedFromSeedMap(int playerX, int playerY){
         return seedMap[playerY][playerX];
+    }
+
+    public boolean getHaveCaughtLegendaryFish(){
+        return this.haveCaughtLegendaryFish;
     }
 
     public String getName() {
@@ -85,12 +90,15 @@ public class Player {
     public String getPartner() {
         return partner;
     }
+
     public int getGold() {
         return gold;
     }
+
     public Inventory getInventory() {
         return inventory;
     }
+
     public Location getLocation() {
         return location;
     }
@@ -101,6 +109,10 @@ public class Player {
 
     public int getTotalCropHarvested(){
         return this.totalCropHarvested;
+    }
+
+    public int getTotalHarvest(){
+        return this.totalHarvest;
     }
 
     public int getTotalFishCaught(){
@@ -309,6 +321,7 @@ public class Player {
         this.time.addTime(5);
         this.inventory.addItem(seedHarvested.getResultCrop(), seedHarvested.getResultCrop().getCropPerPanen());
         this.totalCropHarvested += seedHarvested.getResultCrop().getCropPerPanen();
+        this.totalHarvest++;
         seedMap[playerY][playerX] = new Seeds("temp", 0, Season.FALL, 0, new Crops("temp", 0, 0, 0));
         map.setCurrentTile('.');
         System.out.println("Crop harvested");
@@ -349,21 +362,22 @@ public class Player {
         System.out.println("\n" + this.name + " tertidur pulas...");
 
         int energyBeforeSleep = this.energy;
-        if (energyBeforeSleep <= 0) { 
+        if (energyBeforeSleep == 0) {
+            this.energy += MAX_ENERGY / 2 + ENERGY_BONUS_IF_ZERO;
             // Bonus jika energi persis 0 saat tidur
-            if (energyBeforeSleep == 0) {
-                this.energy = MAX_ENERGY + ENERGY_BONUS_IF_ZERO;
-                System.out.println(this.name + " tidur saat energi 0! Mendapatkan bonus energi +10. Energi: " + this.energy + ".");
-            }
-            else if (energyBeforeSleep < (MAX_ENERGY * ENERGY_PENALTY_THRESHOLD_PERCENTAGE)) {
-                this.energy = MAX_ENERGY / 2;
-                System.out.println(this.name + " tidur saat energi menipis (" + energyBeforeSleep + "). Energi terisi setengah: " + this.energy + ".");
-            } else {
-                this.energy = MAX_ENERGY; 
-                System.out.println(this.name + " tidur. Energi terisi penuh (" + this.energy + ")!");
-            }
+            // if (energyBeforeSleep == 0) {
+            //     this.energy += MAX_ENERGY / 2 + ENERGY_BONUS_IF_ZERO;
+            //     System.out.println(this.name + " tidur saat energi 0! Mendapatkan bonus energi +10. Energi: " + this.energy + ".");
+            // }
+            // else if (energyBeforeSleep < (MAX_ENERGY * ENERGY_PENALTY_THRESHOLD_PERCENTAGE)) {
+            //     this.energy += MAX_ENERGY / 2;
+            //     System.out.println(this.name + " tidur saat energi menipis (" + energyBeforeSleep + "). Energi terisi setengah: " + this.energy + ".");
+            // } else {
+            //     this.energy = MAX_ENERGY; 
+            //     System.out.println(this.name + " tidur. Energi terisi penuh (" + this.energy + ")!");
+            // }
         } else if (energyBeforeSleep < (MAX_ENERGY * ENERGY_PENALTY_THRESHOLD_PERCENTAGE)) {
-            this.energy = MAX_ENERGY / 2;
+            this.energy += MAX_ENERGY / 2;
             System.out.println(this.name + " tidur saat energi menipis (" + energyBeforeSleep + "). Energi terisi setengah: " + this.energy + ".");
         }
         else {
@@ -372,7 +386,7 @@ public class Player {
             System.out.println(this.name + " bangun dengan energi penuh (" + this.energy + ")!");
         }
         LocalTime skipTimeToMorning = LocalTime.of(6, 0);
-        if(time.getCurrentGameTime().isBefore(LocalTime.of(23, 59)) || time.getCurrentGameTime().equals(LocalTime.of(23, 59))){
+        if((time.getCurrentGameTime().isAfter(LocalTime.of(6, 0)) && time.getCurrentGameTime().isBefore(LocalTime.of(23, 59))) || time.getCurrentGameTime().equals(LocalTime.of(23, 59))){
             farm.setDay(farm.getDay().nextDay());
             farm.setDayCount(farm.getDayCount() + 1);
         }
@@ -380,8 +394,6 @@ public class Player {
         farm.changeDay();
         System.out.println("Waktu game maju sampai pagi."); //harus ditambahin
     }
-
-
 
     public boolean fishing(Location location) {
         System.out.println(this.name + " mulai memancing...");
@@ -470,13 +482,18 @@ public class Player {
                 System.out.println("Tebakan Anda terlalu tinggi.");
             }
         }
-        time.addTime(15); 
-        time.resumeTime(); 
+        time.addTime(15);
+        time.resumeTime();
 
         if (guessedCorrectly) {
             this.inventory.addItem(caughtFish, 1);
             System.out.println(this.name + " berhasil menangkap " + caughtFish.getName() + " (" + caughtFish.getFishRarity() + ")!");
             System.out.println("Harga jual: " + caughtFish.getSellPrice() + " gold.");
+
+            if(caughtFish.getFishRarity() == Rarity.LEGENDARY){
+                this.haveCaughtLegendaryFish = true;
+            }
+
             this.totalFishCaught++;
             return true;
         } else {
@@ -590,5 +607,18 @@ public class Player {
 
     public String showLocation() {
         return this.name + " berada di " + location.toString() + ".";
+    }
+
+    public void sleepAtTwo(){
+        Runnable task = () -> {
+            while (true) { 
+                if(this.time.getCurrentGameTime().isBefore(LocalTime.of(3, 00)) && this.time.getCurrentGameTime().isAfter(LocalTime.of(2, 00))){
+                    sleep();
+                }
+            }
+        };
+
+        Thread thread = new Thread(task);
+        thread.start();
     }
 }

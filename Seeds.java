@@ -55,4 +55,15 @@ public class Seeds extends Item {
             }
         }
     }
+
+    @Override
+    void printItemStats(){
+        System.out.println("Name: " + this.name);
+        System.out.println("Buy Price: " + this.buyPrice + "g");
+        System.out.println("Sell Price: " + this.sellPrice + "g");
+        System.out.println("Item Category: " + this.getCategory().toString());
+        System.out.println("Season: " + this.season.toString());
+        System.out.println("Days to Harvest: " + this.daysToHarvest);
+        System.out.println("Result Crop: " + this.resultCrop.toString());
+    }
 }
