@@ -88,7 +88,43 @@ public class NPCManager {
         vincent.addLovedItems("Baguette");
         vincent.addHatedItems("Wheat");
         vincent.addHatedItems("Hot Pepper");
+
+        NPC abil = new NPC("Abil", time);
+        abil.addLovedItems("Wheat");
+        abil.addLovedItems("coal");
+        abil.addLovedItems("Hot Pepper");
+        abil.addHatedItems("Blueberry");
+        abil.addHatedItems("Wine");
+
+        NPC aul = new NPC("Aul", time);
+        aul.addLovedItems("Melon");
+        aul.addLovedItems("Pumpkin");
+        aul.addLovedItems("Baguette");
+        aul.addHatedItems("firewood");
+        aul.addHatedItems("coal");
+
+        NPC nazhif = new NPC("Nazhif", time);
+        nazhif.addLikedItems("Catfish");
+        nazhif.addLikedItems("Salmon");
+        nazhif.addLikedItems("Sardine");
+        nazhif.addHatedItems("Grape");
+        nazhif.addHatedItems("Cauliflower");
+
+        NPC syafiq = new NPC("Syafiq", time);
+        syafiq.addLikedItems("Fish Stew");
+        syafiq.addLikedItems("Baguette");
+        caroline.addHatedItems("Potato");
+        caroline.addHatedItems("Wheat");
+        caroline.addHatedItems("Hot Pepper");
+
+        NPC farhan = new NPC("Farhan", time);
+        farhan.addLikedItems("Crimsonfish");
+        farhan.addLikedItems("Glacierfish");
+        farhan.addLikedItems("Pumpkin Pie");
+        farhan.addHatedItems("Pufferfish");
+        farhan.addHatedItems("Salmon");
         
+
         allNPC.add(mayorTadi);
         allNPC.add(caroline);
         allNPC.add(perry);
@@ -96,6 +132,12 @@ public class NPCManager {
         allNPC.add(emily);
         allNPC.add(abigail);
         allNPC.add(vincent);
+        allNPC.add(abil);
+        allNPC.add(aul);
+        allNPC.add(nazhif);
+        allNPC.add(syafiq);
+        allNPC.add(farhan);
+
 
     }
 

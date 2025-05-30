@@ -397,6 +397,11 @@ public class Map {
                         System.out.println("4. Dasco");
                         System.out.println("5. Abigail");
                         System.out.println("6. Vincent");
+                        System.out.println("7. Abil");
+                        System.out.println("8. Aul");
+                        System.out.println("9. Nazhif");
+                        System.out.println("10. Syafiq");
+                        System.out.println("11. Farhan");
                         System.out.println("** Type 'b' to go to the previous section **");
                         System.out.println("** Type the correspending number to navigate through the world map **");
 
@@ -448,6 +453,36 @@ public class Map {
                                 npcManager.getNPCByName("Vincent").incrementVisitingFrequency();
                                 NPCAction("Vincent", npcManager, player);
                                 message = "Done ... with Vincent";
+                            }
+                            case "7" -> {
+                                player.visiting(Location.ABIL_HOUSE);
+                                npcManager.getNPCByName("Abil").incrementVisitingFrequency();
+                                NPCAction("Abil", npcManager, player);
+                                message = "Done ... with Abil";
+                            }
+                            case "8" -> {
+                                player.visiting(Location.AUL_HOUSE);
+                                npcManager.getNPCByName("Aul").incrementVisitingFrequency();
+                                NPCAction("Aul", npcManager, player);
+                                message = "Done ... with Aul";
+                            }
+                            case "9" -> {
+                                player.visiting(Location.NAZHIF_HOUSE);
+                                npcManager.getNPCByName("Nazhif").incrementVisitingFrequency();
+                                NPCAction("Nazhif", npcManager, player);
+                                message = "Done ... with Nazhif";
+                            }
+                            case "10" -> {
+                                player.visiting(Location.SYAFIQ_HOUSE);
+                                npcManager.getNPCByName("Syafiq").incrementVisitingFrequency();
+                                NPCAction("Syafiq", npcManager, player);
+                                message = "Done ... with Syafiq";
+                            }
+                            case "11" -> {
+                                player.visiting(Location.FARHAN_HOUSE);
+                                npcManager.getNPCByName("Farhan").incrementVisitingFrequency();
+                                NPCAction("Farhan", npcManager, player);
+                                message = "Done ... with Farhan";
                             }
                             case "b" -> {
                                 message = "Back from NPC's house menu";
