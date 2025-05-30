@@ -1,5 +1,5 @@
-import java.util.List;
 import java.time.LocalTime;
+import java.util.List;
 
 
 public class Fish extends Item {
@@ -121,5 +121,36 @@ public class Fish extends Item {
                 rarityMultiplier = 5;
         }
         return (int) (baseMultiplier * rarityMultiplier);
+    }
+
+    @Override
+    void printItemStats(){
+        System.out.println("Name: " + this.name);
+        System.out.println("Buy Price: " + this.buyPrice + "g");
+        System.out.println("Sell Price: " + this.sellPrice + "g");
+        System.out.println("Item Category: " + this.getCategory().toString());
+        System.out.println("Rarity: " + this.rarity.toString());
+        System.out.println("Time to catch: " + this.timeStart.toString() + "-" + this.timeEnd.toString());
+
+        System.out.println("");
+        System.out.println("Season to catch");
+        int count = 1;
+        for(Season season : seasons){
+            System.out.println(count + ". " + season.toString());
+        }
+
+        System.out.println("");
+        System.out.println("Weather to catch");
+        count = 0;
+        for(Weather weather : weathers){
+            System.out.println(count + ". " + weather.toString());
+        }
+
+        System.out.println("");
+        System.out.println("Location to catch");
+        count = 0;
+        for(Location loc : locations){
+            System.out.println(count + ". " + loc.toString());
+        }
     }
 }
