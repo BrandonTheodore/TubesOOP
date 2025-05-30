@@ -74,7 +74,7 @@ public class NPCManager {
         abigail.addLovedItems("Pumpkin");
         abigail.addLovedItems("Grape");
         abigail.addLovedItems("Cranberry");
-        abigail.addLikedItems("Beguette");
+        abigail.addLikedItems("Baguette");
         abigail.addLikedItems("Pumpkin Pie");
         abigail.addLikedItems("Wine");
         abigail.addHatedItems("Hot Pepper");
@@ -82,12 +82,21 @@ public class NPCManager {
         abigail.addHatedItems("Parsnip");
         abigail.addHatedItems("Wheat");
 
+        NPC vincent = new NPC("Vincent", time);
+        vincent.addLovedItems("Grape");
+        vincent.addLovedItems("firewood");
+        vincent.addLovedItems("Baguette");
+        vincent.addHatedItems("Wheat");
+        vincent.addHatedItems("Hot Pepper");
+        
         allNPC.add(mayorTadi);
         allNPC.add(caroline);
         allNPC.add(perry);
         allNPC.add(dasco);
         allNPC.add(emily);
         allNPC.add(abigail);
+        allNPC.add(vincent);
+
     }
 
     public static List<NPC> getAllNPC() {

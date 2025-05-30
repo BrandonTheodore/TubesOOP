@@ -396,6 +396,7 @@ public class Map {
                         System.out.println("3. Perry");
                         System.out.println("4. Dasco");
                         System.out.println("5. Abigail");
+                        System.out.println("6. Vincent");
                         System.out.println("** Type 'b' to go to the previous section **");
                         System.out.println("** Type the correspending number to navigate through the world map **");
 
@@ -441,6 +442,12 @@ public class Map {
                                 npcManager.getNPCByName("Abigail").incrementVisitingFrequency();
                                 NPCAction("Abigail", npcManager, player);
                                 message = "Done ... with Abigail";
+                            }
+                            case "6" -> {
+                                player.visiting(Location.VINCENT_HOUSE);
+                                npcManager.getNPCByName("Vincent").incrementVisitingFrequency();
+                                NPCAction("Vincent", npcManager, player);
+                                message = "Done ... with Vincent";
                             }
                             case "b" -> {
                                 message = "Back from NPC's house menu";

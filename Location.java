@@ -10,5 +10,6 @@ public enum Location {
     PERRY_HOUSE,
     DASCO_HOUSE,
     ABIGAIL_HOUSE,
+    VINCENT_HOUSE,
     STORE;
 }
