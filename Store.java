@@ -5,6 +5,7 @@ import java.util.Map;
 public class Store {
     private Map<Item, Integer> itemsForSale;
     private Map<Recipe, Integer> recipesForSale;
+    // List<Recipe> all = RecipeManager.getAllRecipes();
     private int totalExpenditure;
 
     public Store() {
@@ -13,11 +14,18 @@ public class Store {
 
         List<Item> itemList = Item.itemDijual();
         for (Item item : itemList) {
-            // Misalnya kita kasih harga default 50, atau bisa item.getPrice()
-            itemsForSale.put(item, item.getBuyPrice()); // asumsi ada getPrice()
+            itemsForSale.put(item, item.getBuyPrice());
         }
     
-        recipesForSale = RecipeManager.recipeYangDijual();
+        for (Recipe r : RecipeManager.getAllRecipes()) {
+            if (r.getRecipeName().equals("Fish n' Chips")) {
+                recipesForSale.put(r, 70);
+            }
+            if (r.getRecipeName().equals("Fish Sandwich")) {
+                recipesForSale.put(r, 70);
+            }
+        }
+
         this.totalExpenditure = 0;
     }
 
@@ -58,17 +66,13 @@ public class Store {
         System.out.println("--------------------------------------------------");
         System.out.printf("| %-5s | %-25s | %-10s |\n", "No", "Recipe", "Harga");
         System.out.println("--------------------------------------------------");
-
-        int idx = 1;
-        for (Map.Entry<Recipe, Integer> entry : recipesForSale.entrySet()) {
-            System.out.printf("| %-5d | %-25s | %-10d |\n", 
-                idx, entry.getKey().getRecipeName(), entry.getValue());
-            idx++;
-        }
+        
+        System.out.printf("| %-5d | %-25s | %-10d |\n", 1, "Fish n' Chips", 70);
+        System.out.printf("| %-5d | %-25s | %-10d |\n", 2, "Fish Sandwich", 70);
+        
         System.out.println("--------------------------------------------------");
         System.out.println();
     }
-
 
     // Beli item
     public boolean buyOneItem(Player player, String itemName) {
@@ -120,24 +124,51 @@ public class Store {
 
     // Beli resep
     public boolean buyRecipe(Player player, String recipeName) {
-        for (Map.Entry<Recipe, Integer> entry : recipesForSale.entrySet()) {
-            if (entry.getKey().getRecipeName().equalsIgnoreCase(recipeName)) {
-                int price = entry.getValue();
-                if (player.getGold() < price) {
-                    System.out.println("Uangmu tidak cukup.");
-                    return false;
-                }
-                player.removeGold(price);
-                entry.getKey().setUnlocked(true); // resep terbuka
-                // player.unlockRecipe(entry.getKey()); // set recipenya biar true
-                System.out.println("Kamu membeli resep " + recipeName);
-                this.totalExpenditure += price;
-                return true;
+        if (recipeName.equalsIgnoreCase("Fish n' Chips")) {
+            int price = 70;
+            if (player.getGold() < price) {
+                System.out.println("Uangmu tidak cukup.");
+                return false;
             }
+            player.removeGold(price);
+
+            // Unlocked: cari resepnya dulu dari semua resep
+            for (Recipe r : RecipeManager.getAllRecipes()) {
+                if (r.getRecipeName().equals("Fish n' Chips")) {
+                    r.setUnlocked(true);
+                    break;
+                }
+            }
+
+            System.out.println("Kamu membeli resep Fish n' Chips");
+            totalExpenditure += price;
+            return true;
+        } 
+        else if (recipeName.equalsIgnoreCase("Fish Sandwich")) {
+            int price = 70;
+            if (player.getGold() < price) {
+                System.out.println("Uangmu tidak cukup.");
+                return false;
+            }
+            player.removeGold(price);
+
+            for (Recipe r : RecipeManager.getAllRecipes()) {
+                if (r.getRecipeName().equals("Fish Sandwich")) {
+                    r.setUnlocked(true);
+                    break;
+                }
+            }
+
+            System.out.println("Kamu membeli resep Fish Sandwich");
+            totalExpenditure += price;
+            return true;
         }
+
         System.out.println("Resep tidak ditemukan.");
         return false;
     }
+
+
 
     public String getItemNameByIndex(int index){
         int idx = 1;

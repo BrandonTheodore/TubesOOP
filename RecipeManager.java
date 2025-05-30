@@ -142,16 +142,16 @@ public class RecipeManager {
         return null; // gak ketemu
     }
 
-    public static Map<Recipe, Integer> recipeYangDijual() {
-        Map<Recipe, Integer> recipesForSale = new HashMap<>();
-        for (Recipe recipe : allRecipes) {
-            String name = recipe.getRecipeName();
-            if (name.equalsIgnoreCase("Fish n’ Chips") || name.equalsIgnoreCase("Fish Sandwich")) {
-                recipesForSale.put(recipe, 70);
-            }
-        }
-        return recipesForSale;
-    }
+    // public static Map<Recipe, Integer> recipeYangDijual() {
+    //     Map<Recipe, Integer> recipesForSale = new HashMap<>();
+    //     for (Recipe recipe : allRecipes) {
+    //         String name = recipe.getRecipeName();
+    //         if (name.equalsIgnoreCase("Fish n’ Chips") || name.equalsIgnoreCase("Fish Sandwich")) {
+    //             recipesForSale.put(recipe, 70);
+    //         }
+    //     }
+    //     return recipesForSale;
+    // }
 
     public static List<Recipe> getUnlockedRecipes() {
         List<Recipe> unlocked = new ArrayList<>();
