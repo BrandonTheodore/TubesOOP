@@ -16,5 +16,10 @@ public enum Location {
     NAZHIF_HOUSE,
     SYAFIQ_HOUSE,
     FARHAN_HOUSE,
+    BT_HOUSE,
+    ARRA_HOUSE,
+    FINO_HOUSE,
+    MAHESA_HOUSE,
+    KENLYN_HOUSE,
     STORE;
 }
