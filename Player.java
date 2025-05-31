@@ -18,12 +18,14 @@ public class Player {
     private Equipment equippedTool;
     private boolean hasUsedShippingBinToday;
     private Time time;
+    private House house;
 
     private int totalCropHarvested;
     private int totalFishCaught;
     private int totalHarvest;
     private boolean isMarried;
     private boolean haveCaughtLegendaryFish;
+    private boolean slept;
 
     private ShippingBin shippingBin;
     private Seeds[][] seedMap;
@@ -50,12 +52,14 @@ public class Player {
         this.gold = 0;
         this.inventory = new Inventory();
         this.time = time;
+        this.house = new House();
 
         this.totalCropHarvested = 0;
         this.totalFishCaught = 0;
         this.totalHarvest = 0;
         this.isMarried = false;
         this.haveCaughtLegendaryFish = false;
+        this.slept = true;
         
         this.location = location;
         this.shippingBin = new ShippingBin(time);
@@ -73,6 +77,14 @@ public class Player {
 
     public boolean getHaveCaughtLegendaryFish(){
         return this.haveCaughtLegendaryFish;
+    }
+
+    public House getHouse(){
+        return this.house;
+    }
+
+    public boolean getSlept(){
+        return this.slept;
     }
 
     public String getName() {
@@ -121,6 +133,10 @@ public class Player {
 
     public boolean getIsMarried(){
         return this.isMarried;
+    }
+
+    public void setSlept(boolean slept){
+        this.slept = slept;
     }
 
     public void setGender(Gender gender) {
@@ -392,6 +408,7 @@ public class Player {
         }
         time.setTime(skipTimeToMorning);
         farm.changeDay();
+        this.slept = true;
         System.out.println("Waktu game maju sampai pagi."); //harus ditambahin
     }
 
@@ -614,6 +631,27 @@ public class Player {
             while (true) { 
                 if(this.time.getCurrentGameTime().isBefore(LocalTime.of(3, 00)) && this.time.getCurrentGameTime().isAfter(LocalTime.of(2, 00))){
                     sleep();
+                }
+            }
+        };
+
+        Thread thread = new Thread(task);
+        thread.start();
+    }
+
+    public void sleepAtTwoHouse(Cooking cooking, RecipeManager recipeManager, MiscManager miscManager){
+        Scanner scanner = new Scanner(System.in);
+        Runnable task = () -> {
+            while (true) { 
+                if(this.time.getCurrentGameTime().isBefore(LocalTime.of(3, 00)) && this.time.getCurrentGameTime().isAfter(LocalTime.of(2, 00))){
+                    this.slept = false;
+                    System.out.println("\nHarus segera tidur, waktu sudah jam 02.00!");
+                    this.time.stopTime();
+                    try {
+                        Thread.sleep(15000);
+                    } catch (InterruptedException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
             }
         };
