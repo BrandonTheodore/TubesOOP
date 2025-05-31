@@ -453,19 +453,14 @@ public class House{
                 case "wa" -> {
                     if(nearCouch){
                         player.watching();
-                        message = "You watched Senchou!";
+                        message = "You watched TV!";
                         break;
                     }
                     message = "You must be in a Couch to watch TV!";
                 }
                 case "x" ->{
                     if(nearExit){
-                        System.out.println("Do you want to exit the house? (y to accept)");
-                        input = scanner.nextLine().toLowerCase();
-                        if(input.equals("y")){
-                            return;
-                        }
-                        break;
+                        return;
                     }
                     message = "You cannot exit, no door to go through";
                 }
@@ -568,11 +563,7 @@ public class House{
                     message = "No painting to see";
                 }
                 case "exit" -> {
-                    System.out.println("Do you want to exit the house? (y to accept)");
-                    input = scanner.nextLine().toLowerCase();
-                    if(input.equals("y")){
-                        return;
-                    }
+                    return;
                 }
                 case "time" -> {
                     player.getFarm().showTime();

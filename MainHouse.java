@@ -281,7 +281,7 @@ public class MainHouse {
 
                             if(seedFound){
                                 player.plant(gameMap.getPlayerX(), gameMap.getPlayerY(), seedsManager.getSeedsByName(inputSeed), gameMap);
-                                Thread.sleep(1500);
+                                Thread.sleep(3000);
                                 break;
                             } else {
                                 message = "Seed not found!";
@@ -306,6 +306,7 @@ public class MainHouse {
                 case "hr" -> {
                     if(gameMap.isHarvestReady()){
                         player.harvest(gameMap.getPlayerX(), gameMap.getPlayerY(), gameMap);
+                        Thread.sleep(2500);
                         // message = "You harvested the crops!";
                     } else if (gameMap.isPlanted()) {
                         message = "Crop is not ready for harvest";
@@ -317,7 +318,7 @@ public class MainHouse {
                 }
                 case "q" -> {
                     System.out.println("Quitting game...");
-                    Thread.sleep(3000);
+                    Thread.sleep(2000);
                     System.out.println("Goodbye!!");
                     running = false;
                 }
@@ -337,7 +338,7 @@ public class MainHouse {
                         } else {
                             message = "Fishing failed";
                         }
-                        Thread.sleep(2000);
+                        Thread.sleep(1500);
                     } else {
                         message = "You are not near a pond!";
                     }
@@ -403,10 +404,6 @@ public class MainHouse {
                 case "season" -> {
                     player.getFarm().changeSeason();
                 }
-                case "day" -> {
-                    player.getFarm().changeDay();
-                    time.addTime(60);
-                }
                 case "idle" -> {
                     if(randomNumber % 2 == 0){
                         idle.setIdle(new Humming());
@@ -416,7 +413,39 @@ public class MainHouse {
                     idle.idling();
                     Thread.sleep(1000);
                 }
+                case "min5" -> {
+                    if(player.consumeEnergy(5)){
+                        message = "5 energy used";
+                        Thread.sleep(1000);
+                        break;
+                    }
+                    message = "Your energy is <= 0";
+                }
+                case "min40" -> {
+                    if(player.consumeEnergy(40)){
+                        message = "40 energy used";
+                        Thread.sleep(1000);
+                        break;
+                    }
+                    message = "Your energy is <= 0 or current energy - energy cost < -20";
+                }
+                case "min20" -> {
+                    if(player.consumeEnergy(20)){
+                        message = "20 energy used";
+                        Thread.sleep(1000);
+                        break;
+                    }
+                    message = "Your energy is <= 0";
+                }
                 default -> message = "Unknown command.";
+                case "addmax" -> {
+                    player.addEnergy(999);
+                    message = "Replenished energy";
+                }
+                case "sl" -> {
+                    player.sleep();
+                    Thread.sleep(1500);
+                }
             }
             
             // Clear some space between turns
