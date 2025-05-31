@@ -16,13 +16,6 @@ import java.util.*;
  * by allowing player movement and interaction with the game world.
  */
 public class Main {
-    private static final String ANSI_RESET = "\u001B[0m";
-    private static final String ANSI_GREEN = "\u001B[32m";
-    private static final String ANSI_BLUE = "\u001B[34m"; 
-    private static final String ANSI_YELLOW = "\u001B[33m";
-    private static final String ANSI_RED = "\u001B[31m";
-    private static final String ANSI_CYAN = "\u001B[36m";
-
     static Scanner scanner = new Scanner(System.in);
     
     public static void main(String[] args) throws InterruptedException {
@@ -370,7 +363,7 @@ public class Main {
                     message = "added 1000 gold";
                 }
                 case "wado" -> {
-                    player.addGold(randomNumber);
+                    player.addGold(100);
                     message = "added 100 gold";
                 }
                 case "x" -> {

@@ -22,6 +22,10 @@ public class ShippingBin {
         return this.totalIncome;
     }
 
+    public void setHasBeenUsed(boolean hasBeenUsed){
+        this.hasBeenUsed = hasBeenUsed;
+    }
+
     /**
      * add item to bin,
      * if already in bin add quantity
@@ -79,7 +83,7 @@ public class ShippingBin {
         Runnable task = () -> {
             while(true){
                 LocalTime currTime = time.getCurrentGameTime();
-                if(currTime.isAfter(LocalTime.of(00, 00)) && currTime.isBefore(LocalTime.of(01, 00))){
+                if(currTime.isAfter(LocalTime.of(00, 00)) && currTime.isBefore(LocalTime.of(6, 05))){
                     player.addGold(this.incomePerSale);
                     System.out.println("You successfully sold your items for a total of " + this.incomePerSale + " gold!");
                     System.out.println("You now have " + player.getGold() + " gold!");

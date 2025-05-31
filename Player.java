@@ -449,6 +449,11 @@ public class Player {
         farm.changeDay();
         this.farm.rainWater();
         System.out.println("Waktu game maju sampai pagi."); //harus ditambahin
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public boolean fishing(Location location) {
