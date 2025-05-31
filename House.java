@@ -281,8 +281,15 @@ public class House{
         String message = "nothing";
         boolean running = true;
         boolean playerSlept = slept;
+        boolean first = true;
         
         while(running){
+            if(first){
+                this.playerX = 11;
+                this.playerY = 22;
+                first = false;
+            }
+
             if(!player.getSlept()){
                 player.getTime().resumeTime();
                 player.sleep();
@@ -341,7 +348,6 @@ public class House{
             System.out.println("- HELP  : Display useful info");
             System.out.println("- INV   : Show inventory");
             System.out.println("- E     : Eat food");
-            System.out.println("- V     : View Art.");
 
             for(int i = 0; i < 4; i++){
                 if(surroundingTiles[i] == KITCHEN){
@@ -385,6 +391,7 @@ public class House{
                     canStudy = true;
                 }
                 if(surroundingTiles[i] == MARINE){
+                    System.out.println("- V     : View Art.");
                     nearPainting = true;
                 }
             }
@@ -580,13 +587,12 @@ public class House{
                 case "help" -> {
                     System.out.println("");
                     System.out.println("Go near these objects in the map to do an action,");
+                    System.out.println("Painting  : " + MARINE);
                     System.out.println("Couch     : " + COUCH);
                     System.out.println("Bed       : " + BED);
                     System.out.println("Kitchen   : " + KITCHEN);
                     System.out.println("Exit Door : " + EXIT);
-                    System.out.println("Table     : " + TABLE);
                     System.out.println("Chair     : " + CHAIR);
-                    System.out.println("TV        : " + TV);
                     System.out.println("Plant     : " + PLANT);
                     System.out.println("Bathtub   : " + BATHTUB);
                     System.out.println("Shower    : " + SHOWER);
@@ -601,7 +607,7 @@ public class House{
                     System.out.println("Sink    : " + SINK);
                     
                     System.out.println("** Press enter to go back **");
-                    scanner.next();
+                    scanner.nextLine();
                 }
                 default -> message = "Invalid Input";
             }
