@@ -138,7 +138,7 @@ public class House{
         // int previousY = this.playerY;
         // char previousTile = 'a';
         boolean canMove = false;
-        boolean inputValid = true;
+        // boolean inputValid = true;
 
         switch (input) {
             case "w" -> {
@@ -173,17 +173,9 @@ public class House{
                     canMove = true;
                 }
             }
-            default -> inputValid = false;
+            // default -> inputValid = false;
         }
-
-        if(canMove && inputValid){
-            // this.map[this.playerY][this.playerX] = PLAYER;
-            // this.map[previousY][previousX] = previousTile;
-            return true;
-        } else {
-            // message = "use WASD to move!";
-            return false;
-        }
+        return canMove;
     }
 
     /**

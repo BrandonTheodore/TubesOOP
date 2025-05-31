@@ -138,7 +138,7 @@ public class Main {
             }
 
             // Print the map with color
-            printColorMap(gameMap.getMap());
+            gameMap.printColorMap();
             
             // Get surrounding tiles information
             char[] surroundingTiles = gameMap.getSurroundingTiles();
@@ -272,7 +272,7 @@ public class Main {
 
                             if(seedFound){
                                 player.plant(gameMap.getPlayerX(), gameMap.getPlayerY(), seedsManager.getSeedsByName(inputSeed), gameMap);
-                                Thread.sleep(1500);
+                                Thread.sleep(2500);
                                 break;
                             } else {
                                 message = "Seed not found!";
@@ -297,6 +297,7 @@ public class Main {
                 case "hr" -> {
                     if(gameMap.isHarvestReady()){
                         player.harvest(gameMap.getPlayerX(), gameMap.getPlayerY(), gameMap);
+                        Thread.sleep(1500);
                         // message = "You harvested the crops!";
                     } else if (gameMap.isPlanted()) {
                         message = "Crop is not ready for harvest";
@@ -362,10 +363,16 @@ public class Main {
                     scanner.nextLine();
                 }
                 case "honi" -> {
-                    player.addGold(17209 - 9999 - 10);
+                    player.addGold(15000);
+                    message = "added 15k gold";
                 }
                 case "mani" -> {
-                    player.addGold(100);
+                    player.addGold(1000);
+                    message = "added 1000 gold";
+                }
+                case "wado" -> {
+                    player.addGold(randomNumber);
+                    message = "added 100 gold";
                 }
                 case "x" -> {
                     player.getTime().addTime(60);
@@ -405,40 +412,44 @@ public class Main {
                     idle.idling();
                     Thread.sleep(1000);
                 }
+                case "min5" -> {
+                    if(player.consumeEnergy(5)){
+                        message = "5 energy used";
+                        Thread.sleep(1000);
+                        break;
+                    }
+                    message = "Your energy is <= 0";
+                }
+                case "min40" -> {
+                    if(player.consumeEnergy(40)){
+                        message = "40 energy used";
+                        Thread.sleep(1000);
+                        break;
+                    }
+                    message = "Your energy is <= 0 or current energy - energy cost < -20";
+                }
+                case "min20" -> {
+                    if(player.consumeEnergy(20)){
+                        message = "20 energy used";
+                        Thread.sleep(1000);
+                        break;
+                    }
+                    message = "Your energy is <= 0";
+                }
+                case "addmax" -> {
+                    player.addEnergy(999);
+                    message = "Replenished energy";
+                }
+                case "sl" -> {
+                    player.sleep();
+                    Thread.sleep(1500);
+                }
                 default -> message = "Unknown command.";
             }
-            
-            // Clear some space between turns
-            // System.out.println("\n----------\n");
-
             TerminalClear.clearScreen();
         }
 
         scanner.close();
-    }
-    
-    /**
-     * Print the map with color-coded tiles for better visualization
-     */
-    private static void printColorMap(char[][] map) {
-        for (int row = 0; row < map.length; row++) {
-            for (int col = 0; col < map[row].length; col++) {
-                switch(map[row][col]) {
-                    case Map.TILLABLE -> System.out.print(ANSI_GREEN + ". " + ANSI_RESET);
-                    case Map.TILLED -> System.out.print(ANSI_YELLOW + "t " + ANSI_RESET);
-                    case Map.PLANTED -> System.out.print(ANSI_GREEN + "l " + ANSI_RESET);
-                    case Map.HOUSE -> System.out.print(ANSI_RED + "h " + ANSI_RESET);
-                    case Map.BIN -> System.out.print(ANSI_YELLOW + "s " + ANSI_RESET);
-                    case Map.POND -> System.out.print(ANSI_BLUE + "o " + ANSI_RESET);
-                    case Map.WATERED -> System.out.print(ANSI_BLUE + "w " + ANSI_RESET);
-                    case Map.HARVESTABLE -> System.out.print(ANSI_CYAN + "c " + ANSI_RESET);
-                    case Map.WITHERED -> System.out.print("x ");
-                    case Map.PLAYER -> System.out.print("P ");
-                    default -> System.out.print(map[row][col] + " ");
-                }
-            }
-            System.out.println();
-        }
     }
     
     /**

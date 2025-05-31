@@ -143,7 +143,7 @@ public class MainHouse {
             }
 
             // Print the map with color
-            printColorMap(gameMap.getMap());
+            gameMap.printColorMap();
             
             // Get surrounding tiles information
             char[] surroundingTiles = gameMap.getSurroundingTiles();
@@ -281,7 +281,7 @@ public class MainHouse {
 
                             if(seedFound){
                                 player.plant(gameMap.getPlayerX(), gameMap.getPlayerY(), seedsManager.getSeedsByName(inputSeed), gameMap);
-                                Thread.sleep(3000);
+                                Thread.sleep(2500);
                                 break;
                             } else {
                                 message = "Seed not found!";
@@ -306,7 +306,7 @@ public class MainHouse {
                 case "hr" -> {
                     if(gameMap.isHarvestReady()){
                         player.harvest(gameMap.getPlayerX(), gameMap.getPlayerY(), gameMap);
-                        Thread.sleep(2500);
+                        Thread.sleep(1500);
                         // message = "You harvested the crops!";
                     } else if (gameMap.isPlanted()) {
                         message = "Crop is not ready for harvest";
@@ -318,7 +318,7 @@ public class MainHouse {
                 }
                 case "q" -> {
                     System.out.println("Quitting game...");
-                    Thread.sleep(2000);
+                    Thread.sleep(3000);
                     System.out.println("Goodbye!!");
                     running = false;
                 }
@@ -376,6 +376,10 @@ public class MainHouse {
                     message = "added 15k gold";
                 }
                 case "mani" -> {
+                    player.addGold(1000);
+                    message = "added 1000 gold";
+                }
+                case "wado" -> {
                     player.addGold(100);
                     message = "added 100 gold";
                 }
@@ -437,7 +441,6 @@ public class MainHouse {
                     }
                     message = "Your energy is <= 0";
                 }
-                default -> message = "Unknown command.";
                 case "addmax" -> {
                     player.addEnergy(999);
                     message = "Replenished energy";
@@ -446,39 +449,12 @@ public class MainHouse {
                     player.sleep();
                     Thread.sleep(1500);
                 }
+                default -> message = "Unknown command.";
             }
-            
-            // Clear some space between turns
-            // System.out.println("\n----------\n");
-
             TerminalClear.clearScreen();
         }
 
         scanner.close();
-    }
-    
-    /**
-     * Print the map with color-coded tiles for better visualization
-     */
-    private static void printColorMap(char[][] map) {
-        for (int row = 0; row < map.length; row++) {
-            for (int col = 0; col < map[row].length; col++) {
-                switch(map[row][col]) {
-                    case Map.TILLABLE -> System.out.print(ANSI_GREEN + ". " + ANSI_RESET);
-                    case Map.TILLED -> System.out.print(ANSI_YELLOW + "t " + ANSI_RESET);
-                    case Map.PLANTED -> System.out.print(ANSI_GREEN + "l " + ANSI_RESET);
-                    case Map.HOUSE -> System.out.print(ANSI_RED + "h " + ANSI_RESET);
-                    case Map.BIN -> System.out.print(ANSI_YELLOW + "s " + ANSI_RESET);
-                    case Map.POND -> System.out.print(ANSI_BLUE + "o " + ANSI_RESET);
-                    case Map.WATERED -> System.out.print(ANSI_BLUE + "w " + ANSI_RESET);
-                    case Map.HARVESTABLE -> System.out.print(ANSI_CYAN + "c " + ANSI_RESET);
-                    case Map.WITHERED -> System.out.print("x ");
-                    case Map.PLAYER -> System.out.print("P ");
-                    default -> System.out.print(map[row][col] + " ");
-                }
-            }
-            System.out.println();
-        }
     }
     
     /**
@@ -493,7 +469,7 @@ public class MainHouse {
             case Map.BIN -> "Shipping Bin";
             case Map.POND -> "Pond";
             case Map.WATERED -> "Watered Plant";
-            case Map.HARVESTABLE -> "Harvestable";
+            case Map.HARVESTABLE -> "Harvestable Crop";
             case Map.WITHERED -> "Withered Plant";
             case Map.PLAYER -> "Player";
             case '\0' -> "Edge of Map";

@@ -22,6 +22,13 @@ public class Map {
     
     private Random rand;
 
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_BLUE = "\u001B[34m"; 
+    private static final String ANSI_YELLOW = "\u001B[33m";
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_CYAN = "\u001B[36m";
+
     public Map() {
         this.map = new char[HEIGHT][WIDTH];
         this.playerX = WIDTH / 2;
@@ -67,11 +74,6 @@ public class Map {
             for(int col = 0; col < WIDTH; col++) {
                 map[row][col] = TILLABLE;
             }
-        }
-
-        // Place player in the middle
-        if(map[playerY][playerX] == TILLABLE) {
-            map[playerY][playerX] = PLAYER;
         }
 
         // Place house
@@ -206,16 +208,12 @@ public class Map {
      * Move the player
      */
     public boolean move (String input) {
-        int previousX = this.playerX;
-        int previousY = this.playerY;
-        char previousTile = 'a';
         boolean canMove = false;
-        boolean inputValid = true;
+        // boolean inputValid = true;
 
         switch (input) {
             case "w" -> {
                 if(!isOutOfBound(input) && isWalkable(input)){
-                    previousTile = this.currentTile;
                     this.playerY -= 1;
                     this.currentTile = this.map[this.playerY][this.playerX];
                     canMove = true;
@@ -223,7 +221,6 @@ public class Map {
             }
             case "a" -> {
                 if(!isOutOfBound(input) && isWalkable(input)){
-                    previousTile = this.currentTile;
                     this.playerX -= 1;
                     this.currentTile = this.map[this.playerY][this.playerX];
                     canMove = true;
@@ -231,7 +228,6 @@ public class Map {
             }
             case "s" -> {
                 if(!isOutOfBound(input) && isWalkable(input)){
-                    previousTile = this.currentTile;
                     this.playerY += 1;
                     this.currentTile = this.map[this.playerY][this.playerX];
                     canMove = true;
@@ -239,26 +235,21 @@ public class Map {
             }
             case "d" -> {
                 if(!isOutOfBound(input) && isWalkable(input)){
-                    previousTile = this.currentTile;
                     this.playerX += 1;
                     this.currentTile = this.map[this.playerY][this.playerX];
                     canMove = true;
                 }
             }
-            default -> inputValid = false;
+            // default -> inputValid = false;
         }
+        return canMove;
 
-        if(canMove && inputValid){
-            this.map[this.playerY][this.playerX] = PLAYER;
-            this.map[previousY][previousX] = previousTile;
-            return true;
-        } else if(!canMove && inputValid) {
-            // message = "Cannot move through buildings / out of bounds!";
-            return false;
-        } else {
-            // message = "use WASD to move!";
-            return false;
-        }
+        // if(canMove && inputValid){
+        //     return true;
+        // } else {
+        //     // message = "use WASD to move!";
+        //     return false;
+        // }
     }
 
     /**
@@ -305,6 +296,7 @@ public class Map {
      * set current player's tile
      */
     public void setCurrentTile(char tile){
+        this.map[playerY][playerX] = tile;
         this.currentTile = tile;
     }
 
@@ -800,6 +792,29 @@ public class Map {
                 }
                 default -> message = "Action is not valid!";
             }
+        }
+    }
+
+    public void printColorMap() {
+        for (int row = 0; row < this.map.length; row++) {
+            for (int col = 0; col < this.map[row].length; col++) {
+                if(this.playerX == col && this.playerY == row){
+                    System.out.print("P ");
+                    continue;
+                }
+                switch(this.map[row][col]) {
+                    case Map.TILLABLE -> System.out.print(ANSI_GREEN + ". " + ANSI_RESET);
+                    case Map.TILLED -> System.out.print(ANSI_YELLOW + "t " + ANSI_RESET);
+                    case Map.PLANTED -> System.out.print(ANSI_GREEN + "l " + ANSI_RESET);
+                    case Map.HOUSE -> System.out.print(ANSI_RED + "h " + ANSI_RESET);
+                    case Map.BIN -> System.out.print(ANSI_YELLOW + "s " + ANSI_RESET);
+                    case Map.POND -> System.out.print(ANSI_BLUE + "o " + ANSI_RESET);
+                    case Map.WATERED -> System.out.print(ANSI_BLUE + "w " + ANSI_RESET);
+                    case Map.HARVESTABLE -> System.out.print(ANSI_CYAN + "c " + ANSI_RESET);
+                    case Map.WITHERED -> System.out.print("x ");
+                }
+            }
+            System.out.println();
         }
     }
 }
