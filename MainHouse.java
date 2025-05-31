@@ -15,7 +15,7 @@ import java.util.*;
  * This class demonstrates the functionality of the Map class
  * by allowing player movement and interaction with the game world.
  */
-public class Main {
+public class MainHouse {
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_GREEN = "\u001B[32m";
     private static final String ANSI_BLUE = "\u001B[34m"; 
@@ -67,7 +67,7 @@ public class Main {
         int randomNumber = rand.nextInt(1000);
 
         Player player = new Player(inputName, gender, farm, time, Location.FARM);
-        player.sleepAtTwo();
+        // player.sleepAtTwo();
 
         CropsManager cropsManager = new CropsManager();
         EquipmentManager equipmentManager = new EquipmentManager();
@@ -88,6 +88,7 @@ public class Main {
 
         List<NPC> allNPC = NPCManager.getAllNPC();
         List<String> allSeedName = seedsManager.getAllSeedsNames();
+        player.sleepAtTwoHouse(cooking, recipeManager, miscManager);
         // List<Seeds> allSeeds = seedsManager.getAllSeeds();
         // List<Item> itemToBeSold = itemDijual();
 
@@ -108,6 +109,11 @@ public class Main {
         
         // Game loop
         while (running) {
+            if(!player.getSlept()){
+                player.getTime().resumeTime();
+                player.sleep();
+                player.getHouse().house(player, cooking, recipeManager, miscManager, true);
+            }
 
             if((player.getIsMarried() || player.getGold() >= goldThreshold) && !endgameStatsShown){
                 printEndgameStats(player, store, allNPC);
@@ -252,6 +258,10 @@ public class Main {
                     // Plant on tilled soil
                     if (gameMap.isTilled()) {
                         while(true){
+                            if(!player.getSlept()){
+                                break;
+                            }
+
                             System.out.println("** Press 'b' to get back **");
                             System.out.print("Seed to plant (Match Case): ");
                             boolean seedFound = false;
@@ -313,7 +323,7 @@ public class Main {
                 }
                 case "h" -> {
                     if(houseNearby){
-                        houseAction(player, cooking, recipeManager, miscManager);
+                        player.getHouse().house(player, cooking, recipeManager, miscManager, false);
                         message = "You exited the house";
                     } else {
                         message = "You are not near a house!";
@@ -361,10 +371,12 @@ public class Main {
                     scanner.nextLine();
                 }
                 case "honi" -> {
-                    player.addGold(17209 - 9999 - 10);
+                    player.addGold(15000);
+                    message = "added 15k gold";
                 }
                 case "mani" -> {
                     player.addGold(100);
+                    message = "added 100 gold";
                 }
                 case "x" -> {
                     player.getTime().addTime(60);
@@ -389,7 +401,7 @@ public class Main {
                     message = "Added 16 items to the Shipping bin";
                 }
                 case "season" -> {
-                    player.getFarm().getSeason();
+                    player.getFarm().changeSeason();
                 }
                 case "day" -> {
                     player.getFarm().changeDay();
@@ -472,78 +484,13 @@ public class Main {
         }
     }
 
-    public static void houseAction(Player player, Cooking cooking, RecipeManager recipeManager, MiscManager miscManager){
-        String message = "nothing";
-        String input = "";
-
-        while(true){
-            System.out.println("\n=== House Menu ===");
-            System.out.println("1. Cooking");
-            System.out.println("2. Sleeping");
-            System.out.println("3. Watching");
-            System.out.println("** Type 'b' to go to the previous section **");
-            System.out.println("** Type the number based on the action! **");
-
-            System.out.println("");
-            if(message.equals("nothing")){
-                System.out.println("System Message: ");
-            } else {
-                System.out.print("System Message: ");
-                System.out.println(message);
-            }
-            System.out.println("");
-
-            System.out.print("Action to do: ");
-            input = scanner.nextLine().toLowerCase();
-
-            message = "nothing";
-            
-            switch(input){
-                case "1" -> {
-                    // RecipeManager.initRecipes();
-                    RecipeManager.printUnlockedRecipes();
-                    System.out.print("\nMasukkan nama resep yang ingin dimasak: ");
-                    String recipeName = scanner.nextLine();
-
-                    System.out.print("Gunakan bahan bakar apa? (firewood / coal): ");
-                    String fuelInput = scanner.nextLine().toLowerCase();
-
-                    Misc fuel = null;
-                    for (Item item : player.getInventory().getInventory().keySet()) {
-                        if (item instanceof Misc miscItem) {
-                            if ((fuelInput.equals("firewood") && miscItem.getType() == MiscType.FIREWOOD)
-                            || (fuelInput.equals("coal") && miscItem.getType() == MiscType.COAL)) {
-                                fuel = miscItem;
-                                break;
-                            }
-                        }
-                    }
-
-                    boolean success = cooking.cook(player, recipeName, fuel, recipeManager, player.getTime());
-                    message = success ? "Masakan berhasil dimulai!" : "Masakan gagal.";
-                }
-
-                case "2" -> {
-                    player.sleep();
-                    return;
-                }
-
-                case "3" -> {
-                    player.watching();
-                    message = "You watched a movie!";
-                }
-                case "b" -> {
-                    return;
-                }
-                default -> message = "Action is not valid";
-            }
-        }
-    }
-
     public static void shippingBinAction(Player player) throws InterruptedException {
         String message = "nothing";
 
         while (true) { 
+            if(!player.getSlept()){
+                return;
+            }
             System.out.println("=== Shipping Bin Menu ==="); 
             System.out.println("1. Add item to Shipping Bin");
             System.out.println("2. Sell Shipping Bin (once per day)");
@@ -572,6 +519,10 @@ public class Main {
                     String inputItemName = scanner.nextLine();
 
                     while(true){
+                        if(!player.getSlept()){
+                            return;
+                        }
+
                         System.out.println("** Type 'b' to go to the previous section **");
                         System.out.println("How much of this item do you want to add?");
                         System.out.print("Input Item Quantity: "); 

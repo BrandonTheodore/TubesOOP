@@ -118,4 +118,22 @@ public class ShippingBin {
 
         System.out.println("Total Sell Price: " + totalSellPrice);
     }
+
+    public void cheat(Item item, int quantity, Player player) {
+        if (this.bin.containsKey(item)) {
+            player.getInventory().removeItem(item, quantity);
+            this.bin.put(item, this.bin.get(item) + quantity);
+            this.incomePerSale += item.sellPrice*quantity;
+            System.out.println("You have successfully added " + quantity + " " + item.getName() + " to your Shipping Bin!");
+        } else {
+            if (this.bin.size() < maxSlot) {
+                player.getInventory().removeItem(item, quantity);
+                this.bin.put(item, quantity);
+                this.incomePerSale += item.sellPrice*quantity;
+                System.out.println("You have successfully added " + quantity + " " + item.getName() + " to your Shipping Bin!");
+            } else {
+                System.out.println("Bin is full!");
+            }
+        }
+    }
 }

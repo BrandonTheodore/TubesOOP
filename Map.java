@@ -369,6 +369,9 @@ public class Map {
         // player.visiting("WORLD MAP");
 
         while(true){
+            if(!player.getSlept()){
+                return;
+            }
             System.out.println("=== World Map ===");
             System.out.println("1. NPC's House");
             System.out.println("2. Fishing Location");
@@ -390,6 +393,9 @@ public class Map {
             switch (input) {
                 case "1" -> {
                     while(true){
+                        if(!player.getSlept()){
+                            return;
+                        }
                         System.out.println("=== NPC's House ===");
                         System.out.println("1. Mayor Tadi");
                         System.out.println("2. Caroline");
@@ -533,6 +539,9 @@ public class Map {
                 }
                 case "2" -> {
                     while(true){
+                        if(!player.getSlept()){
+                            return;
+                        }
                         boolean fished = false;
                         System.out.println("=== Fishing Locations ===");
                         System.out.println("1. Forest River");
@@ -596,6 +605,9 @@ public class Map {
                 case "3" -> {
                     player.visiting(Location.STORE);
                     while(true){
+                        if(!player.getSlept()){
+                            return;
+                        }
                         System.out.println("=== Store ===");
                         System.out.println("1. Visit Emily");
                         System.out.println("2. Buy Item");
@@ -625,6 +637,9 @@ public class Map {
                             }
                             case "2" -> {
                                 while(true){
+                                    if(!player.getSlept()){
+                                        return;
+                                    }
                                     store.showItemsForSale();
                                     if(message.equals("nothing")){
                                         System.out.println("System Message: ");
@@ -674,6 +689,9 @@ public class Map {
                             }
                             case "3" -> {
                                 while (true) {
+                                    if(!player.getSlept()){
+                                        return;
+                                    }
                                     store.showRecipesForSale();
                                     System.out.println("** Ketik 'b' untuk kembali **");
                                     System.out.print("Nama resep yang ingin dibeli: ");
@@ -722,6 +740,9 @@ public class Map {
         String message = "nothing";
         
         while(true){
+            if(!player.getSlept()){
+                return;
+            }
             if(npcName.equals("Emily")){
                 System.out.println("\n=== " + npcName + "'s Store ===");
             } else {
