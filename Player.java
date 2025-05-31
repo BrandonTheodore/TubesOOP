@@ -683,7 +683,7 @@ public class Player {
             while (true) { 
                 if(this.time.getCurrentGameTime().isBefore(LocalTime.of(3, 00)) && this.time.getCurrentGameTime().isAfter(LocalTime.of(2, 00))){
                     this.slept = false;
-                    System.out.println("\nHarus segera tidur, waktu sudah jam 02.00!");
+                    System.out.println("\nHarus segera pulang dan tidur, waktu sudah jam 02.00!");
                     this.time.stopTime();
                     try {
                         Thread.sleep(15000);
