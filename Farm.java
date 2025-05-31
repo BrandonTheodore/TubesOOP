@@ -95,6 +95,7 @@ public class Farm {
                     player.resetShowerCount();
                     player.reserBathCount();
                     first = false;
+                    rainWater();
                 }
                 if(waktu.isAfter(LocalTime.of(01, 00))){
                     break;
@@ -134,7 +135,20 @@ public class Farm {
         System.out.println("Today's weather is " + weather.toString());
         System.out.println("Current season is " + season.toString());
     }
-    
+
+    public void rainWater(){
+        char[][] currentMap = this.farmMap.getMap();
+        if(this.weather == Weather.RAINY){
+            for(int row = 0; row < 32; row++){
+                for(int col = 0; col < 32; col++){
+                    if(currentMap[row][col] == 'l'){
+                        this.farmMap.setTile('w', col, row);
+                    }
+                }
+            }
+            System.out.println("All plants are watered.");
+        }
+    }
 }
 
 

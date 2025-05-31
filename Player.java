@@ -294,13 +294,13 @@ public class Player {
 
                     if(currentMap[playerY][playerX] == 'w'){
                         lastWatered = 0;
-                    } else {
+                    } else if (this.farm.getSeason() == Season.SUMMER){
                         lastWatered++;
                     }
-                    
+
                     map.setTile('l', playerX, playerY);
 
-                    if(lastWatered >= 2){
+                    if(lastWatered > 2){
                         System.out.println("Plant has withered!");
                         seed.setStatus("Withered");
                         map.setTile('x', playerX, playerY);
@@ -359,18 +359,6 @@ public class Player {
             map.setCurrentTile('w');
         } else {
             System.out.println("Terlalu lelah untuk melakukan watering");
-        }
-    }
-
-    public void rainWater(Map map, Seeds seed){
-        char[][] currentMap = map.getMap();
-        for(int row = 0; row < 32; row++){
-            for(int col = 0; col < 32; col++){
-                if(currentMap[row][col] == 'l'){
-                    map.setTile('w', col, row);
-                    seed.setLastWatered(0);
-                }
-            }
         }
     }
 
@@ -453,12 +441,13 @@ public class Player {
             // farm.setDayCount(farm.getDayCount() + 1);
             System.out.println("\nDay Changed");
             this.farm.setDay(farm.getDay().nextDay());
-            this.farm.setDayCount(farm.getDayCount() + 1);  
+            this.farm.setDayCount(farm.getDayCount() + 1);
             resetShowerCount();
             reserBathCount();
         }
         time.setTime(skipTimeToMorning);
         farm.changeDay();
+        this.farm.rainWater();
         System.out.println("Waktu game maju sampai pagi."); //harus ditambahin
     }
 
