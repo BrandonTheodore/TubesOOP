@@ -59,7 +59,6 @@ public class MainHouse {
         System.out.println("");
         Time time = new Time();
         Farm farm = new Farm(inputFarmName, time);
-        farm.runThread();
         Cooking cooking = new Cooking();
         Store store = new Store();
         Idle idle = new Idle(new Watering());
@@ -67,6 +66,7 @@ public class MainHouse {
         int randomNumber = rand.nextInt(1000);
 
         Player player = new Player(inputName, gender, farm, time, Location.FARM);
+        farm.runThread(player);
         // player.sleepAtTwo();
 
         CropsManager cropsManager = new CropsManager();
@@ -112,7 +112,7 @@ public class MainHouse {
             if(!player.getSlept()){
                 player.getTime().resumeTime();
                 player.sleep();
-                player.getHouse().house(player, cooking, recipeManager, miscManager, true);
+                player.getHouse().house(player, cooking, recipeManager, miscManager, true, foodManager);
             }
 
             if((player.getIsMarried() || player.getGold() >= goldThreshold) && !endgameStatsShown){
@@ -323,7 +323,7 @@ public class MainHouse {
                 }
                 case "h" -> {
                     if(houseNearby){
-                        player.getHouse().house(player, cooking, recipeManager, miscManager, false);
+                        player.getHouse().house(player, cooking, recipeManager, miscManager, false, foodManager);
                         message = "You exited the house";
                     } else {
                         message = "You are not near a house!";
@@ -461,7 +461,7 @@ public class MainHouse {
             case Map.TILLED -> "Tilled Soil";
             case Map.PLANTED -> "Planted Crop";
             case Map.HOUSE -> "House";
-            case Map.BIN -> "Storage Bin";
+            case Map.BIN -> "Shipping Bin";
             case Map.POND -> "Pond";
             case Map.WATERED -> "Watered Plant";
             case Map.HARVESTABLE -> "Harvestable";

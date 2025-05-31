@@ -83,7 +83,7 @@ public class Farm {
         }
     }
 
-    public void updateDay(){
+    public void updateDay(Player player){
         while(true){
             boolean first = true;
             while(true){
@@ -92,6 +92,8 @@ public class Farm {
                     System.out.println("\nDay Changed");
                     this.day = day.nextDay();
                     this.dayCount++;
+                    player.resetShowerCount();
+                    player.reserBathCount();
                     first = false;
                 }
                 if(waktu.isAfter(LocalTime.of(01, 00))){
@@ -101,9 +103,9 @@ public class Farm {
         }
     }
 
-    public void runThread(){
+    public void runThread(Player player){
         Runnable task = () -> {
-            updateDay();
+            updateDay(player);
         };
 
         Thread thread = new Thread(task);

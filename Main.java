@@ -59,7 +59,6 @@ public class Main {
         System.out.println("");
         Time time = new Time();
         Farm farm = new Farm(inputFarmName, time);
-        farm.runThread();
         Cooking cooking = new Cooking();
         Store store = new Store();
         Idle idle = new Idle(new Watering());
@@ -68,6 +67,8 @@ public class Main {
 
         Player player = new Player(inputName, gender, farm, time, Location.FARM);
         player.sleepAtTwo();
+        farm.runThread(player);
+        
 
         CropsManager cropsManager = new CropsManager();
         EquipmentManager equipmentManager = new EquipmentManager();
@@ -449,7 +450,7 @@ public class Main {
             case Map.TILLED -> "Tilled Soil";
             case Map.PLANTED -> "Planted Crop";
             case Map.HOUSE -> "House";
-            case Map.BIN -> "Storage Bin";
+            case Map.BIN -> "Shipping Bin";
             case Map.POND -> "Pond";
             case Map.WATERED -> "Watered Plant";
             case Map.HARVESTABLE -> "Harvestable";

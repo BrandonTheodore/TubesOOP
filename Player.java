@@ -27,6 +27,9 @@ public class Player {
     private boolean haveCaughtLegendaryFish;
     private boolean slept;
 
+    private int showerCount;
+    private int bathCount;
+
     private ShippingBin shippingBin;
     private Seeds[][] seedMap;
 
@@ -60,6 +63,9 @@ public class Player {
         this.isMarried = false;
         this.haveCaughtLegendaryFish = false;
         this.slept = true;
+
+        this.showerCount = 0;
+        this.bathCount = 0;
         
         this.location = location;
         this.shippingBin = new ShippingBin(time);
@@ -133,6 +139,14 @@ public class Player {
 
     public boolean getIsMarried(){
         return this.isMarried;
+    }
+
+    public void resetShowerCount(){
+        this.showerCount = 0;
+    }
+
+    public void reserBathCount(){
+        this.bathCount = 0;
     }
 
     public void setSlept(boolean slept){
@@ -408,7 +422,6 @@ public class Player {
         }
         time.setTime(skipTimeToMorning);
         farm.changeDay();
-        this.slept = true;
         System.out.println("Waktu game maju sampai pagi."); //harus ditambahin
     }
 
@@ -657,5 +670,61 @@ public class Player {
 
         Thread thread = new Thread(task);
         thread.start();
+    }
+
+    public void chill(){
+        addEnergy(15);
+        this.time.addTime(30);
+    }
+
+    public void admirePlants(){
+        addEnergy(1);
+        this.time.addTime(1);
+    }
+
+    public void toilet1(){
+        addEnergy(1);
+        this.time.addTime(2);
+    }   
+
+    public boolean toilet2(){
+        if(consumeEnergy(10)){
+            this.time.addTime(20);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean shower(){
+        if(this.showerCount < 2){
+            addEnergy(10);
+            this.time.addTime(20);
+            this.showerCount++;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean bath(){
+        if(this.bathCount < 1){
+            addEnergy(30);
+            this.time.addTime(120);
+            this.bathCount++;
+            return true;
+        }
+        return false;
+    }
+
+    public void smolEat(){
+        addEnergy(1);
+        this.time.addTime(1);
+    }
+
+    public boolean study(){
+        if(consumeEnergy(20)){
+            this.time.addTime(90);
+            return true;
+        }
+        return false;
     }
 }
