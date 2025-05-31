@@ -201,13 +201,20 @@ public class Player {
         if (energyCost < 0) {
             throw new IllegalArgumentException("Biaya energi tidak harus lebih dari 0.");
         }
-        this.energy -= energyCost;
-        if (this.energy < MIN_ENERGY_BEFORE_SLEEP) {
-            System.out.println(this.name + " kelelahan dan harus segera tidur! Energi mencapai " + this.energy);
-            sleep();
+        if(this.energy <= 0){
             return false;
         }
+        if(this.energy - energyCost < MIN_ENERGY_BEFORE_SLEEP){
+            System.out.println("Jika melakukan aksi energi mencapai " + (this.energy-energyCost) + ", kurang dari cadangan energi (-20)");
+            System.out.println(this.name + " tidak bisa melakukan aksi.");
+            return false;
+        }
+        this.energy -= energyCost;
         System.out.println(this.name + " melakukan aksi. Energi berkurang " + energyCost + ". Sisa energi: " + this.energy);
+        if(this.energy == -20){
+            System.out.println("Energi mencapai -20, " + this.name + " sangat lelah, harus segera tidur;");
+            sleep();
+        }
         return true;
     }
 
@@ -244,8 +251,7 @@ public class Player {
 
     //ACTIONS!!!!!
     public void till(Map map) {
-        int energyCost = TILL_ENERGY_COST_PER_TILE;
-        if (consumeEnergy(energyCost)) { 
+        if (consumeEnergy(5)) { 
             time.addTime(5);
             map.setCurrentTile('t');
             System.out.println("Till successful");
@@ -256,8 +262,7 @@ public class Player {
     }
 
     public void recoverLand(Map map) {
-        int energyCost = RECOVER_ENERGY_COST_PER_TILE;
-        if (consumeEnergy(energyCost)) {
+        if (consumeEnergy(5)) {
             time.addTime(5);
             map.setCurrentTile('.');
             System.out.println("Recovered tilled land");
@@ -269,38 +274,47 @@ public class Player {
     public void cropProgress(int playerX, int playerY, Seeds seed, Map map) {
         int timer = seed.getDaysToHarvest();
         int i = 0;
-        boolean withered = false;
         int lastWatered = 0;
         char[][] currentMap = map.getMap();
-        while(i <= timer){
+        while(i < timer){
             boolean first = true;
             while(true){
                 LocalTime waktu = time.getCurrentGameTime();
-                if(waktu.isAfter(LocalTime.of(00, 00)) && waktu.isBefore(LocalTime.of(01, 00)) && first){
+                if(waktu.isAfter(LocalTime.of(00, 00)) && waktu.isBefore(LocalTime.of(6, 05)) && first){
+                    // if(this.farm.getWeather() == Weather.RAINY){
+                    //     rainWater(map, seed);
+                    //     System.out.println("Its raining, all plants are watered");
+                    // }
+
+                    // if(prevTile == 'w'){
+                    //     seed.setLastWatered(0);
+                    // } else if (this.farm.getSeason() == Season.SUMMER && prevTile == 'l' && currentMap[playerY][playerX] == 'l'){
+                    //     seed.incLastWatered();
+                    // }
+
                     if(currentMap[playerY][playerX] == 'w'){
                         lastWatered = 0;
                     } else {
                         lastWatered++;
                     }
-                    // lastWatered = seed.getLastWatered();
+                    
                     map.setTile('l', playerX, playerY);
+
                     if(lastWatered >= 2){
                         System.out.println("Plant has withered!");
                         seed.setStatus("Withered");
-                        withered = true;
                         map.setTile('x', playerX, playerY);
+                        return;
                     }
                     first = false;
                     i++;
                 }
-                if(waktu.isAfter(LocalTime.of(01, 00))){
+                if(waktu.isAfter(LocalTime.of(6, 05))){
                     break;
                 }
             }
         }
-        if(!withered){
-            map.setTile('c', playerX, playerY);
-        }
+        map.setTile('c', playerX, playerY);
     }
 
     public void plant(int playerX, int playerY, Seeds seed, Map map) {
@@ -309,52 +323,70 @@ public class Player {
             return;
         }
 
-        if(this.energy < 5){
-            System.out.println("Terlalu lelah untuk melakukan plant");
+        if(this.farm.getSeason() == Season.WINTER){
+            System.out.println("Cannot plant in the winter");
             return;
         }
 
-        this.seedMap[playerY][playerX] = seed;
-        consumeEnergy(5);
-        this.time.addTime(5);
-        this.inventory.removeItem(seed, 1);
-        map.setCurrentTile('l'); 
+        if(this.farm.getSeason() != seed.getSeason()){
+            System.out.println(seed.getName() + " can only be planted in " + seed.getSeason() + " season, now is " + this.farm.getSeason() + " season.");
+            return;
+        }
+
         Runnable task = () -> {
             cropProgress(playerX, playerY, seed, map);
         };
 
-        Thread thread = new Thread(task);
-        thread.start();        
+        if(consumeEnergy(5)){
+            this.seedMap[playerY][playerX] = seed;
+            this.time.addTime(5);
+            this.inventory.removeItem(seed, 1);
+            map.setCurrentTile('l');
+            System.out.println("You planted a " + seed.getName() + ", " + seed.getDaysToHarvest() + " days to harvest.");
+            System.out.println("Make sure to water it properly!");
+
+            Thread thread = new Thread(task);
+            thread.start(); 
+        } else {
+            System.out.println("Too tired to plant");
+        }      
     }
 
     public void watering(int playerX, int playerY, Seeds seed, Map map) {
-        if(this.energy < 5){
-            System.out.println("Terlalu lelah untuk melakukan watering");
-            return;
-        } else {
+        if(consumeEnergy(5)){
             seed.setLastWatered(0);
+            this.time.addTime(5);
+            map.setCurrentTile('w');
+        } else {
+            System.out.println("Terlalu lelah untuk melakukan watering");
         }
+    }
 
-        consumeEnergy(5);
-        this.time.addTime(5);
-        map.setCurrentTile('w');
+    public void rainWater(Map map, Seeds seed){
+        char[][] currentMap = map.getMap();
+        for(int row = 0; row < 32; row++){
+            for(int col = 0; col < 32; col++){
+                if(currentMap[row][col] == 'l'){
+                    map.setTile('w', col, row);
+                    seed.setLastWatered(0);
+                }
+            }
+        }
     }
 
     public void harvest(int playerX, int playerY, Map map) {
-        if(this.energy < 5){
-            System.out.println("Terlalu lelah untuk melakukan harvest");
-            return;
+        Seeds seedToHarvest = seedMap[playerY][playerX];
+        if(consumeEnergy(5)){
+            seedMap[playerY][playerX] = new Seeds("temp", 0, Season.FALL, 0, new Crops("temp", 0, 0, 0));
+            this.time.addTime(5);
+            this.inventory.addItem(seedToHarvest.getResultCrop(), seedToHarvest.getResultCrop().getCropPerPanen());
+            this.totalCropHarvested += seedToHarvest.getResultCrop().getCropPerPanen();
+            this.totalHarvest++;
+            System.out.println(seedToHarvest.getResultCrop().getCropPerPanen() + " " + seedToHarvest.getResultCrop().getName() + " harvested");
+            map.setCurrentTile('.');
+        } else {
+            System.out.println("Too tired to harvest " + seedToHarvest.getResultCrop().getName());
         }
-
-        Seeds seedHarvested = seedMap[playerY][playerX];
-        consumeEnergy(5);
-        this.time.addTime(5);
-        this.inventory.addItem(seedHarvested.getResultCrop(), seedHarvested.getResultCrop().getCropPerPanen());
-        this.totalCropHarvested += seedHarvested.getResultCrop().getCropPerPanen();
-        this.totalHarvest++;
-        seedMap[playerY][playerX] = new Seeds("temp", 0, Season.FALL, 0, new Crops("temp", 0, 0, 0));
-        map.setCurrentTile('.');
-        System.out.println("Crop harvested");
     }
 
     public boolean eat(Item food) {
@@ -417,8 +449,13 @@ public class Player {
         }
         LocalTime skipTimeToMorning = LocalTime.of(6, 0);
         if((time.getCurrentGameTime().isAfter(LocalTime.of(6, 0)) && time.getCurrentGameTime().isBefore(LocalTime.of(23, 59))) || time.getCurrentGameTime().equals(LocalTime.of(23, 59))){
-            farm.setDay(farm.getDay().nextDay());
-            farm.setDayCount(farm.getDayCount() + 1);
+            // farm.setDay(farm.getDay().nextDay());
+            // farm.setDayCount(farm.getDayCount() + 1);
+            System.out.println("\nDay Changed");
+            this.farm.setDay(farm.getDay().nextDay());
+            this.farm.setDayCount(farm.getDayCount() + 1);  
+            resetShowerCount();
+            reserBathCount();
         }
         time.setTime(skipTimeToMorning);
         farm.changeDay();
@@ -652,7 +689,6 @@ public class Player {
     }
 
     public void sleepAtTwoHouse(Cooking cooking, RecipeManager recipeManager, MiscManager miscManager){
-        Scanner scanner = new Scanner(System.in);
         Runnable task = () -> {
             while (true) { 
                 if(this.time.getCurrentGameTime().isBefore(LocalTime.of(3, 00)) && this.time.getCurrentGameTime().isAfter(LocalTime.of(2, 00))){

@@ -19,8 +19,8 @@ public class Farm {
         this.day = Day.MONDAY;
         this.season = Season.SPRING;
         this.weather = Weather.SUNNY;
-        this.dayCount = 1;
-        this.seasonCount = 1;
+        this.dayCount = 0;
+        this.seasonCount = 0;
         this.rainyDay = 0;
     }
 

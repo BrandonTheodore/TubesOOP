@@ -34,6 +34,11 @@ public class Seeds extends Item {
     public void setLastWatered(int water){
         this.lastWatered = water;
     }
+
+    public void incLastWatered(){
+        this.lastWatered++;
+    }
+
     public int getDaysToHarvest() {
         return daysToHarvest;
     }
