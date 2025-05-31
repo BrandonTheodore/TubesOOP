@@ -62,8 +62,7 @@ public class Main {
         Cooking cooking = new Cooking();
         Store store = new Store();
         Idle idle = new Idle(new Watering());
-        Random rand = new Random();
-        int randomNumber = rand.nextInt(1000);
+        
 
         Player player = new Player(inputName, gender, farm, time, Location.FARM);
         player.sleepAtTwo();
@@ -397,6 +396,8 @@ public class Main {
                     time.addTime(60);
                 }
                 case "idle" -> {
+                    Random rand = new Random();
+                int randomNumber = rand.nextInt(1000);
                     if(randomNumber % 2 == 0){
                         idle.setIdle(new Humming());
                     } else {
